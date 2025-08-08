@@ -27,4 +27,21 @@ class HomeEvent with _$HomeEvent {
   /// Сохранение псевдонима
   const factory HomeEvent.onNicknameSaved({required String nickname}) =
       HomeEventOnNicknameSaved;
+
+  /// Изменился стейт экрана
+  const factory HomeEvent.onViewStateChanged() = HomeEventOnViewStateChanged;
+
+  /// Получено приглашение
+  const factory HomeEvent.onInvitationReceived({
+    required Player invitingPlayer,
+  }) = HomeEventOnInvitationReceived;
+
+  /// Приглашение отклонено
+  const factory HomeEvent.onInvitationRejected({
+    required Player rejectedPlayer,
+  }) = HomeEventOnInvitationRejected;
+
+  /// Игра началась
+  const factory HomeEvent.onGameStarted({required Player opponent}) =
+      HomeEventOnGameStarted;
 }

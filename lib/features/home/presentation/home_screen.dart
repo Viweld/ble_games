@@ -51,7 +51,7 @@ class _HomeView extends StatelessWidget {
             },
             gameStarted: (opponent) {
               // Переход к игре
-              Navigator.of(context).pushReplacementNamed('/game');
+              Navigator.of(context).pushNamed('/game');
             },
           );
         },
@@ -108,7 +108,7 @@ class _HomeView extends StatelessWidget {
                     onPressed: selectedPlayer != null
                         ? () {
                             context.read<HomeBloc>().add(
-                              HomeEvent.onInvitePlayer(player: selectedPlayer!),
+                              HomeEvent.onInvitePlayer(player: selectedPlayer),
                             );
                           }
                         : null,

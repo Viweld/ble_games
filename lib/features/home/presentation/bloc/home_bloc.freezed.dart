@@ -26,6 +26,10 @@ mixin _$HomeEvent {
     required TResult Function() onAcceptInvitation,
     required TResult Function() onRejectInvitation,
     required TResult Function(String nickname) onNicknameSaved,
+    required TResult Function() onViewStateChanged,
+    required TResult Function(Player invitingPlayer) onInvitationReceived,
+    required TResult Function(Player rejectedPlayer) onInvitationRejected,
+    required TResult Function(Player opponent) onGameStarted,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
@@ -36,6 +40,10 @@ mixin _$HomeEvent {
     TResult? Function()? onAcceptInvitation,
     TResult? Function()? onRejectInvitation,
     TResult? Function(String nickname)? onNicknameSaved,
+    TResult? Function()? onViewStateChanged,
+    TResult? Function(Player invitingPlayer)? onInvitationReceived,
+    TResult? Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult? Function(Player opponent)? onGameStarted,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
@@ -46,6 +54,10 @@ mixin _$HomeEvent {
     TResult Function()? onAcceptInvitation,
     TResult Function()? onRejectInvitation,
     TResult Function(String nickname)? onNicknameSaved,
+    TResult Function()? onViewStateChanged,
+    TResult Function(Player invitingPlayer)? onInvitationReceived,
+    TResult Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult Function(Player opponent)? onGameStarted,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -61,6 +73,13 @@ mixin _$HomeEvent {
     required TResult Function(HomeEventOnRejectInvitation value)
     onRejectInvitation,
     required TResult Function(HomeEventOnNicknameSaved value) onNicknameSaved,
+    required TResult Function(HomeEventOnViewStateChanged value)
+    onViewStateChanged,
+    required TResult Function(HomeEventOnInvitationReceived value)
+    onInvitationReceived,
+    required TResult Function(HomeEventOnInvitationRejected value)
+    onInvitationRejected,
+    required TResult Function(HomeEventOnGameStarted value) onGameStarted,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
@@ -72,6 +91,12 @@ mixin _$HomeEvent {
     TResult? Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
     TResult? Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
     TResult? Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult? Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult? Function(HomeEventOnInvitationReceived value)?
+    onInvitationReceived,
+    TResult? Function(HomeEventOnInvitationRejected value)?
+    onInvitationRejected,
+    TResult? Function(HomeEventOnGameStarted value)? onGameStarted,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
@@ -83,6 +108,10 @@ mixin _$HomeEvent {
     TResult Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
     TResult Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
     TResult Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult Function(HomeEventOnInvitationReceived value)? onInvitationReceived,
+    TResult Function(HomeEventOnInvitationRejected value)? onInvitationRejected,
+    TResult Function(HomeEventOnGameStarted value)? onGameStarted,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
 }
@@ -160,6 +189,10 @@ class _$HomeEventOnInitializationRequestedImpl
     required TResult Function() onAcceptInvitation,
     required TResult Function() onRejectInvitation,
     required TResult Function(String nickname) onNicknameSaved,
+    required TResult Function() onViewStateChanged,
+    required TResult Function(Player invitingPlayer) onInvitationReceived,
+    required TResult Function(Player rejectedPlayer) onInvitationRejected,
+    required TResult Function(Player opponent) onGameStarted,
   }) {
     return onInitializationRequested();
   }
@@ -174,6 +207,10 @@ class _$HomeEventOnInitializationRequestedImpl
     TResult? Function()? onAcceptInvitation,
     TResult? Function()? onRejectInvitation,
     TResult? Function(String nickname)? onNicknameSaved,
+    TResult? Function()? onViewStateChanged,
+    TResult? Function(Player invitingPlayer)? onInvitationReceived,
+    TResult? Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult? Function(Player opponent)? onGameStarted,
   }) {
     return onInitializationRequested?.call();
   }
@@ -188,6 +225,10 @@ class _$HomeEventOnInitializationRequestedImpl
     TResult Function()? onAcceptInvitation,
     TResult Function()? onRejectInvitation,
     TResult Function(String nickname)? onNicknameSaved,
+    TResult Function()? onViewStateChanged,
+    TResult Function(Player invitingPlayer)? onInvitationReceived,
+    TResult Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult Function(Player opponent)? onGameStarted,
     required TResult orElse(),
   }) {
     if (onInitializationRequested != null) {
@@ -210,6 +251,13 @@ class _$HomeEventOnInitializationRequestedImpl
     required TResult Function(HomeEventOnRejectInvitation value)
     onRejectInvitation,
     required TResult Function(HomeEventOnNicknameSaved value) onNicknameSaved,
+    required TResult Function(HomeEventOnViewStateChanged value)
+    onViewStateChanged,
+    required TResult Function(HomeEventOnInvitationReceived value)
+    onInvitationReceived,
+    required TResult Function(HomeEventOnInvitationRejected value)
+    onInvitationRejected,
+    required TResult Function(HomeEventOnGameStarted value) onGameStarted,
   }) {
     return onInitializationRequested(this);
   }
@@ -225,6 +273,12 @@ class _$HomeEventOnInitializationRequestedImpl
     TResult? Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
     TResult? Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
     TResult? Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult? Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult? Function(HomeEventOnInvitationReceived value)?
+    onInvitationReceived,
+    TResult? Function(HomeEventOnInvitationRejected value)?
+    onInvitationRejected,
+    TResult? Function(HomeEventOnGameStarted value)? onGameStarted,
   }) {
     return onInitializationRequested?.call(this);
   }
@@ -240,6 +294,10 @@ class _$HomeEventOnInitializationRequestedImpl
     TResult Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
     TResult Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
     TResult Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult Function(HomeEventOnInvitationReceived value)? onInvitationReceived,
+    TResult Function(HomeEventOnInvitationRejected value)? onInvitationRejected,
+    TResult Function(HomeEventOnGameStarted value)? onGameStarted,
     required TResult orElse(),
   }) {
     if (onInitializationRequested != null) {
@@ -346,6 +404,10 @@ class _$HomeEventOnPlayerSelectedImpl implements HomeEventOnPlayerSelected {
     required TResult Function() onAcceptInvitation,
     required TResult Function() onRejectInvitation,
     required TResult Function(String nickname) onNicknameSaved,
+    required TResult Function() onViewStateChanged,
+    required TResult Function(Player invitingPlayer) onInvitationReceived,
+    required TResult Function(Player rejectedPlayer) onInvitationRejected,
+    required TResult Function(Player opponent) onGameStarted,
   }) {
     return onPlayerSelected(player);
   }
@@ -360,6 +422,10 @@ class _$HomeEventOnPlayerSelectedImpl implements HomeEventOnPlayerSelected {
     TResult? Function()? onAcceptInvitation,
     TResult? Function()? onRejectInvitation,
     TResult? Function(String nickname)? onNicknameSaved,
+    TResult? Function()? onViewStateChanged,
+    TResult? Function(Player invitingPlayer)? onInvitationReceived,
+    TResult? Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult? Function(Player opponent)? onGameStarted,
   }) {
     return onPlayerSelected?.call(player);
   }
@@ -374,6 +440,10 @@ class _$HomeEventOnPlayerSelectedImpl implements HomeEventOnPlayerSelected {
     TResult Function()? onAcceptInvitation,
     TResult Function()? onRejectInvitation,
     TResult Function(String nickname)? onNicknameSaved,
+    TResult Function()? onViewStateChanged,
+    TResult Function(Player invitingPlayer)? onInvitationReceived,
+    TResult Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult Function(Player opponent)? onGameStarted,
     required TResult orElse(),
   }) {
     if (onPlayerSelected != null) {
@@ -396,6 +466,13 @@ class _$HomeEventOnPlayerSelectedImpl implements HomeEventOnPlayerSelected {
     required TResult Function(HomeEventOnRejectInvitation value)
     onRejectInvitation,
     required TResult Function(HomeEventOnNicknameSaved value) onNicknameSaved,
+    required TResult Function(HomeEventOnViewStateChanged value)
+    onViewStateChanged,
+    required TResult Function(HomeEventOnInvitationReceived value)
+    onInvitationReceived,
+    required TResult Function(HomeEventOnInvitationRejected value)
+    onInvitationRejected,
+    required TResult Function(HomeEventOnGameStarted value) onGameStarted,
   }) {
     return onPlayerSelected(this);
   }
@@ -411,6 +488,12 @@ class _$HomeEventOnPlayerSelectedImpl implements HomeEventOnPlayerSelected {
     TResult? Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
     TResult? Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
     TResult? Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult? Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult? Function(HomeEventOnInvitationReceived value)?
+    onInvitationReceived,
+    TResult? Function(HomeEventOnInvitationRejected value)?
+    onInvitationRejected,
+    TResult? Function(HomeEventOnGameStarted value)? onGameStarted,
   }) {
     return onPlayerSelected?.call(this);
   }
@@ -426,6 +509,10 @@ class _$HomeEventOnPlayerSelectedImpl implements HomeEventOnPlayerSelected {
     TResult Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
     TResult Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
     TResult Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult Function(HomeEventOnInvitationReceived value)? onInvitationReceived,
+    TResult Function(HomeEventOnInvitationRejected value)? onInvitationRejected,
+    TResult Function(HomeEventOnGameStarted value)? onGameStarted,
     required TResult orElse(),
   }) {
     if (onPlayerSelected != null) {
@@ -540,6 +627,10 @@ class _$HomeEventOnInvitePlayerImpl implements HomeEventOnInvitePlayer {
     required TResult Function() onAcceptInvitation,
     required TResult Function() onRejectInvitation,
     required TResult Function(String nickname) onNicknameSaved,
+    required TResult Function() onViewStateChanged,
+    required TResult Function(Player invitingPlayer) onInvitationReceived,
+    required TResult Function(Player rejectedPlayer) onInvitationRejected,
+    required TResult Function(Player opponent) onGameStarted,
   }) {
     return onInvitePlayer(player);
   }
@@ -554,6 +645,10 @@ class _$HomeEventOnInvitePlayerImpl implements HomeEventOnInvitePlayer {
     TResult? Function()? onAcceptInvitation,
     TResult? Function()? onRejectInvitation,
     TResult? Function(String nickname)? onNicknameSaved,
+    TResult? Function()? onViewStateChanged,
+    TResult? Function(Player invitingPlayer)? onInvitationReceived,
+    TResult? Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult? Function(Player opponent)? onGameStarted,
   }) {
     return onInvitePlayer?.call(player);
   }
@@ -568,6 +663,10 @@ class _$HomeEventOnInvitePlayerImpl implements HomeEventOnInvitePlayer {
     TResult Function()? onAcceptInvitation,
     TResult Function()? onRejectInvitation,
     TResult Function(String nickname)? onNicknameSaved,
+    TResult Function()? onViewStateChanged,
+    TResult Function(Player invitingPlayer)? onInvitationReceived,
+    TResult Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult Function(Player opponent)? onGameStarted,
     required TResult orElse(),
   }) {
     if (onInvitePlayer != null) {
@@ -590,6 +689,13 @@ class _$HomeEventOnInvitePlayerImpl implements HomeEventOnInvitePlayer {
     required TResult Function(HomeEventOnRejectInvitation value)
     onRejectInvitation,
     required TResult Function(HomeEventOnNicknameSaved value) onNicknameSaved,
+    required TResult Function(HomeEventOnViewStateChanged value)
+    onViewStateChanged,
+    required TResult Function(HomeEventOnInvitationReceived value)
+    onInvitationReceived,
+    required TResult Function(HomeEventOnInvitationRejected value)
+    onInvitationRejected,
+    required TResult Function(HomeEventOnGameStarted value) onGameStarted,
   }) {
     return onInvitePlayer(this);
   }
@@ -605,6 +711,12 @@ class _$HomeEventOnInvitePlayerImpl implements HomeEventOnInvitePlayer {
     TResult? Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
     TResult? Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
     TResult? Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult? Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult? Function(HomeEventOnInvitationReceived value)?
+    onInvitationReceived,
+    TResult? Function(HomeEventOnInvitationRejected value)?
+    onInvitationRejected,
+    TResult? Function(HomeEventOnGameStarted value)? onGameStarted,
   }) {
     return onInvitePlayer?.call(this);
   }
@@ -620,6 +732,10 @@ class _$HomeEventOnInvitePlayerImpl implements HomeEventOnInvitePlayer {
     TResult Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
     TResult Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
     TResult Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult Function(HomeEventOnInvitationReceived value)? onInvitationReceived,
+    TResult Function(HomeEventOnInvitationRejected value)? onInvitationRejected,
+    TResult Function(HomeEventOnGameStarted value)? onGameStarted,
     required TResult orElse(),
   }) {
     if (onInvitePlayer != null) {
@@ -693,6 +809,10 @@ class _$HomeEventOnCancelInvitationImpl implements HomeEventOnCancelInvitation {
     required TResult Function() onAcceptInvitation,
     required TResult Function() onRejectInvitation,
     required TResult Function(String nickname) onNicknameSaved,
+    required TResult Function() onViewStateChanged,
+    required TResult Function(Player invitingPlayer) onInvitationReceived,
+    required TResult Function(Player rejectedPlayer) onInvitationRejected,
+    required TResult Function(Player opponent) onGameStarted,
   }) {
     return onCancelInvitation();
   }
@@ -707,6 +827,10 @@ class _$HomeEventOnCancelInvitationImpl implements HomeEventOnCancelInvitation {
     TResult? Function()? onAcceptInvitation,
     TResult? Function()? onRejectInvitation,
     TResult? Function(String nickname)? onNicknameSaved,
+    TResult? Function()? onViewStateChanged,
+    TResult? Function(Player invitingPlayer)? onInvitationReceived,
+    TResult? Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult? Function(Player opponent)? onGameStarted,
   }) {
     return onCancelInvitation?.call();
   }
@@ -721,6 +845,10 @@ class _$HomeEventOnCancelInvitationImpl implements HomeEventOnCancelInvitation {
     TResult Function()? onAcceptInvitation,
     TResult Function()? onRejectInvitation,
     TResult Function(String nickname)? onNicknameSaved,
+    TResult Function()? onViewStateChanged,
+    TResult Function(Player invitingPlayer)? onInvitationReceived,
+    TResult Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult Function(Player opponent)? onGameStarted,
     required TResult orElse(),
   }) {
     if (onCancelInvitation != null) {
@@ -743,6 +871,13 @@ class _$HomeEventOnCancelInvitationImpl implements HomeEventOnCancelInvitation {
     required TResult Function(HomeEventOnRejectInvitation value)
     onRejectInvitation,
     required TResult Function(HomeEventOnNicknameSaved value) onNicknameSaved,
+    required TResult Function(HomeEventOnViewStateChanged value)
+    onViewStateChanged,
+    required TResult Function(HomeEventOnInvitationReceived value)
+    onInvitationReceived,
+    required TResult Function(HomeEventOnInvitationRejected value)
+    onInvitationRejected,
+    required TResult Function(HomeEventOnGameStarted value) onGameStarted,
   }) {
     return onCancelInvitation(this);
   }
@@ -758,6 +893,12 @@ class _$HomeEventOnCancelInvitationImpl implements HomeEventOnCancelInvitation {
     TResult? Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
     TResult? Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
     TResult? Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult? Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult? Function(HomeEventOnInvitationReceived value)?
+    onInvitationReceived,
+    TResult? Function(HomeEventOnInvitationRejected value)?
+    onInvitationRejected,
+    TResult? Function(HomeEventOnGameStarted value)? onGameStarted,
   }) {
     return onCancelInvitation?.call(this);
   }
@@ -773,6 +914,10 @@ class _$HomeEventOnCancelInvitationImpl implements HomeEventOnCancelInvitation {
     TResult Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
     TResult Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
     TResult Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult Function(HomeEventOnInvitationReceived value)? onInvitationReceived,
+    TResult Function(HomeEventOnInvitationRejected value)? onInvitationRejected,
+    TResult Function(HomeEventOnGameStarted value)? onGameStarted,
     required TResult orElse(),
   }) {
     if (onCancelInvitation != null) {
@@ -838,6 +983,10 @@ class _$HomeEventOnAcceptInvitationImpl implements HomeEventOnAcceptInvitation {
     required TResult Function() onAcceptInvitation,
     required TResult Function() onRejectInvitation,
     required TResult Function(String nickname) onNicknameSaved,
+    required TResult Function() onViewStateChanged,
+    required TResult Function(Player invitingPlayer) onInvitationReceived,
+    required TResult Function(Player rejectedPlayer) onInvitationRejected,
+    required TResult Function(Player opponent) onGameStarted,
   }) {
     return onAcceptInvitation();
   }
@@ -852,6 +1001,10 @@ class _$HomeEventOnAcceptInvitationImpl implements HomeEventOnAcceptInvitation {
     TResult? Function()? onAcceptInvitation,
     TResult? Function()? onRejectInvitation,
     TResult? Function(String nickname)? onNicknameSaved,
+    TResult? Function()? onViewStateChanged,
+    TResult? Function(Player invitingPlayer)? onInvitationReceived,
+    TResult? Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult? Function(Player opponent)? onGameStarted,
   }) {
     return onAcceptInvitation?.call();
   }
@@ -866,6 +1019,10 @@ class _$HomeEventOnAcceptInvitationImpl implements HomeEventOnAcceptInvitation {
     TResult Function()? onAcceptInvitation,
     TResult Function()? onRejectInvitation,
     TResult Function(String nickname)? onNicknameSaved,
+    TResult Function()? onViewStateChanged,
+    TResult Function(Player invitingPlayer)? onInvitationReceived,
+    TResult Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult Function(Player opponent)? onGameStarted,
     required TResult orElse(),
   }) {
     if (onAcceptInvitation != null) {
@@ -888,6 +1045,13 @@ class _$HomeEventOnAcceptInvitationImpl implements HomeEventOnAcceptInvitation {
     required TResult Function(HomeEventOnRejectInvitation value)
     onRejectInvitation,
     required TResult Function(HomeEventOnNicknameSaved value) onNicknameSaved,
+    required TResult Function(HomeEventOnViewStateChanged value)
+    onViewStateChanged,
+    required TResult Function(HomeEventOnInvitationReceived value)
+    onInvitationReceived,
+    required TResult Function(HomeEventOnInvitationRejected value)
+    onInvitationRejected,
+    required TResult Function(HomeEventOnGameStarted value) onGameStarted,
   }) {
     return onAcceptInvitation(this);
   }
@@ -903,6 +1067,12 @@ class _$HomeEventOnAcceptInvitationImpl implements HomeEventOnAcceptInvitation {
     TResult? Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
     TResult? Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
     TResult? Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult? Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult? Function(HomeEventOnInvitationReceived value)?
+    onInvitationReceived,
+    TResult? Function(HomeEventOnInvitationRejected value)?
+    onInvitationRejected,
+    TResult? Function(HomeEventOnGameStarted value)? onGameStarted,
   }) {
     return onAcceptInvitation?.call(this);
   }
@@ -918,6 +1088,10 @@ class _$HomeEventOnAcceptInvitationImpl implements HomeEventOnAcceptInvitation {
     TResult Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
     TResult Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
     TResult Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult Function(HomeEventOnInvitationReceived value)? onInvitationReceived,
+    TResult Function(HomeEventOnInvitationRejected value)? onInvitationRejected,
+    TResult Function(HomeEventOnGameStarted value)? onGameStarted,
     required TResult orElse(),
   }) {
     if (onAcceptInvitation != null) {
@@ -983,6 +1157,10 @@ class _$HomeEventOnRejectInvitationImpl implements HomeEventOnRejectInvitation {
     required TResult Function() onAcceptInvitation,
     required TResult Function() onRejectInvitation,
     required TResult Function(String nickname) onNicknameSaved,
+    required TResult Function() onViewStateChanged,
+    required TResult Function(Player invitingPlayer) onInvitationReceived,
+    required TResult Function(Player rejectedPlayer) onInvitationRejected,
+    required TResult Function(Player opponent) onGameStarted,
   }) {
     return onRejectInvitation();
   }
@@ -997,6 +1175,10 @@ class _$HomeEventOnRejectInvitationImpl implements HomeEventOnRejectInvitation {
     TResult? Function()? onAcceptInvitation,
     TResult? Function()? onRejectInvitation,
     TResult? Function(String nickname)? onNicknameSaved,
+    TResult? Function()? onViewStateChanged,
+    TResult? Function(Player invitingPlayer)? onInvitationReceived,
+    TResult? Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult? Function(Player opponent)? onGameStarted,
   }) {
     return onRejectInvitation?.call();
   }
@@ -1011,6 +1193,10 @@ class _$HomeEventOnRejectInvitationImpl implements HomeEventOnRejectInvitation {
     TResult Function()? onAcceptInvitation,
     TResult Function()? onRejectInvitation,
     TResult Function(String nickname)? onNicknameSaved,
+    TResult Function()? onViewStateChanged,
+    TResult Function(Player invitingPlayer)? onInvitationReceived,
+    TResult Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult Function(Player opponent)? onGameStarted,
     required TResult orElse(),
   }) {
     if (onRejectInvitation != null) {
@@ -1033,6 +1219,13 @@ class _$HomeEventOnRejectInvitationImpl implements HomeEventOnRejectInvitation {
     required TResult Function(HomeEventOnRejectInvitation value)
     onRejectInvitation,
     required TResult Function(HomeEventOnNicknameSaved value) onNicknameSaved,
+    required TResult Function(HomeEventOnViewStateChanged value)
+    onViewStateChanged,
+    required TResult Function(HomeEventOnInvitationReceived value)
+    onInvitationReceived,
+    required TResult Function(HomeEventOnInvitationRejected value)
+    onInvitationRejected,
+    required TResult Function(HomeEventOnGameStarted value) onGameStarted,
   }) {
     return onRejectInvitation(this);
   }
@@ -1048,6 +1241,12 @@ class _$HomeEventOnRejectInvitationImpl implements HomeEventOnRejectInvitation {
     TResult? Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
     TResult? Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
     TResult? Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult? Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult? Function(HomeEventOnInvitationReceived value)?
+    onInvitationReceived,
+    TResult? Function(HomeEventOnInvitationRejected value)?
+    onInvitationRejected,
+    TResult? Function(HomeEventOnGameStarted value)? onGameStarted,
   }) {
     return onRejectInvitation?.call(this);
   }
@@ -1063,6 +1262,10 @@ class _$HomeEventOnRejectInvitationImpl implements HomeEventOnRejectInvitation {
     TResult Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
     TResult Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
     TResult Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult Function(HomeEventOnInvitationReceived value)? onInvitationReceived,
+    TResult Function(HomeEventOnInvitationRejected value)? onInvitationRejected,
+    TResult Function(HomeEventOnGameStarted value)? onGameStarted,
     required TResult orElse(),
   }) {
     if (onRejectInvitation != null) {
@@ -1158,6 +1361,10 @@ class _$HomeEventOnNicknameSavedImpl implements HomeEventOnNicknameSaved {
     required TResult Function() onAcceptInvitation,
     required TResult Function() onRejectInvitation,
     required TResult Function(String nickname) onNicknameSaved,
+    required TResult Function() onViewStateChanged,
+    required TResult Function(Player invitingPlayer) onInvitationReceived,
+    required TResult Function(Player rejectedPlayer) onInvitationRejected,
+    required TResult Function(Player opponent) onGameStarted,
   }) {
     return onNicknameSaved(nickname);
   }
@@ -1172,6 +1379,10 @@ class _$HomeEventOnNicknameSavedImpl implements HomeEventOnNicknameSaved {
     TResult? Function()? onAcceptInvitation,
     TResult? Function()? onRejectInvitation,
     TResult? Function(String nickname)? onNicknameSaved,
+    TResult? Function()? onViewStateChanged,
+    TResult? Function(Player invitingPlayer)? onInvitationReceived,
+    TResult? Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult? Function(Player opponent)? onGameStarted,
   }) {
     return onNicknameSaved?.call(nickname);
   }
@@ -1186,6 +1397,10 @@ class _$HomeEventOnNicknameSavedImpl implements HomeEventOnNicknameSaved {
     TResult Function()? onAcceptInvitation,
     TResult Function()? onRejectInvitation,
     TResult Function(String nickname)? onNicknameSaved,
+    TResult Function()? onViewStateChanged,
+    TResult Function(Player invitingPlayer)? onInvitationReceived,
+    TResult Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult Function(Player opponent)? onGameStarted,
     required TResult orElse(),
   }) {
     if (onNicknameSaved != null) {
@@ -1208,6 +1423,13 @@ class _$HomeEventOnNicknameSavedImpl implements HomeEventOnNicknameSaved {
     required TResult Function(HomeEventOnRejectInvitation value)
     onRejectInvitation,
     required TResult Function(HomeEventOnNicknameSaved value) onNicknameSaved,
+    required TResult Function(HomeEventOnViewStateChanged value)
+    onViewStateChanged,
+    required TResult Function(HomeEventOnInvitationReceived value)
+    onInvitationReceived,
+    required TResult Function(HomeEventOnInvitationRejected value)
+    onInvitationRejected,
+    required TResult Function(HomeEventOnGameStarted value) onGameStarted,
   }) {
     return onNicknameSaved(this);
   }
@@ -1223,6 +1445,12 @@ class _$HomeEventOnNicknameSavedImpl implements HomeEventOnNicknameSaved {
     TResult? Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
     TResult? Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
     TResult? Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult? Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult? Function(HomeEventOnInvitationReceived value)?
+    onInvitationReceived,
+    TResult? Function(HomeEventOnInvitationRejected value)?
+    onInvitationRejected,
+    TResult? Function(HomeEventOnGameStarted value)? onGameStarted,
   }) {
     return onNicknameSaved?.call(this);
   }
@@ -1238,6 +1466,10 @@ class _$HomeEventOnNicknameSavedImpl implements HomeEventOnNicknameSaved {
     TResult Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
     TResult Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
     TResult Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult Function(HomeEventOnInvitationReceived value)? onInvitationReceived,
+    TResult Function(HomeEventOnInvitationRejected value)? onInvitationRejected,
+    TResult Function(HomeEventOnGameStarted value)? onGameStarted,
     required TResult orElse(),
   }) {
     if (onNicknameSaved != null) {
@@ -1257,6 +1489,865 @@ abstract class HomeEventOnNicknameSaved implements HomeEvent {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$HomeEventOnNicknameSavedImplCopyWith<_$HomeEventOnNicknameSavedImpl>
+  get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$HomeEventOnViewStateChangedImplCopyWith<$Res> {
+  factory _$$HomeEventOnViewStateChangedImplCopyWith(
+    _$HomeEventOnViewStateChangedImpl value,
+    $Res Function(_$HomeEventOnViewStateChangedImpl) then,
+  ) = __$$HomeEventOnViewStateChangedImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$HomeEventOnViewStateChangedImplCopyWithImpl<$Res>
+    extends _$HomeEventCopyWithImpl<$Res, _$HomeEventOnViewStateChangedImpl>
+    implements _$$HomeEventOnViewStateChangedImplCopyWith<$Res> {
+  __$$HomeEventOnViewStateChangedImplCopyWithImpl(
+    _$HomeEventOnViewStateChangedImpl _value,
+    $Res Function(_$HomeEventOnViewStateChangedImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of HomeEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$HomeEventOnViewStateChangedImpl implements HomeEventOnViewStateChanged {
+  const _$HomeEventOnViewStateChangedImpl();
+
+  @override
+  String toString() {
+    return 'HomeEvent.onViewStateChanged()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$HomeEventOnViewStateChangedImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() onInitializationRequested,
+    required TResult Function(Player player) onPlayerSelected,
+    required TResult Function(Player player) onInvitePlayer,
+    required TResult Function() onCancelInvitation,
+    required TResult Function() onAcceptInvitation,
+    required TResult Function() onRejectInvitation,
+    required TResult Function(String nickname) onNicknameSaved,
+    required TResult Function() onViewStateChanged,
+    required TResult Function(Player invitingPlayer) onInvitationReceived,
+    required TResult Function(Player rejectedPlayer) onInvitationRejected,
+    required TResult Function(Player opponent) onGameStarted,
+  }) {
+    return onViewStateChanged();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? onInitializationRequested,
+    TResult? Function(Player player)? onPlayerSelected,
+    TResult? Function(Player player)? onInvitePlayer,
+    TResult? Function()? onCancelInvitation,
+    TResult? Function()? onAcceptInvitation,
+    TResult? Function()? onRejectInvitation,
+    TResult? Function(String nickname)? onNicknameSaved,
+    TResult? Function()? onViewStateChanged,
+    TResult? Function(Player invitingPlayer)? onInvitationReceived,
+    TResult? Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult? Function(Player opponent)? onGameStarted,
+  }) {
+    return onViewStateChanged?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? onInitializationRequested,
+    TResult Function(Player player)? onPlayerSelected,
+    TResult Function(Player player)? onInvitePlayer,
+    TResult Function()? onCancelInvitation,
+    TResult Function()? onAcceptInvitation,
+    TResult Function()? onRejectInvitation,
+    TResult Function(String nickname)? onNicknameSaved,
+    TResult Function()? onViewStateChanged,
+    TResult Function(Player invitingPlayer)? onInvitationReceived,
+    TResult Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult Function(Player opponent)? onGameStarted,
+    required TResult orElse(),
+  }) {
+    if (onViewStateChanged != null) {
+      return onViewStateChanged();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(HomeEventOnInitializationRequested value)
+    onInitializationRequested,
+    required TResult Function(HomeEventOnPlayerSelected value) onPlayerSelected,
+    required TResult Function(HomeEventOnInvitePlayer value) onInvitePlayer,
+    required TResult Function(HomeEventOnCancelInvitation value)
+    onCancelInvitation,
+    required TResult Function(HomeEventOnAcceptInvitation value)
+    onAcceptInvitation,
+    required TResult Function(HomeEventOnRejectInvitation value)
+    onRejectInvitation,
+    required TResult Function(HomeEventOnNicknameSaved value) onNicknameSaved,
+    required TResult Function(HomeEventOnViewStateChanged value)
+    onViewStateChanged,
+    required TResult Function(HomeEventOnInvitationReceived value)
+    onInvitationReceived,
+    required TResult Function(HomeEventOnInvitationRejected value)
+    onInvitationRejected,
+    required TResult Function(HomeEventOnGameStarted value) onGameStarted,
+  }) {
+    return onViewStateChanged(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(HomeEventOnInitializationRequested value)?
+    onInitializationRequested,
+    TResult? Function(HomeEventOnPlayerSelected value)? onPlayerSelected,
+    TResult? Function(HomeEventOnInvitePlayer value)? onInvitePlayer,
+    TResult? Function(HomeEventOnCancelInvitation value)? onCancelInvitation,
+    TResult? Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
+    TResult? Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
+    TResult? Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult? Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult? Function(HomeEventOnInvitationReceived value)?
+    onInvitationReceived,
+    TResult? Function(HomeEventOnInvitationRejected value)?
+    onInvitationRejected,
+    TResult? Function(HomeEventOnGameStarted value)? onGameStarted,
+  }) {
+    return onViewStateChanged?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(HomeEventOnInitializationRequested value)?
+    onInitializationRequested,
+    TResult Function(HomeEventOnPlayerSelected value)? onPlayerSelected,
+    TResult Function(HomeEventOnInvitePlayer value)? onInvitePlayer,
+    TResult Function(HomeEventOnCancelInvitation value)? onCancelInvitation,
+    TResult Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
+    TResult Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
+    TResult Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult Function(HomeEventOnInvitationReceived value)? onInvitationReceived,
+    TResult Function(HomeEventOnInvitationRejected value)? onInvitationRejected,
+    TResult Function(HomeEventOnGameStarted value)? onGameStarted,
+    required TResult orElse(),
+  }) {
+    if (onViewStateChanged != null) {
+      return onViewStateChanged(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class HomeEventOnViewStateChanged implements HomeEvent {
+  const factory HomeEventOnViewStateChanged() =
+      _$HomeEventOnViewStateChangedImpl;
+}
+
+/// @nodoc
+abstract class _$$HomeEventOnInvitationReceivedImplCopyWith<$Res> {
+  factory _$$HomeEventOnInvitationReceivedImplCopyWith(
+    _$HomeEventOnInvitationReceivedImpl value,
+    $Res Function(_$HomeEventOnInvitationReceivedImpl) then,
+  ) = __$$HomeEventOnInvitationReceivedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Player invitingPlayer});
+
+  $PlayerCopyWith<$Res> get invitingPlayer;
+}
+
+/// @nodoc
+class __$$HomeEventOnInvitationReceivedImplCopyWithImpl<$Res>
+    extends _$HomeEventCopyWithImpl<$Res, _$HomeEventOnInvitationReceivedImpl>
+    implements _$$HomeEventOnInvitationReceivedImplCopyWith<$Res> {
+  __$$HomeEventOnInvitationReceivedImplCopyWithImpl(
+    _$HomeEventOnInvitationReceivedImpl _value,
+    $Res Function(_$HomeEventOnInvitationReceivedImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of HomeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? invitingPlayer = null}) {
+    return _then(
+      _$HomeEventOnInvitationReceivedImpl(
+        invitingPlayer: null == invitingPlayer
+            ? _value.invitingPlayer
+            : invitingPlayer // ignore: cast_nullable_to_non_nullable
+                  as Player,
+      ),
+    );
+  }
+
+  /// Create a copy of HomeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $PlayerCopyWith<$Res> get invitingPlayer {
+    return $PlayerCopyWith<$Res>(_value.invitingPlayer, (value) {
+      return _then(_value.copyWith(invitingPlayer: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$HomeEventOnInvitationReceivedImpl
+    implements HomeEventOnInvitationReceived {
+  const _$HomeEventOnInvitationReceivedImpl({required this.invitingPlayer});
+
+  @override
+  final Player invitingPlayer;
+
+  @override
+  String toString() {
+    return 'HomeEvent.onInvitationReceived(invitingPlayer: $invitingPlayer)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$HomeEventOnInvitationReceivedImpl &&
+            (identical(other.invitingPlayer, invitingPlayer) ||
+                other.invitingPlayer == invitingPlayer));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, invitingPlayer);
+
+  /// Create a copy of HomeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$HomeEventOnInvitationReceivedImplCopyWith<
+    _$HomeEventOnInvitationReceivedImpl
+  >
+  get copyWith =>
+      __$$HomeEventOnInvitationReceivedImplCopyWithImpl<
+        _$HomeEventOnInvitationReceivedImpl
+      >(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() onInitializationRequested,
+    required TResult Function(Player player) onPlayerSelected,
+    required TResult Function(Player player) onInvitePlayer,
+    required TResult Function() onCancelInvitation,
+    required TResult Function() onAcceptInvitation,
+    required TResult Function() onRejectInvitation,
+    required TResult Function(String nickname) onNicknameSaved,
+    required TResult Function() onViewStateChanged,
+    required TResult Function(Player invitingPlayer) onInvitationReceived,
+    required TResult Function(Player rejectedPlayer) onInvitationRejected,
+    required TResult Function(Player opponent) onGameStarted,
+  }) {
+    return onInvitationReceived(invitingPlayer);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? onInitializationRequested,
+    TResult? Function(Player player)? onPlayerSelected,
+    TResult? Function(Player player)? onInvitePlayer,
+    TResult? Function()? onCancelInvitation,
+    TResult? Function()? onAcceptInvitation,
+    TResult? Function()? onRejectInvitation,
+    TResult? Function(String nickname)? onNicknameSaved,
+    TResult? Function()? onViewStateChanged,
+    TResult? Function(Player invitingPlayer)? onInvitationReceived,
+    TResult? Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult? Function(Player opponent)? onGameStarted,
+  }) {
+    return onInvitationReceived?.call(invitingPlayer);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? onInitializationRequested,
+    TResult Function(Player player)? onPlayerSelected,
+    TResult Function(Player player)? onInvitePlayer,
+    TResult Function()? onCancelInvitation,
+    TResult Function()? onAcceptInvitation,
+    TResult Function()? onRejectInvitation,
+    TResult Function(String nickname)? onNicknameSaved,
+    TResult Function()? onViewStateChanged,
+    TResult Function(Player invitingPlayer)? onInvitationReceived,
+    TResult Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult Function(Player opponent)? onGameStarted,
+    required TResult orElse(),
+  }) {
+    if (onInvitationReceived != null) {
+      return onInvitationReceived(invitingPlayer);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(HomeEventOnInitializationRequested value)
+    onInitializationRequested,
+    required TResult Function(HomeEventOnPlayerSelected value) onPlayerSelected,
+    required TResult Function(HomeEventOnInvitePlayer value) onInvitePlayer,
+    required TResult Function(HomeEventOnCancelInvitation value)
+    onCancelInvitation,
+    required TResult Function(HomeEventOnAcceptInvitation value)
+    onAcceptInvitation,
+    required TResult Function(HomeEventOnRejectInvitation value)
+    onRejectInvitation,
+    required TResult Function(HomeEventOnNicknameSaved value) onNicknameSaved,
+    required TResult Function(HomeEventOnViewStateChanged value)
+    onViewStateChanged,
+    required TResult Function(HomeEventOnInvitationReceived value)
+    onInvitationReceived,
+    required TResult Function(HomeEventOnInvitationRejected value)
+    onInvitationRejected,
+    required TResult Function(HomeEventOnGameStarted value) onGameStarted,
+  }) {
+    return onInvitationReceived(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(HomeEventOnInitializationRequested value)?
+    onInitializationRequested,
+    TResult? Function(HomeEventOnPlayerSelected value)? onPlayerSelected,
+    TResult? Function(HomeEventOnInvitePlayer value)? onInvitePlayer,
+    TResult? Function(HomeEventOnCancelInvitation value)? onCancelInvitation,
+    TResult? Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
+    TResult? Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
+    TResult? Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult? Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult? Function(HomeEventOnInvitationReceived value)?
+    onInvitationReceived,
+    TResult? Function(HomeEventOnInvitationRejected value)?
+    onInvitationRejected,
+    TResult? Function(HomeEventOnGameStarted value)? onGameStarted,
+  }) {
+    return onInvitationReceived?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(HomeEventOnInitializationRequested value)?
+    onInitializationRequested,
+    TResult Function(HomeEventOnPlayerSelected value)? onPlayerSelected,
+    TResult Function(HomeEventOnInvitePlayer value)? onInvitePlayer,
+    TResult Function(HomeEventOnCancelInvitation value)? onCancelInvitation,
+    TResult Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
+    TResult Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
+    TResult Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult Function(HomeEventOnInvitationReceived value)? onInvitationReceived,
+    TResult Function(HomeEventOnInvitationRejected value)? onInvitationRejected,
+    TResult Function(HomeEventOnGameStarted value)? onGameStarted,
+    required TResult orElse(),
+  }) {
+    if (onInvitationReceived != null) {
+      return onInvitationReceived(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class HomeEventOnInvitationReceived implements HomeEvent {
+  const factory HomeEventOnInvitationReceived({
+    required final Player invitingPlayer,
+  }) = _$HomeEventOnInvitationReceivedImpl;
+
+  Player get invitingPlayer;
+
+  /// Create a copy of HomeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$HomeEventOnInvitationReceivedImplCopyWith<
+    _$HomeEventOnInvitationReceivedImpl
+  >
+  get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$HomeEventOnInvitationRejectedImplCopyWith<$Res> {
+  factory _$$HomeEventOnInvitationRejectedImplCopyWith(
+    _$HomeEventOnInvitationRejectedImpl value,
+    $Res Function(_$HomeEventOnInvitationRejectedImpl) then,
+  ) = __$$HomeEventOnInvitationRejectedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Player rejectedPlayer});
+
+  $PlayerCopyWith<$Res> get rejectedPlayer;
+}
+
+/// @nodoc
+class __$$HomeEventOnInvitationRejectedImplCopyWithImpl<$Res>
+    extends _$HomeEventCopyWithImpl<$Res, _$HomeEventOnInvitationRejectedImpl>
+    implements _$$HomeEventOnInvitationRejectedImplCopyWith<$Res> {
+  __$$HomeEventOnInvitationRejectedImplCopyWithImpl(
+    _$HomeEventOnInvitationRejectedImpl _value,
+    $Res Function(_$HomeEventOnInvitationRejectedImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of HomeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? rejectedPlayer = null}) {
+    return _then(
+      _$HomeEventOnInvitationRejectedImpl(
+        rejectedPlayer: null == rejectedPlayer
+            ? _value.rejectedPlayer
+            : rejectedPlayer // ignore: cast_nullable_to_non_nullable
+                  as Player,
+      ),
+    );
+  }
+
+  /// Create a copy of HomeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $PlayerCopyWith<$Res> get rejectedPlayer {
+    return $PlayerCopyWith<$Res>(_value.rejectedPlayer, (value) {
+      return _then(_value.copyWith(rejectedPlayer: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$HomeEventOnInvitationRejectedImpl
+    implements HomeEventOnInvitationRejected {
+  const _$HomeEventOnInvitationRejectedImpl({required this.rejectedPlayer});
+
+  @override
+  final Player rejectedPlayer;
+
+  @override
+  String toString() {
+    return 'HomeEvent.onInvitationRejected(rejectedPlayer: $rejectedPlayer)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$HomeEventOnInvitationRejectedImpl &&
+            (identical(other.rejectedPlayer, rejectedPlayer) ||
+                other.rejectedPlayer == rejectedPlayer));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, rejectedPlayer);
+
+  /// Create a copy of HomeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$HomeEventOnInvitationRejectedImplCopyWith<
+    _$HomeEventOnInvitationRejectedImpl
+  >
+  get copyWith =>
+      __$$HomeEventOnInvitationRejectedImplCopyWithImpl<
+        _$HomeEventOnInvitationRejectedImpl
+      >(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() onInitializationRequested,
+    required TResult Function(Player player) onPlayerSelected,
+    required TResult Function(Player player) onInvitePlayer,
+    required TResult Function() onCancelInvitation,
+    required TResult Function() onAcceptInvitation,
+    required TResult Function() onRejectInvitation,
+    required TResult Function(String nickname) onNicknameSaved,
+    required TResult Function() onViewStateChanged,
+    required TResult Function(Player invitingPlayer) onInvitationReceived,
+    required TResult Function(Player rejectedPlayer) onInvitationRejected,
+    required TResult Function(Player opponent) onGameStarted,
+  }) {
+    return onInvitationRejected(rejectedPlayer);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? onInitializationRequested,
+    TResult? Function(Player player)? onPlayerSelected,
+    TResult? Function(Player player)? onInvitePlayer,
+    TResult? Function()? onCancelInvitation,
+    TResult? Function()? onAcceptInvitation,
+    TResult? Function()? onRejectInvitation,
+    TResult? Function(String nickname)? onNicknameSaved,
+    TResult? Function()? onViewStateChanged,
+    TResult? Function(Player invitingPlayer)? onInvitationReceived,
+    TResult? Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult? Function(Player opponent)? onGameStarted,
+  }) {
+    return onInvitationRejected?.call(rejectedPlayer);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? onInitializationRequested,
+    TResult Function(Player player)? onPlayerSelected,
+    TResult Function(Player player)? onInvitePlayer,
+    TResult Function()? onCancelInvitation,
+    TResult Function()? onAcceptInvitation,
+    TResult Function()? onRejectInvitation,
+    TResult Function(String nickname)? onNicknameSaved,
+    TResult Function()? onViewStateChanged,
+    TResult Function(Player invitingPlayer)? onInvitationReceived,
+    TResult Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult Function(Player opponent)? onGameStarted,
+    required TResult orElse(),
+  }) {
+    if (onInvitationRejected != null) {
+      return onInvitationRejected(rejectedPlayer);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(HomeEventOnInitializationRequested value)
+    onInitializationRequested,
+    required TResult Function(HomeEventOnPlayerSelected value) onPlayerSelected,
+    required TResult Function(HomeEventOnInvitePlayer value) onInvitePlayer,
+    required TResult Function(HomeEventOnCancelInvitation value)
+    onCancelInvitation,
+    required TResult Function(HomeEventOnAcceptInvitation value)
+    onAcceptInvitation,
+    required TResult Function(HomeEventOnRejectInvitation value)
+    onRejectInvitation,
+    required TResult Function(HomeEventOnNicknameSaved value) onNicknameSaved,
+    required TResult Function(HomeEventOnViewStateChanged value)
+    onViewStateChanged,
+    required TResult Function(HomeEventOnInvitationReceived value)
+    onInvitationReceived,
+    required TResult Function(HomeEventOnInvitationRejected value)
+    onInvitationRejected,
+    required TResult Function(HomeEventOnGameStarted value) onGameStarted,
+  }) {
+    return onInvitationRejected(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(HomeEventOnInitializationRequested value)?
+    onInitializationRequested,
+    TResult? Function(HomeEventOnPlayerSelected value)? onPlayerSelected,
+    TResult? Function(HomeEventOnInvitePlayer value)? onInvitePlayer,
+    TResult? Function(HomeEventOnCancelInvitation value)? onCancelInvitation,
+    TResult? Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
+    TResult? Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
+    TResult? Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult? Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult? Function(HomeEventOnInvitationReceived value)?
+    onInvitationReceived,
+    TResult? Function(HomeEventOnInvitationRejected value)?
+    onInvitationRejected,
+    TResult? Function(HomeEventOnGameStarted value)? onGameStarted,
+  }) {
+    return onInvitationRejected?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(HomeEventOnInitializationRequested value)?
+    onInitializationRequested,
+    TResult Function(HomeEventOnPlayerSelected value)? onPlayerSelected,
+    TResult Function(HomeEventOnInvitePlayer value)? onInvitePlayer,
+    TResult Function(HomeEventOnCancelInvitation value)? onCancelInvitation,
+    TResult Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
+    TResult Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
+    TResult Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult Function(HomeEventOnInvitationReceived value)? onInvitationReceived,
+    TResult Function(HomeEventOnInvitationRejected value)? onInvitationRejected,
+    TResult Function(HomeEventOnGameStarted value)? onGameStarted,
+    required TResult orElse(),
+  }) {
+    if (onInvitationRejected != null) {
+      return onInvitationRejected(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class HomeEventOnInvitationRejected implements HomeEvent {
+  const factory HomeEventOnInvitationRejected({
+    required final Player rejectedPlayer,
+  }) = _$HomeEventOnInvitationRejectedImpl;
+
+  Player get rejectedPlayer;
+
+  /// Create a copy of HomeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$HomeEventOnInvitationRejectedImplCopyWith<
+    _$HomeEventOnInvitationRejectedImpl
+  >
+  get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$HomeEventOnGameStartedImplCopyWith<$Res> {
+  factory _$$HomeEventOnGameStartedImplCopyWith(
+    _$HomeEventOnGameStartedImpl value,
+    $Res Function(_$HomeEventOnGameStartedImpl) then,
+  ) = __$$HomeEventOnGameStartedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Player opponent});
+
+  $PlayerCopyWith<$Res> get opponent;
+}
+
+/// @nodoc
+class __$$HomeEventOnGameStartedImplCopyWithImpl<$Res>
+    extends _$HomeEventCopyWithImpl<$Res, _$HomeEventOnGameStartedImpl>
+    implements _$$HomeEventOnGameStartedImplCopyWith<$Res> {
+  __$$HomeEventOnGameStartedImplCopyWithImpl(
+    _$HomeEventOnGameStartedImpl _value,
+    $Res Function(_$HomeEventOnGameStartedImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of HomeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? opponent = null}) {
+    return _then(
+      _$HomeEventOnGameStartedImpl(
+        opponent: null == opponent
+            ? _value.opponent
+            : opponent // ignore: cast_nullable_to_non_nullable
+                  as Player,
+      ),
+    );
+  }
+
+  /// Create a copy of HomeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $PlayerCopyWith<$Res> get opponent {
+    return $PlayerCopyWith<$Res>(_value.opponent, (value) {
+      return _then(_value.copyWith(opponent: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$HomeEventOnGameStartedImpl implements HomeEventOnGameStarted {
+  const _$HomeEventOnGameStartedImpl({required this.opponent});
+
+  @override
+  final Player opponent;
+
+  @override
+  String toString() {
+    return 'HomeEvent.onGameStarted(opponent: $opponent)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$HomeEventOnGameStartedImpl &&
+            (identical(other.opponent, opponent) ||
+                other.opponent == opponent));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, opponent);
+
+  /// Create a copy of HomeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$HomeEventOnGameStartedImplCopyWith<_$HomeEventOnGameStartedImpl>
+  get copyWith =>
+      __$$HomeEventOnGameStartedImplCopyWithImpl<_$HomeEventOnGameStartedImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() onInitializationRequested,
+    required TResult Function(Player player) onPlayerSelected,
+    required TResult Function(Player player) onInvitePlayer,
+    required TResult Function() onCancelInvitation,
+    required TResult Function() onAcceptInvitation,
+    required TResult Function() onRejectInvitation,
+    required TResult Function(String nickname) onNicknameSaved,
+    required TResult Function() onViewStateChanged,
+    required TResult Function(Player invitingPlayer) onInvitationReceived,
+    required TResult Function(Player rejectedPlayer) onInvitationRejected,
+    required TResult Function(Player opponent) onGameStarted,
+  }) {
+    return onGameStarted(opponent);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? onInitializationRequested,
+    TResult? Function(Player player)? onPlayerSelected,
+    TResult? Function(Player player)? onInvitePlayer,
+    TResult? Function()? onCancelInvitation,
+    TResult? Function()? onAcceptInvitation,
+    TResult? Function()? onRejectInvitation,
+    TResult? Function(String nickname)? onNicknameSaved,
+    TResult? Function()? onViewStateChanged,
+    TResult? Function(Player invitingPlayer)? onInvitationReceived,
+    TResult? Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult? Function(Player opponent)? onGameStarted,
+  }) {
+    return onGameStarted?.call(opponent);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? onInitializationRequested,
+    TResult Function(Player player)? onPlayerSelected,
+    TResult Function(Player player)? onInvitePlayer,
+    TResult Function()? onCancelInvitation,
+    TResult Function()? onAcceptInvitation,
+    TResult Function()? onRejectInvitation,
+    TResult Function(String nickname)? onNicknameSaved,
+    TResult Function()? onViewStateChanged,
+    TResult Function(Player invitingPlayer)? onInvitationReceived,
+    TResult Function(Player rejectedPlayer)? onInvitationRejected,
+    TResult Function(Player opponent)? onGameStarted,
+    required TResult orElse(),
+  }) {
+    if (onGameStarted != null) {
+      return onGameStarted(opponent);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(HomeEventOnInitializationRequested value)
+    onInitializationRequested,
+    required TResult Function(HomeEventOnPlayerSelected value) onPlayerSelected,
+    required TResult Function(HomeEventOnInvitePlayer value) onInvitePlayer,
+    required TResult Function(HomeEventOnCancelInvitation value)
+    onCancelInvitation,
+    required TResult Function(HomeEventOnAcceptInvitation value)
+    onAcceptInvitation,
+    required TResult Function(HomeEventOnRejectInvitation value)
+    onRejectInvitation,
+    required TResult Function(HomeEventOnNicknameSaved value) onNicknameSaved,
+    required TResult Function(HomeEventOnViewStateChanged value)
+    onViewStateChanged,
+    required TResult Function(HomeEventOnInvitationReceived value)
+    onInvitationReceived,
+    required TResult Function(HomeEventOnInvitationRejected value)
+    onInvitationRejected,
+    required TResult Function(HomeEventOnGameStarted value) onGameStarted,
+  }) {
+    return onGameStarted(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(HomeEventOnInitializationRequested value)?
+    onInitializationRequested,
+    TResult? Function(HomeEventOnPlayerSelected value)? onPlayerSelected,
+    TResult? Function(HomeEventOnInvitePlayer value)? onInvitePlayer,
+    TResult? Function(HomeEventOnCancelInvitation value)? onCancelInvitation,
+    TResult? Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
+    TResult? Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
+    TResult? Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult? Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult? Function(HomeEventOnInvitationReceived value)?
+    onInvitationReceived,
+    TResult? Function(HomeEventOnInvitationRejected value)?
+    onInvitationRejected,
+    TResult? Function(HomeEventOnGameStarted value)? onGameStarted,
+  }) {
+    return onGameStarted?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(HomeEventOnInitializationRequested value)?
+    onInitializationRequested,
+    TResult Function(HomeEventOnPlayerSelected value)? onPlayerSelected,
+    TResult Function(HomeEventOnInvitePlayer value)? onInvitePlayer,
+    TResult Function(HomeEventOnCancelInvitation value)? onCancelInvitation,
+    TResult Function(HomeEventOnAcceptInvitation value)? onAcceptInvitation,
+    TResult Function(HomeEventOnRejectInvitation value)? onRejectInvitation,
+    TResult Function(HomeEventOnNicknameSaved value)? onNicknameSaved,
+    TResult Function(HomeEventOnViewStateChanged value)? onViewStateChanged,
+    TResult Function(HomeEventOnInvitationReceived value)? onInvitationReceived,
+    TResult Function(HomeEventOnInvitationRejected value)? onInvitationRejected,
+    TResult Function(HomeEventOnGameStarted value)? onGameStarted,
+    required TResult orElse(),
+  }) {
+    if (onGameStarted != null) {
+      return onGameStarted(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class HomeEventOnGameStarted implements HomeEvent {
+  const factory HomeEventOnGameStarted({required final Player opponent}) =
+      _$HomeEventOnGameStartedImpl;
+
+  Player get opponent;
+
+  /// Create a copy of HomeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$HomeEventOnGameStartedImplCopyWith<_$HomeEventOnGameStartedImpl>
   get copyWith => throw _privateConstructorUsedError;
 }
 

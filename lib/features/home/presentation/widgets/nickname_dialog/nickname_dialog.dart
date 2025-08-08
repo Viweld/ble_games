@@ -50,7 +50,8 @@ class _NicknameDialogViewState extends State<_NicknameDialogView> {
         );
       },
       builder: (context, state) {
-        final isEnabled = _textController.text.length >= AppConstants.minNicknameLength;
+        final isEnabled =
+            _textController.text.length >= AppConstants.minNicknameLength;
         return AlertDialog(
           title: const Text('Придумайте себе псевдоним'),
           content: TextField(
@@ -61,8 +62,8 @@ class _NicknameDialogViewState extends State<_NicknameDialogView> {
             ),
             onChanged: (value) {
               context.read<NicknameBloc>().add(
-                    NicknameEvent.onNicknameChanged(nickname: value),
-                  );
+                NicknameEvent.onNicknameChanged(nickname: value),
+              );
               setState(() {});
             },
           ),
@@ -71,10 +72,10 @@ class _NicknameDialogViewState extends State<_NicknameDialogView> {
               onPressed: isEnabled
                   ? () {
                       context.read<NicknameBloc>().add(
-                            NicknameEvent.onSaveNickname(
-                              nickname: _textController.text,
-                            ),
-                          );
+                        NicknameEvent.onSaveNickname(
+                          nickname: _textController.text,
+                        ),
+                      );
                     }
                   : null,
               child: const Text('Сохранить'),

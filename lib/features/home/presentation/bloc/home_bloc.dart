@@ -9,7 +9,9 @@ import '../../../../core/repositories/i_player_repository.dart';
 import '../../../../core/repositories/i_bluetooth_repository.dart';
 
 part 'events.dart';
+
 part 'states.dart';
+
 part 'home_bloc.freezed.dart';
 
 /// BLoC для главного экрана
@@ -22,27 +24,37 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
        _bluetoothRepository = bluetoothRepository,
        super(const HomeState.initializationPending()) {
     on<HomeEvent>(
-      (event, emit) => switch (event) {
+      (event, emitter) => switch (event) {
         HomeEventOnInitializationRequested() => _onInitializationRequested(
-          emit,
+          emitter,
         ),
-        HomeEventOnPlayerSelected() => _onPlayerSelected(event, emit),
-        HomeEventOnInvitePlayer() => _onInvitePlayer(event, emit),
-        HomeEventOnCancelInvitation() => _onCancelInvitation(emit),
-        HomeEventOnAcceptInvitation() => _onAcceptInvitation(emit),
-        HomeEventOnRejectInvitation() => _onRejectInvitation(emit),
-        HomeEventOnNicknameSaved() => _onNicknameSaved(event, emit),
+        HomeEventOnPlayerSelected() => _onPlayerSelected(event, emitter),
+        HomeEventOnInvitePlayer() => _onInvitePlayer(event, emitter),
+        HomeEventOnCancelInvitation() => _onCancelInvitation(emitter),
+        HomeEventOnAcceptInvitation() => _onAcceptInvitation(emitter),
+        HomeEventOnRejectInvitation() => _onRejectInvitation(emitter),
+        HomeEventOnNicknameSaved() => _onNicknameSaved(event, emitter),
+        HomeEventOnViewStateChanged() => _onViewStateChanged(emitter),
+        HomeEventOnInvitationReceived() => _onInvitationReceived(
+          event,
+          emitter,
+        ),
+        HomeEventOnInvitationRejected() => _onInvitationRejected(
+          event,
+          emitter,
+        ),
+        HomeEventOnGameStarted() => _onGameStarted(event, emitter),
         _ => throw UnimplementedError('Unhandled event: $event'),
       },
     );
 
     // Подписка на найденные устройства
     _discoveredDevicesSubscription = _bluetoothRepository.discoveredDevices
-        .listen((devices) => _updateDiscoveredDevices(devices));
+        .listen(_updateDiscoveredDevices);
 
     // Подписка на входящие данные
     _incomingDataSubscription = _bluetoothRepository.incomingData.listen(
-      (data) => _handleIncomingData(data),
+      _handleIncomingData,
     );
 
     add(const HomeEvent.onInitializationRequested());
@@ -63,11 +75,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> close() {
     _discoveredDevicesSubscription.cancel();
     _incomingDataSubscription.cancel();
+    _bluetoothRepository.dispose();
     return super.close();
   }
 
   /// Обработчик запроса инициализации
-  Future<void> _onInitializationRequested(Emitter<HomeState> emit) async {
+  Future<void> _onInitializationRequested(Emitter<HomeState> emitter) async {
     try {
       // Получаем текущего игрока
       _currentPlayer = await _playerRepository.getCurrentPlayer();
@@ -83,29 +96,29 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         selectedPlayer: _selectedPlayer,
         isFirstLaunch: isFirstLaunch,
       );
-      emit(_viewState!);
+      emitter(_viewState!);
     } catch (e) {
-      emit(HomeState.initializationError(message: e.toString()));
+      emitter(HomeState.initializationError(message: e.toString()));
     }
   }
 
   /// Обработчик выбора игрока
   Future<void> _onPlayerSelected(
     HomeEventOnPlayerSelected event,
-    Emitter<HomeState> emit,
+    Emitter<HomeState> emitter,
   ) async {
     _selectedPlayer = event.player;
 
     if (_viewState != null) {
       _viewState = _viewState!.copyWith(selectedPlayer: _selectedPlayer);
-      emit(_viewState!);
+      emitter(_viewState!);
     }
   }
 
   /// Обработчик приглашения игрока
   Future<void> _onInvitePlayer(
     HomeEventOnInvitePlayer event,
-    Emitter<HomeState> emit,
+    Emitter<HomeState> emitter,
   ) async {
     try {
       // Отправляем приглашение
@@ -115,9 +128,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         'to': event.player.toJson(),
       });
 
-      emit(HomeState.invitationPending(invitedPlayer: event.player));
+      emitter(HomeState.invitationPending(invitedPlayer: event.player));
     } catch (e) {
-      emit(
+      emitter(
         HomeState.initializationError(
           message: 'Ошибка отправки приглашения: $e',
         ),
@@ -126,32 +139,32 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   /// Обработчик отмены приглашения
-  Future<void> _onCancelInvitation(Emitter<HomeState> emit) async {
+  Future<void> _onCancelInvitation(Emitter<HomeState> emitter) async {
     try {
       await _bluetoothRepository.sendData({'type': 'cancel_invitation'});
 
       if (_viewState != null) {
-        emit(_viewState!);
+        emitter(_viewState!);
       }
     } catch (e) {
-      emit(
+      emitter(
         HomeState.initializationError(message: 'Ошибка отмены приглашения: $e'),
       );
     }
   }
 
   /// Обработчик принятия приглашения
-  Future<void> _onAcceptInvitation(Emitter<HomeState> emit) async {
+  Future<void> _onAcceptInvitation(Emitter<HomeState> emitter) async {
     try {
       await _bluetoothRepository.sendData({'type': 'accept_invitation'});
 
       // Переходим к игре
       final currentState = state;
       if (currentState is HomeStateInvitationReceived) {
-        emit(HomeState.gameStarted(opponent: currentState.invitingPlayer));
+        emitter(HomeState.gameStarted(opponent: currentState.invitingPlayer));
       }
     } catch (e) {
-      emit(
+      emitter(
         HomeState.initializationError(
           message: 'Ошибка принятия приглашения: $e',
         ),
@@ -160,20 +173,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   /// Обработчик отклонения приглашения
-  Future<void> _onRejectInvitation(Emitter<HomeState> emit) async {
+  Future<void> _onRejectInvitation(Emitter<HomeState> emitter) async {
     try {
       await _bluetoothRepository.sendData({'type': 'reject_invitation'});
 
       final currentState = state;
       if (currentState is HomeStateInvitationReceived) {
-        emit(
+        emitter(
           HomeState.invitationRejected(
             rejectedPlayer: currentState.invitingPlayer,
           ),
         );
       }
     } catch (e) {
-      emit(
+      emitter(
         HomeState.initializationError(
           message: 'Ошибка отклонения приглашения: $e',
         ),
@@ -184,7 +197,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   /// Обработчик сохранения псевдонима
   Future<void> _onNicknameSaved(
     HomeEventOnNicknameSaved event,
-    Emitter<HomeState> emit,
+    Emitter<HomeState> emitter,
   ) async {
     try {
       // Создаем игрока с новым псевдонимом
@@ -205,10 +218,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       // Обновляем состояние
       if (_viewState != null) {
         _viewState = _viewState!.copyWith(isFirstLaunch: false);
-        emit(_viewState!);
+        emitter(_viewState!);
       }
     } catch (e) {
-      emit(
+      emitter(
         HomeState.initializationError(
           message: 'Ошибка сохранения псевдонима: $e',
         ),
@@ -216,18 +229,48 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
+  /// Обработчик изменения состояния представления
+  void _onViewStateChanged(Emitter<HomeState> emitter) {
+    emitter(_viewState!);
+  }
+
+  /// Обработчик получения приглашения
+  void _onInvitationReceived(
+    HomeEventOnInvitationReceived event,
+    Emitter<HomeState> emitter,
+  ) {
+    emitter(HomeState.invitationReceived(invitingPlayer: event.invitingPlayer));
+  }
+
+  /// Обработчик отклонения приглашения
+  void _onInvitationRejected(
+    HomeEventOnInvitationRejected event,
+    Emitter<HomeState> emitter,
+  ) {
+    emitter(HomeState.invitationRejected(rejectedPlayer: event.rejectedPlayer));
+  }
+
+  /// Обработчик начала игры
+  void _onGameStarted(
+    HomeEventOnGameStarted event,
+    Emitter<HomeState> emitter,
+  ) {
+    emitter(HomeState.gameStarted(opponent: event.opponent));
+  }
+
   /// Обновление списка найденных устройств
   void _updateDiscoveredDevices(List<Player> devices) {
+    if (isClosed) return;
     _discoveredDevices = devices;
 
-    if (_viewState != null) {
-      _viewState = _viewState!.copyWith(players: _discoveredDevices);
-      emit(_viewState!);
-    }
+    if (_viewState == null) return;
+    _viewState = _viewState!.copyWith(players: _discoveredDevices);
+    add(const HomeEvent.onViewStateChanged());
   }
 
   /// Обработка входящих данных
   void _handleIncomingData(Map<String, dynamic> data) {
+    if (isClosed) return;
     final type = data['type'] as String?;
 
     switch (type) {
@@ -235,28 +278,28 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final fromPlayer = Player.fromJson(
           data['from'] as Map<String, dynamic>,
         );
-        emit(HomeState.invitationReceived(invitingPlayer: fromPlayer));
+        add(HomeEvent.onInvitationReceived(invitingPlayer: fromPlayer));
         break;
       case 'accept_invitation':
         final currentState = state;
         if (currentState is HomeStateInvitationPending) {
-          emit(HomeState.gameStarted(opponent: currentState.invitedPlayer));
+          add(HomeEvent.onGameStarted(opponent: currentState.invitedPlayer));
         }
         break;
       case 'reject_invitation':
         final currentState = state;
         if (currentState is HomeStateInvitationPending) {
-          emit(
-            HomeState.invitationRejected(
+          add(
+            HomeEvent.onInvitationRejected(
               rejectedPlayer: currentState.invitedPlayer,
             ),
           );
         }
         break;
       case 'cancel_invitation':
-        if (_viewState != null) {
-          emit(_viewState!);
-        }
+        if (_viewState == null) break;
+        if (isClosed) break;
+        add(const HomeEvent.onViewStateChanged());
         break;
     }
   }

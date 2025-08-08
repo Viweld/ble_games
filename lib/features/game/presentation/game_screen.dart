@@ -16,7 +16,7 @@ class GameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => DepProvider.of(context).buildGameBloc() ,
+      create: (context) => DepProvider.of(context).buildGameBloc(),
       child: const _GameView(),
     );
   }
@@ -97,7 +97,7 @@ class _GameView extends StatelessWidget {
                       gameBoard: gameBoard,
                       onCellTap: (row, column) {
                         context.read<GameBloc>().add(
-                          GameEvent.onCellTapped(row:row, column:column),
+                          GameEvent.onCellTapped(row: row, column: column),
                         );
                       },
                     ),

@@ -16,13 +16,17 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
   SplashBloc({
     @DepArg() required IPlayerRepository playerRepository,
     @DepArg() required IBluetoothRepository bluetoothRepository,
-  })  : _playerRepository = playerRepository,
-        _bluetoothRepository = bluetoothRepository,
-        super(const SplashState.initializationPending()) {
-    on<SplashEvent>((event, emit) => switch (event) {
-      SplashEventOnInitializationRequested() => _onInitializationRequested(emit),
-      _ => throw UnimplementedError('Unhandled event: $event'),
-    });
+  }) : _playerRepository = playerRepository,
+       _bluetoothRepository = bluetoothRepository,
+       super(const SplashState.initializationPending()) {
+    on<SplashEvent>(
+      (event, emit) => switch (event) {
+        SplashEventOnInitializationRequested() => _onInitializationRequested(
+          emit,
+        ),
+        _ => throw UnimplementedError('Unhandled event: $event'),
+      },
+    );
 
     add(const SplashEvent.onInitializationRequested());
   }
@@ -35,15 +39,13 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     try {
       // Инициализация Bluetooth
       await _bluetoothRepository.initialize();
-      
+
       // Задержка для показа сплэш-скрина
-      await Future.delayed(
-        Duration(milliseconds: AppConstants.splashDelayMs),
-      );
-      
+      await Future.delayed(Duration(milliseconds: AppConstants.splashDelayMs));
+
       emitter(const SplashState.view());
     } catch (e) {
       emitter(SplashState.initializationError(e.toString()));
     }
   }
-} 
+}

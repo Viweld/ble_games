@@ -29,9 +29,9 @@ class _SplashView extends StatelessWidget {
           state.when(
             initializationPending: () {},
             initializationError: (message) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Ошибка: $message')),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('Ошибка: $message')));
             },
             view: () {
               // Переход на главный экран
@@ -50,9 +50,9 @@ class _SplashView extends StatelessWidget {
                   size: 120,
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),
-                
+
                 const SizedBox(height: 24),
-                
+
                 /// Название приложения
                 Text(
                   'Крестики-Нолики',
@@ -61,19 +61,21 @@ class _SplashView extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                
+
                 const SizedBox(height: 8),
-                
+
                 /// Подзаголовок
                 Text(
                   'Игра по Bluetooth',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.8),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onPrimary.withOpacity(0.8),
                   ),
                 ),
-                
+
                 const SizedBox(height: 48),
-                
+
                 /// Индикатор загрузки
                 if (state.maybeWhen(
                   initializationPending: () => true,
@@ -89,4 +91,4 @@ class _SplashView extends StatelessWidget {
       ),
     );
   }
-} 
+}

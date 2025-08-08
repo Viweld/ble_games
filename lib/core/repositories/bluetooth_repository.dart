@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -13,7 +12,8 @@ import 'i_bluetooth_repository.dart';
 class BluetoothRepository implements IBluetoothRepository {
   BluetoothRepository() {
     _discoveredDevicesController = StreamController<List<Player>>.broadcast();
-    _incomingDataController = StreamController<Map<String, dynamic>>.broadcast();
+    _incomingDataController =
+        StreamController<Map<String, dynamic>>.broadcast();
   }
 
   late final StreamController<List<Player>> _discoveredDevicesController;
@@ -47,8 +47,8 @@ class BluetoothRepository implements IBluetoothRepository {
     try {
       _scanSub = FlutterBluePlus.scanResults.listen((results) {
         for (var result in results) {
-          final name = result.device.name;
-          if (name?.startsWith(AppConstants.bluetoothDevicePrefix) == true) {
+          final name = result.device.platformName;
+          if (name.startsWith(AppConstants.bluetoothDevicePrefix) == true) {
             _processDiscoveredDevice(result.device);
           }
         }
@@ -84,7 +84,7 @@ class BluetoothRepository implements IBluetoothRepository {
         for (var c in service.characteristics) {
           if (c.properties.notify) {
             await c.setNotifyValue(true);
-            _notifySub = c.value.listen((data) {
+            _notifySub = c.lastValueStream.listen((data) {
               final message = utf8.decode(data);
               try {
                 final jsonData = jsonDecode(message) as Map<String, dynamic>;
@@ -139,26 +139,27 @@ class BluetoothRepository implements IBluetoothRepository {
       _incomingDataController.stream;
 
   @override
-  bool get isConnected =>
-      _connectedDevice != null && _notifySub != null;
+  bool get isConnected => _connectedDevice != null && _notifySub != null;
 
   @override
   Player? get connectedDevice => _connectedDevice != null
       ? Player(
-    id: _connectedDevice!.id.id,
-    nickname: _connectedDevice!.name,
-    deviceId: _connectedDevice!.id.id,
-    deviceName: _connectedDevice!.name,
-  )
+          id: _connectedDevice!.remoteId.str,
+          nickname: _connectedDevice!.platformName,
+          deviceId: _connectedDevice!.remoteId.str,
+          deviceName: _connectedDevice!.platformName,
+        )
       : null;
 
   void _processDiscoveredDevice(BluetoothDevice device) {
     final player = Player(
-      id: device.id.id,
-      nickname:
-      device.name.replaceFirst(AppConstants.bluetoothDevicePrefix, ''),
-      deviceId: device.id.id,
-      deviceName: device.name,
+      id: device.remoteId.str,
+      nickname: device.platformName.replaceFirst(
+        AppConstants.bluetoothDevicePrefix,
+        '',
+      ),
+      deviceId: device.remoteId.str,
+      deviceName: device.platformName,
     );
 
     if (_foundPlayers.every((p) => p.id != player.id)) {

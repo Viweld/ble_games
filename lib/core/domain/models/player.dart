@@ -14,4 +14,4 @@ class Player with _$Player {
   }) = _Player;
 
   factory Player.fromJson(Map<String, dynamic> json) => _$PlayerFromJson(json);
-} 
+}

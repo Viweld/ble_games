@@ -22,4 +22,4 @@ class AppConstants {
 
   /// Префикс для Bluetooth устройств
   static const String bluetoothDevicePrefix = 'BT_TOE_';
-} 
+}

@@ -16,4 +16,4 @@ abstract class IPlayerRepository {
 
   /// Установить флаг первого запуска
   Future<void> setFirstLaunch(bool value);
-} 
+}

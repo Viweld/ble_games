@@ -4,13 +4,13 @@ part of 'splash_bloc.dart';
 @freezed
 class SplashState with _$SplashState {
   /// Состояние инициализации
-  const factory SplashState.initializationPending() = 
+  const factory SplashState.initializationPending() =
       SplashStateInitializationPending;
 
   /// Ошибка инициализации
-  const factory SplashState.initializationError(String message) = 
+  const factory SplashState.initializationError(String message) =
       SplashStateInitializationError;
 
   /// Основное состояние
   const factory SplashState.view() = SplashStateView;
-} 
+}

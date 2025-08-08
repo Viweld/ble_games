@@ -16,7 +16,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/material.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bluetooth_toe/core/di/builders.dep_gen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,12 +28,11 @@ import 'package:bluetooth_toe/features/home/presentation/bloc/home_bloc.dart';
 import 'package:bluetooth_toe/features/home/presentation/widgets/nickname_dialog/bloc/nickname_bloc.dart';
 import 'package:bluetooth_toe/features/splash/presentation/bloc/splash_bloc.dart';
 
-
 /// The environment in which all used dependency instances are configured
 @immutable
 class DepGenEnvironment {
   DepGenEnvironment({Map<Type, Object>? initialServices})
-      : _environment = initialServices ?? {};
+    : _environment = initialServices ?? {};
 
   late final Map<Type, Object> _environment;
 
@@ -70,7 +69,7 @@ extension DepProviderContextExtension on BuildContext {
   /// Obtain a value from the nearest ancestor DepProvider.
   DepProvider depGen() => DepProvider.of(this);
 }
-  
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -79,17 +78,18 @@ class DepProvider extends InheritedWidget {
     Key? key,
     required Widget child,
     required DepGenEnvironment environment,
-  })  : _env = environment,
-        super(key: key, child: child);
-        
-  // --------------------------------------------------------------------------- 
-  /// A pre-configured environment containing the dependencies used 
+  }) : _env = environment,
+       super(key: key, child: child);
+
+  // ---------------------------------------------------------------------------
+  /// A pre-configured environment containing the dependencies used
   final DepGenEnvironment _env;
   DepGenEnvironment get environment => _env;
 
   // ---------------------------------------------------------------------------
   static DepProvider of(BuildContext context) {
-    final DepProvider? dp = context.findAncestorWidgetOfExactType<DepProvider>();
+    final DepProvider? dp = context
+        .findAncestorWidgetOfExactType<DepProvider>();
     if (dp == null) {
       throw UnimplementedError('DepProvider is not initialized in context');
     }
@@ -111,37 +111,25 @@ class DepProvider extends InheritedWidget {
   /// A safe method for trying to get an instance by its type.
   T? mayBeGet<T>() => _env.mayBeGet<T>();
 
-  
+  // ---------------------------------------------------------------------------
+  GameBloc buildGameBloc() =>
+      GameBloc(bluetoothRepository: _env.g<IBluetoothRepository>());
 
   // ---------------------------------------------------------------------------
-  GameBloc buildGameBloc(
-  ) => GameBloc(
-      bluetoothRepository: _env.g<IBluetoothRepository>(),
-    );
-
-
-  // ---------------------------------------------------------------------------
-  HomeBloc buildHomeBloc(
-  ) => HomeBloc(
-      playerRepository: _env.g<IPlayerRepository>(),
-      bluetoothRepository: _env.g<IBluetoothRepository>(),
-    );
-
+  HomeBloc buildHomeBloc() => HomeBloc(
+    playerRepository: _env.g<IPlayerRepository>(),
+    bluetoothRepository: _env.g<IBluetoothRepository>(),
+  );
 
   // ---------------------------------------------------------------------------
-  NicknameBloc buildNicknameBloc(
-  ) => NicknameBloc(
-      playerRepository: _env.g<IPlayerRepository>(),
-    );
-
+  NicknameBloc buildNicknameBloc() =>
+      NicknameBloc(playerRepository: _env.g<IPlayerRepository>());
 
   // ---------------------------------------------------------------------------
-  SplashBloc buildSplashBloc(
-  ) => SplashBloc(
-      playerRepository: _env.g<IPlayerRepository>(),
-      bluetoothRepository: _env.g<IBluetoothRepository>(),
-    );
+  SplashBloc buildSplashBloc() => SplashBloc(
+    playerRepository: _env.g<IPlayerRepository>(),
+    bluetoothRepository: _env.g<IBluetoothRepository>(),
+  );
+}
 
-}  
 // coverage:ignore-end
-  

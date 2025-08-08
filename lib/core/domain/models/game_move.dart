@@ -3,10 +3,7 @@ import 'game_position.dart';
 
 /// Ход в игре
 class GameMove {
-  const GameMove({
-    required this.position,
-    required this.playerType,
-  });
+  const GameMove({required this.position, required this.playerType});
 
   final GamePosition position;
   final PlayerType playerType;
@@ -23,7 +20,7 @@ class GameMove {
       column: json['column'] as int,
     ),
     playerType: PlayerType.values.firstWhere(
-          (e) => e.name == json['playerType'],
+      (e) => e.name == json['playerType'],
     ),
   );
 }

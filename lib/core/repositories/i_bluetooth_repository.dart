@@ -31,4 +31,6 @@ abstract class IBluetoothRepository {
 
   /// Получить текущее подключенное устройство
   Player? get connectedDevice;
-} 
+
+  void dispose();
+}
