@@ -31,7 +31,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     );
 
     // Подписка на входящие данные
-    _incomingDataSubscription = _bluetoothRepository.incomingData.listen(
+    _incomingDataSubscription = _bluetoothRepository.incomingMessages.listen(
       (data) => _handleIncomingData(data),
     );
 
@@ -99,7 +99,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       _gameWinner = _checkWinner();
 
       // Отправляем ход сопернику
-      await _bluetoothRepository.sendData({
+      await _bluetoothRepository.sendMessage({
         'type': 'move',
         'row': event.row,
         'column': event.column,

@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'i_shared_preferences_provider.dart';
+import 'i_cached_data_provider.dart';
 
 /// Реализация провайдера данных SharedPreferences
-class SharedPreferencesProvider implements ISharedPreferencesProvider {
-  const SharedPreferencesProvider(this._sharedPreferences);
+class CachedDataProvider implements ICachedDataProvider {
+  const CachedDataProvider(this._sharedPreferences);
 
   final SharedPreferences _sharedPreferences;
 

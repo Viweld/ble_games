@@ -1,7 +1,7 @@
 import 'dart:async';
 
 /// Интерфейс провайдера данных SharedPreferences
-abstract class ISharedPreferencesProvider {
+abstract class ICachedDataProvider {
   /// Чтение строки по ключу
   Future<String?> getString({required String key});
 

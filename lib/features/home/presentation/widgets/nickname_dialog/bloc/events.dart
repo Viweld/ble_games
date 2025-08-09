@@ -4,10 +4,10 @@ part of 'nickname_bloc.dart';
 @freezed
 class NicknameEvent with _$NicknameEvent {
   /// Изменение псевдонима
-  const factory NicknameEvent.onNicknameChanged({required String nickname}) =
+  const factory NicknameEvent.onNicknameChanged({required String nick}) =
       NicknameEventOnNicknameChanged;
 
   /// Сохранение псевдонима
-  const factory NicknameEvent.onSaveNickname({required String nickname}) =
+  const factory NicknameEvent.onSaveNickname({required String name}) =
       NicknameEventOnSaveNickname;
 }

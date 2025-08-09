@@ -45,5 +45,18 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+  
+  <!-- Bluetooth usage descriptions -->
+  <key>NSBluetoothAlwaysUsageDescription</key>
+  <string>Приложению нужен доступ к Bluetooth для поиска соперников и игры.</string>
+  <key>NSBluetoothPeripheralUsageDescription</key>
+  <string>Приложению нужен доступ к Bluetooth для обмена данными между устройствами.</string>
+  
+  <!-- Background modes (включайте только при необходимости фоновой рекламы/сканирования) -->
+  <key>UIBackgroundModes</key>
+  <array>
+    <string>bluetooth-central</string>
+    <string>bluetooth-peripheral</string>
+  </array>
 </dict>
 </plist>

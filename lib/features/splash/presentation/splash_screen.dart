@@ -25,19 +25,24 @@ class _SplashView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: BlocConsumer<SplashBloc, SplashState>(
-        listener: (context, state) {
-          state.when(
-            initializationPending: () {},
-            initializationError: (message) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('Ошибка: $message')));
-            },
-            view: () {
-              // Переход на главный экран
-              Navigator.of(context).pushReplacementNamed('/home');
-            },
-          );
+        listenWhen: (previous, state) => switch (state) {
+          SplashStateInitializationError() => true,
+          SplashStateView() => true,
+          _ => false,
+        },
+        buildWhen: (previous, state) => switch (state) {
+          SplashStateInitializationPending() => true,
+          _ => false,
+        },
+        listener: (context, state) => switch (state) {
+          SplashStateInitializationError(:final message) =>
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('Ошибка: $message'))),
+          SplashStateView() => Navigator.of(
+            context,
+          ).pushReplacementNamed('/home'),
+          _ => null,
         },
         builder: (context, state) {
           return Center(
@@ -77,10 +82,10 @@ class _SplashView extends StatelessWidget {
                 const SizedBox(height: 48),
 
                 /// Индикатор загрузки
-                if (state.maybeWhen(
-                  initializationPending: () => true,
-                  orElse: () => false,
-                ))
+                if (switch (state) {
+                  SplashStateInitializationPending() => true,
+                  _ => false,
+                })
                   CircularProgressIndicator(
                     color: Theme.of(context).colorScheme.onPrimary,
                   ),

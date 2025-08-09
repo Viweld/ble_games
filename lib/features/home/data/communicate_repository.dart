@@ -8,22 +8,24 @@ import 'package:flutter_ble_peripheral/flutter_ble_peripheral.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../constants/app_constants.dart';
-import '../data/dto/messages_dto.dart';
-import '../domain/models/device.dart';
-import '../domain/models/messages.dart';
-import 'i_bluetooth_repository.dart';
+import '../domain/models/player.dart';
+import '../data/dto/player_dto.dart';
+import '../data/mapper/mapper.dart';
+import '../domain/i_communicate_repository.dart';
 
 /// Реализация репозитория Bluetooth на основе flutter_blue_plus
-class BluetoothRepository implements IBluetoothRepository {
-  BluetoothRepository() {
-    _discoveredDevicesController = StreamController<List<Device>>.broadcast();
-    _incomingMessagesController = StreamController<Message>.broadcast();
+class CommunicateRepository implements ICommunicateRepository {
+  CommunicateRepository() {
+    _discoveredDevicesController = StreamController<List<Player>>.broadcast();
+    _incomingDataController =
+        StreamController<Map<String, dynamic>>.broadcast();
   }
 
-  late final StreamController<List<Device>> _discoveredDevicesController;
-  late final StreamController<Message> _incomingMessagesController;
+  late final StreamController<List<Player>> _discoveredDevicesController;
+  late final StreamController<Map<String, dynamic>> _incomingDataController;
 
-  final List<Device> _foundDevices = [];
+  final List<Player> _foundPlayers = [];
+  final Mapper _mapper = const Mapper();
 
   BluetoothDevice? _connectedDevice;
   StreamSubscription<List<ScanResult>>? _scanSub;
@@ -60,7 +62,7 @@ class BluetoothRepository implements IBluetoothRepository {
     if (!_isInitialized) throw Exception('Bluetooth не инициализирован');
 
     try {
-      _foundDevices.clear();
+      _foundPlayers.clear();
       _scanSub = FlutterBluePlus.scanResults.listen((results) {
         for (var result in results) {
           // Фильтрация по нашему сервису рекламирования
@@ -126,18 +128,18 @@ class BluetoothRepository implements IBluetoothRepository {
   }
 
   @override
-  Stream<List<Device>> get discoveredDevices =>
+  Stream<List<Player>> get discoveredDevices =>
       _discoveredDevicesController.stream;
 
   @override
-  Future<void> connectToDevice(Device device) async {
+  Future<void> connectToDevice(Player player) async {
     try {
-      final btDevice = BluetoothDevice.fromId(device.id);
-      _connectedDevice = btDevice;
+      final device = BluetoothDevice.fromId(player.deviceId);
+      _connectedDevice = device;
 
-      await btDevice.connect(autoConnect: false);
+      await device.connect(autoConnect: false);
 
-      final services = await btDevice.discoverServices();
+      final services = await device.discoverServices();
       for (var service in services) {
         for (var c in service.characteristics) {
           if (c.properties.notify) {
@@ -146,9 +148,7 @@ class BluetoothRepository implements IBluetoothRepository {
               final message = utf8.decode(data);
               try {
                 final jsonData = jsonDecode(message) as Map<String, dynamic>;
-                _incomingMessagesController.add(
-                  MessageDto.fromJson(jsonData).toDomain(),
-                );
+                _incomingDataController.add(jsonData);
               } catch (_) {
                 // игнор некорректных данных
               }
@@ -170,20 +170,20 @@ class BluetoothRepository implements IBluetoothRepository {
   }
 
   @override
-  Future<void> sendMessage(Message message) async {
+  Future<void> sendData(Map<String, dynamic> data) async {
     if (_connectedDevice == null) {
       throw Exception('Нет активного соединения');
     }
 
     try {
-      final jsonMessage = jsonEncode(MessageDto.fromDomain(message).toJson());
-      final bytesMessage = utf8.encode(jsonMessage);
+      final jsonData = jsonEncode(data);
+      final bytes = utf8.encode(jsonData);
 
       final services = await _connectedDevice!.discoverServices();
       for (var service in services) {
         for (var c in service.characteristics) {
           if (c.properties.write) {
-            await c.write(bytesMessage, withoutResponse: false);
+            await c.write(bytes, withoutResponse: false);
             return;
           }
         }
@@ -195,7 +195,8 @@ class BluetoothRepository implements IBluetoothRepository {
   }
 
   @override
-  Stream<Message> get incomingMessages => _incomingMessagesController.stream;
+  Stream<Map<String, dynamic>> get incomingData =>
+      _incomingDataController.stream;
 
   @override
   bool get isConnected => _connectedDevice != null && _notifySub != null;
@@ -235,9 +236,9 @@ class BluetoothRepository implements IBluetoothRepository {
       deviceName: device.platformName,
     );
 
-    if (_foundDevices.every((p) => p.id != player.id)) {
-      _foundDevices.add(player);
-      _discoveredDevicesController.add(List.unmodifiable(_foundDevices));
+    if (_foundPlayers.every((p) => p.id != player.id)) {
+      _foundPlayers.add(player);
+      _discoveredDevicesController.add(List.unmodifiable(_foundPlayers));
     }
   }
 
@@ -254,7 +255,7 @@ class BluetoothRepository implements IBluetoothRepository {
   @override
   void dispose() {
     _discoveredDevicesController.close();
-    _incomingMessagesController.close();
+    _incomingDataController.close();
     _scanSub?.cancel();
     _scanTimer?.cancel();
     _notifySub?.cancel();

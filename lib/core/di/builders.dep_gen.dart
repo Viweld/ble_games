@@ -22,7 +22,7 @@ import 'package:bluetooth_toe/core/di/builders.dep_gen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:bluetooth_toe/core/repositories/i_bluetooth_repository.dart';
-import 'package:bluetooth_toe/core/repositories/i_player_repository.dart';
+import 'package:bluetooth_toe/core/repositories/i_user_repository.dart';
 import 'package:bluetooth_toe/features/game/presentation/bloc/game_bloc.dart';
 import 'package:bluetooth_toe/features/home/presentation/bloc/home_bloc.dart';
 import 'package:bluetooth_toe/features/home/presentation/widgets/nickname_dialog/bloc/nickname_bloc.dart';
@@ -117,17 +117,17 @@ class DepProvider extends InheritedWidget {
 
   // ---------------------------------------------------------------------------
   HomeBloc buildHomeBloc() => HomeBloc(
-    playerRepository: _env.g<IPlayerRepository>(),
+    playerRepository: _env.g<IUserRepository>(),
     bluetoothRepository: _env.g<IBluetoothRepository>(),
   );
 
   // ---------------------------------------------------------------------------
   NicknameBloc buildNicknameBloc() =>
-      NicknameBloc(playerRepository: _env.g<IPlayerRepository>());
+      NicknameBloc(playerRepository: _env.g<IUserRepository>());
 
   // ---------------------------------------------------------------------------
   SplashBloc buildSplashBloc() => SplashBloc(
-    playerRepository: _env.g<IPlayerRepository>(),
+    playerRepository: _env.g<IUserRepository>(),
     bluetoothRepository: _env.g<IBluetoothRepository>(),
   );
 }

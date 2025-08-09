@@ -3,6 +3,7 @@
     <!-- Разрешения -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+    <!-- Для Android < 12, сканирование BLE требует локацию -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
@@ -11,6 +12,8 @@
     <!-- Особенности устройства (нельзя внутри <application>) -->
     <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
+    <!-- Для некоторых устройств требуется GPS как индикатор присутствия железа -->
+    <uses-feature android:name="android.hardware.location" android:required="false" />
 
     <application
             android:label="bluetooth_toe"
@@ -40,6 +43,8 @@
         <meta-data
                 android:name="flutterEmbedding"
                 android:value="2" />
+
+        <!-- Разрешения на время выполнения (для Android 12+) будут запрашиваться в коде -->
 
     </application>
 

@@ -38,16 +38,20 @@ class _NicknameDialogViewState extends State<_NicknameDialogView> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<NicknameBloc, NicknameState>(
-      listener: (context, state) {
-        state.when(
-          initial: () {},
-          nicknameSaved: () {
-            Navigator.of(context).pop();
-          },
-          error: (message) {
-            context.showSnackBar(message);
-          },
-        );
+      listenWhen: (previous, state) => switch (state) {
+        NicknameStateNicknameSaved() => true,
+        NicknameStateError() => true,
+        _ => false,
+      },
+      buildWhen: (previous, state) => switch (state) {
+        NicknameStateInitial() => true,
+        _ => false,
+      },
+      listener: (context, state) => switch (state) {
+        NicknameStateInitial() => null,
+        NicknameStateNicknameSaved() => Navigator.of(context).pop(),
+        NicknameStateError(:final message) => context.showSnackBar(message),
+        NicknameState() => null,
       },
       builder: (context, state) {
         final isEnabled =
@@ -62,7 +66,7 @@ class _NicknameDialogViewState extends State<_NicknameDialogView> {
             ),
             onChanged: (value) {
               context.read<NicknameBloc>().add(
-                NicknameEvent.onNicknameChanged(nickname: value),
+                NicknameEvent.onNicknameChanged(nick: value),
               );
               setState(() {});
             },
@@ -73,7 +77,7 @@ class _NicknameDialogViewState extends State<_NicknameDialogView> {
                   ? () {
                       context.read<NicknameBloc>().add(
                         NicknameEvent.onSaveNickname(
-                          nickname: _textController.text,
+                          name: _textController.text,
                         ),
                       );
                     }

@@ -5,7 +5,6 @@ import '../../../../core/domain/models/player.dart';
 import '../../../../core/extensions/build_context_extension.dart';
 import '../../../core/di/builders.dep_gen.dart';
 import 'bloc/home_bloc.dart';
-import 'widgets/nickname_dialog/nickname_dialog.dart';
 import 'widgets/player_list_item.dart';
 
 /// Главный экран приложения
@@ -29,37 +28,39 @@ class _HomeView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Крестики-Нолики'), centerTitle: true),
       body: BlocConsumer<HomeBloc, HomeState>(
-        listener: (context, state) {
-          state.when(
-            initializationPending: () {},
-            initializationError: (message) {
-              context.showSnackBar('Ошибка: $message');
-            },
-            view: (players, selectedPlayer, isFirstLaunch) {
-              if (isFirstLaunch) {
-                _showNicknameDialog(context);
-              }
-            },
-            invitationPending: (invitedPlayer) {
-              _showWaitingDialog(context, invitedPlayer);
-            },
-            invitationReceived: (invitingPlayer) {
-              _showInvitationDialog(context, invitingPlayer);
-            },
-            invitationRejected: (rejectedPlayer) {
-              _showRejectionDialog(context, rejectedPlayer);
-            },
-            gameStarted: (opponent) {
-              // Переход к игре
-              Navigator.of(context).pushNamed('/game');
-            },
-          );
+        listenWhen: (previous, state) => switch (state) {
+          HomeStateInitializationError() => true,
+          HomeStateInvitationPending() => true,
+          HomeStateInvitationReceived() => true,
+          HomeStateInvitationRejected() => true,
+          HomeStateGameStarted() => true,
+          _ => false,
+        },
+        buildWhen: (previous, state) => switch (state) {
+          HomeStateInitializationPending() => true,
+          HomeStateInitializationError() => true,
+          HomeStateView() => true,
+          _ => false,
+        },
+        listener: (context, state) => switch (state) {
+          HomeStateInitializationError(:final message) => context.showSnackBar(
+            'Ошибка: $message',
+          ),
+          HomeStateInvitationPending(:final invitedPlayer) =>
+            _showWaitingDialog(context, invitedPlayer),
+          HomeStateInvitationReceived(:final invitingPlayer) =>
+            _showInvitationDialog(context, invitingPlayer),
+          HomeStateInvitationRejected(:final rejectedPlayer) =>
+            _showRejectionDialog(context, rejectedPlayer),
+          HomeStateGameStarted() => Navigator.of(context).pushNamed('/game'),
+          _ => null,
         },
         builder: (context, state) {
-          return state.when(
-            initializationPending: () =>
-                const Center(child: CircularProgressIndicator()),
-            initializationError: (message) => Center(
+          return switch (state) {
+            HomeStateInitializationPending() => const Center(
+              child: CircularProgressIndicator(),
+            ),
+            HomeStateInitializationError(:final message) => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -78,7 +79,7 @@ class _HomeView extends StatelessWidget {
                 ],
               ),
             ),
-            view: (players, selectedPlayer, isFirstLaunch) => Column(
+            HomeStateView(:final players, :final selectedPlayer) => Column(
               children: [
                 /// Список игроков
                 Expanded(
@@ -115,28 +116,24 @@ class _HomeView extends StatelessWidget {
                     child: const Text('Пригласить'),
                   ),
                 ),
+
+                /// Кнопка ручного обновления
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: TextButton.icon(
+                    onPressed: () => context.read<HomeBloc>().add(
+                      const HomeEvent.onRefreshRequested(),
+                    ),
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Обновить список устройств'),
+                  ),
+                ),
               ],
             ),
-            invitationPending: (invitedPlayer) =>
-                const Center(child: CircularProgressIndicator()),
-            invitationReceived: (invitingPlayer) =>
-                const Center(child: CircularProgressIndicator()),
-            invitationRejected: (rejectedPlayer) =>
-                const Center(child: CircularProgressIndicator()),
-            gameStarted: (opponent) =>
-                const Center(child: CircularProgressIndicator()),
-          );
+            _ => throw UnsupportedError('${state.runtimeType} нельзя строить'),
+          };
         },
       ),
-    );
-  }
-
-  /// Показать диалог ввода псевдонима
-  void _showNicknameDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => const NicknameDialog(),
     );
   }
 

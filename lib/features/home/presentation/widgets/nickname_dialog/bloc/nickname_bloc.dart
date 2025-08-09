@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../../../core/repositories/i_player_repository.dart';
+import '../../../../../../core/repositories/i_user_repository.dart';
 
 part 'events.dart';
 
@@ -13,7 +13,7 @@ part 'nickname_bloc.freezed.dart';
 /// BLoC для диалога псевдонима
 @DepGen()
 class NicknameBloc extends Bloc<NicknameEvent, NicknameState> {
-  NicknameBloc({@DepArg() required IPlayerRepository playerRepository})
+  NicknameBloc({@DepArg() required IUserRepository playerRepository})
     : _playerRepository = playerRepository,
       super(const NicknameState.initial()) {
     on<NicknameEvent>(
@@ -25,7 +25,7 @@ class NicknameBloc extends Bloc<NicknameEvent, NicknameState> {
     );
   }
 
-  final IPlayerRepository _playerRepository;
+  final IUserRepository _playerRepository;
 
   /// Обработчик изменения псевдонима
   Future<void> _onNicknameChanged(

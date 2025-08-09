@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/repositories/i_player_repository.dart';
+import '../../../../core/repositories/i_user_repository.dart';
 import '../../../../core/repositories/i_bluetooth_repository.dart';
 import '../../../../core/constants/app_constants.dart';
 
@@ -14,7 +14,7 @@ part 'splash_bloc.freezed.dart';
 @DepGen()
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
   SplashBloc({
-    @DepArg() required IPlayerRepository playerRepository,
+    @DepArg() required IUserRepository playerRepository,
     @DepArg() required IBluetoothRepository bluetoothRepository,
   }) : _playerRepository = playerRepository,
        _bluetoothRepository = bluetoothRepository,
@@ -31,7 +31,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     add(const SplashEvent.onInitializationRequested());
   }
 
-  final IPlayerRepository _playerRepository;
+  final IUserRepository _playerRepository;
   final IBluetoothRepository _bluetoothRepository;
 
   /// Обработчик запроса инициализации

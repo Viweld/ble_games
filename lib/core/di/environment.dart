@@ -1,10 +1,10 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../data/data_providers/i_shared_preferences_provider.dart';
-import '../data/data_providers/shared_preferences_provider.dart';
-import '../repositories/i_player_repository.dart';
+import '../data/data_providers/i_cached_data_provider.dart';
+import '../data/data_providers/cached_data_provider.dart';
+import '../repositories/i_user_repository.dart';
 import '../repositories/i_bluetooth_repository.dart';
-import '../repositories/player_repository.dart';
+import '../repositories/user_repository.dart';
 import '../repositories/bluetooth_repository.dart';
 import 'builders.dep_gen.dart';
 
@@ -15,17 +15,18 @@ class Environment extends DepGenEnvironment {
     /// ПРОВАЙДЕРЫ ДАННЫХ
     /// ------------------------------------------------------------------------
     // Провайдер SharedPreferences
-    final ISharedPreferencesProvider sharedPreferencesProvider =
-        SharedPreferencesProvider(await SharedPreferences.getInstance());
-    registry<ISharedPreferencesProvider>(sharedPreferencesProvider);
+    final ICachedDataProvider sharedPreferencesProvider = CachedDataProvider(
+      await SharedPreferences.getInstance(),
+    );
+    registry<ICachedDataProvider>(sharedPreferencesProvider);
 
     /// РЕПОЗИТОРИИ
     /// ------------------------------------------------------------------------
     // Репозиторий игроков
-    final IPlayerRepository playerRepository = PlayerRepository(
-      sharedPreferencesProvider: sharedPreferencesProvider,
+    final IUserRepository playerRepository = UserRepository(
+      cachedDataProvider: sharedPreferencesProvider,
     );
-    registry<IPlayerRepository>(playerRepository);
+    registry<IUserRepository>(playerRepository);
 
     // Репозиторий Bluetooth
     final IBluetoothRepository bluetoothRepository = BluetoothRepository();

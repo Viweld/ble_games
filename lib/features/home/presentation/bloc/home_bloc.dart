@@ -5,7 +5,7 @@ import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/domain/models/player.dart';
-import '../../../../core/repositories/i_player_repository.dart';
+import '../../../../core/repositories/i_user_repository.dart';
 import '../../../../core/repositories/i_bluetooth_repository.dart';
 
 part 'events.dart';
@@ -18,7 +18,7 @@ part 'home_bloc.freezed.dart';
 @DepGen()
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc({
-    @DepArg() required IPlayerRepository playerRepository,
+    @DepArg() required IUserRepository playerRepository,
     @DepArg() required IBluetoothRepository bluetoothRepository,
   }) : _playerRepository = playerRepository,
        _bluetoothRepository = bluetoothRepository,
@@ -28,6 +28,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         HomeEventOnInitializationRequested() => _onInitializationRequested(
           emitter,
         ),
+        HomeEventOnRefreshRequested() => _onRefreshRequested(emitter),
         HomeEventOnPlayerSelected() => _onPlayerSelected(event, emitter),
         HomeEventOnInvitePlayer() => _onInvitePlayer(event, emitter),
         HomeEventOnCancelInvitation() => _onCancelInvitation(emitter),
@@ -53,14 +54,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         .listen(_updateDiscoveredDevices);
 
     // Подписка на входящие данные
-    _incomingDataSubscription = _bluetoothRepository.incomingData.listen(
+    _incomingDataSubscription = _bluetoothRepository.incomingMessages.listen(
       _handleIncomingData,
     );
 
     add(const HomeEvent.onInitializationRequested());
   }
 
-  final IPlayerRepository _playerRepository;
+  final IUserRepository _playerRepository;
   final IBluetoothRepository _bluetoothRepository;
 
   late final StreamSubscription<List<Player>> _discoveredDevicesSubscription;
@@ -83,12 +84,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> _onInitializationRequested(Emitter<HomeState> emitter) async {
     try {
       // Получаем текущего игрока
-      _currentPlayer = await _playerRepository.getCurrentPlayer();
+      _currentPlayer = await _playerRepository.getCurrentUser();
 
       // Проверяем, является ли это первым запуском
       final isFirstLaunch = await _playerRepository.isFirstLaunch();
 
-      // Начинаем поиск устройств
+      // Запускаем рекламу и поиск устройств
+      await _bluetoothRepository.startAdvertising();
       await _bluetoothRepository.startDiscovery();
 
       _viewState = HomeStateView(
@@ -99,6 +101,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emitter(_viewState!);
     } catch (e) {
       emitter(HomeState.initializationError(message: e.toString()));
+    }
+  }
+
+  /// Обработчик ручного обновления
+  Future<void> _onRefreshRequested(Emitter<HomeState> emitter) async {
+    try {
+      await _bluetoothRepository.stopDiscovery();
+      await _bluetoothRepository.startDiscovery();
+    } catch (e) {
+      emitter(HomeState.initializationError(message: 'Ошибка обновления: $e'));
     }
   }
 
@@ -122,11 +134,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) async {
     try {
       // Отправляем приглашение
-      await _bluetoothRepository.sendData({
-        'type': 'invitation',
-        'from': _currentPlayer?.toJson(),
-        'to': event.player.toJson(),
-      });
+      if (_currentPlayer == null) {
+        throw StateError('Текущий игрок не инициализирован');
+      }
+      await _bluetoothRepository.sendMessage(
+        _bluetoothRepository.buildInvitationMessage(
+          from: _currentPlayer!,
+          to: event.player,
+        ),
+      );
 
       emitter(HomeState.invitationPending(invitedPlayer: event.player));
     } catch (e) {
@@ -141,7 +157,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   /// Обработчик отмены приглашения
   Future<void> _onCancelInvitation(Emitter<HomeState> emitter) async {
     try {
-      await _bluetoothRepository.sendData({'type': 'cancel_invitation'});
+      await _bluetoothRepository.sendMessage({'type': 'cancel_invitation'});
 
       if (_viewState != null) {
         emitter(_viewState!);
@@ -156,7 +172,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   /// Обработчик принятия приглашения
   Future<void> _onAcceptInvitation(Emitter<HomeState> emitter) async {
     try {
-      await _bluetoothRepository.sendData({'type': 'accept_invitation'});
+      await _bluetoothRepository.sendMessage({'type': 'accept_invitation'});
 
       // Переходим к игре
       final currentState = state;
@@ -175,7 +191,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   /// Обработчик отклонения приглашения
   Future<void> _onRejectInvitation(Emitter<HomeState> emitter) async {
     try {
-      await _bluetoothRepository.sendData({'type': 'reject_invitation'});
+      await _bluetoothRepository.sendMessage({'type': 'reject_invitation'});
 
       final currentState = state;
       if (currentState is HomeStateInvitationReceived) {
@@ -209,7 +225,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       );
 
       // Сохраняем игрока
-      await _playerRepository.saveCurrentPlayer(player);
+      await _playerRepository.saveCurrentUser(player);
       _currentPlayer = player;
 
       // Устанавливаем флаг первого запуска
@@ -275,7 +291,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     switch (type) {
       case 'invitation':
-        final fromPlayer = Player.fromJson(
+        final fromPlayer = _bluetoothRepository.parsePlayer(
           data['from'] as Map<String, dynamic>,
         );
         add(HomeEvent.onInvitationReceived(invitingPlayer: fromPlayer));

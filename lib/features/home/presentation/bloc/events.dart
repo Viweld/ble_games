@@ -7,6 +7,9 @@ class HomeEvent with _$HomeEvent {
   const factory HomeEvent.onInitializationRequested() =
       HomeEventOnInitializationRequested;
 
+  /// Ручной рефреш списка устройств
+  const factory HomeEvent.onRefreshRequested() = HomeEventOnRefreshRequested;
+
   /// Выбор игрока
   const factory HomeEvent.onPlayerSelected({required Player player}) =
       HomeEventOnPlayerSelected;

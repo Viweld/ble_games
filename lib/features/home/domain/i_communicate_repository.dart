@@ -1,8 +1,7 @@
-import '../domain/models/device.dart';
-import '../domain/models/messages.dart';
+import '../../../core/domain/models/player.dart';
 
 /// Интерфейс репозитория Bluetooth
-abstract class IBluetoothRepository {
+abstract class ICommunicateRepository {
   /// Инициализировать Bluetooth
   Future<void> initialize();
 
@@ -19,26 +18,34 @@ abstract class IBluetoothRepository {
   Future<void> stopAdvertising();
 
   /// Получить список найденных устройств
-  Stream<List<Device>> get discoveredDevices;
+  Stream<List<Player>> get discoveredDevices;
 
   /// Подключиться к устройству
-  Future<void> connectToDevice(Device device);
+  Future<void> connectToDevice(Player player);
 
   /// Отключиться от устройства
   Future<void> disconnect();
 
-  /// Отправить сообщение на устройство
-  Future<void> sendMessage(Message message);
+  /// Отправить данные
+  Future<void> sendData(Map<String, dynamic> data);
 
-  /// Получить поток входящих сообщений
-  Stream<Message> get incomingMessages;
+  /// Получить поток входящих данных
+  Stream<Map<String, dynamic>> get incomingData;
 
   /// Проверить, подключены ли к устройству
   bool get isConnected;
 
   /// Получить текущее подключенное устройство
-  Device? get connectedDevice;
+  Player? get connectedDevice;
 
-  /// Закрыть все соединения и освободить ресурсы
+  /// Построить сообщение-приглашение (транспортный уровень) из доменных сущностей
+  Map<String, dynamic> buildInvitationMessage({
+    required Player from,
+    required Player to,
+  });
+
+  /// Преобразовать транспортное представление игрока в доменную модель
+  Player parsePlayer(Map<String, dynamic> json);
+
   void dispose();
 }

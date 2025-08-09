@@ -34,30 +34,39 @@ class _GameView extends StatelessWidget {
         automaticallyImplyLeading: false,
       ),
       body: BlocConsumer<GameBloc, GameState>(
-        listener: (context, state) {
-          state.when(
-            initializationPending: () {},
-            initializationError: (message) {
-              context.showSnackBar('Ошибка: $message');
-            },
-            view: (gameBoard, currentPlayer, playerType, gameWinner) {
-              if (gameWinner != GameWinner.none) {
-                _showGameResultDialog(context, gameWinner, playerType);
-              }
-            },
-            connectionLost: () {
-              _showConnectionLostDialog(context);
-            },
-            opponentLeft: () {
-              _showOpponentLeftDialog(context);
-            },
-          );
+        listenWhen: (previous, state) => switch (state) {
+          GameStateInitializationError() => true,
+          GameStateView(:final gameWinner) => gameWinner != GameWinner.none,
+          GameStateConnectionLost() => true,
+          GameStateOpponentLeft() => true,
+          _ => false,
+        },
+        buildWhen: (previous, state) => switch (state) {
+          GameStateInitializationPending() => true,
+          GameStateInitializationError() => true,
+          GameStateView() => true,
+          GameStateConnectionLost() => true,
+          GameStateOpponentLeft() => true,
+          _ => false,
+        },
+        listener: (context, state) => switch (state) {
+          GameStateInitializationError(:final message) => context.showSnackBar(
+            'Ошибка: $message',
+          ),
+          GameStateView(:final gameWinner, :final playerType) =>
+            gameWinner != GameWinner.none
+                ? _showGameResultDialog(context, gameWinner, playerType)
+                : null,
+          GameStateConnectionLost() => _showConnectionLostDialog(context),
+          GameStateOpponentLeft() => _showOpponentLeftDialog(context),
+          _ => null,
         },
         builder: (context, state) {
-          return state.when(
-            initializationPending: () =>
-                const Center(child: CircularProgressIndicator()),
-            initializationError: (message) => Center(
+          return switch (state) {
+            GameStateInitializationPending() => const Center(
+              child: CircularProgressIndicator(),
+            ),
+            GameStateInitializationError(:final message) => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -74,69 +83,55 @@ class _GameView extends StatelessWidget {
                 ],
               ),
             ),
-            view: (gameBoard, currentPlayer, playerType, gameWinner) => Column(
-              children: [
-                /// Уведомление о ходе
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    currentPlayer == playerType ? 'Ваш ход' : 'Ход соперника',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: AppConstants.turnNotificationFontSize,
-                      fontWeight: FontWeight.bold,
+            GameStateView(
+              :final gameBoard,
+              :final currentPlayer,
+              :final playerType,
+            ) =>
+              Column(
+                children: [
+                  /// Уведомление о ходе
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    child: Text(
+                      currentPlayer == playerType ? 'Ваш ход' : 'Ход соперника',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: AppConstants.turnNotificationFontSize,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
 
-                /// Игровое поле
-                Expanded(
-                  child: Center(
-                    child: GameBoard(
-                      gameBoard: gameBoard,
-                      onCellTap: (row, column) {
-                        context.read<GameBloc>().add(
-                          GameEvent.onCellTapped(row: row, column: column),
-                        );
-                      },
+                  /// Игровое поле
+                  Expanded(
+                    child: Center(
+                      child: GameBoard(
+                        gameBoard: gameBoard,
+                        onCellTap: (row, column) {
+                          context.read<GameBloc>().add(
+                            GameEvent.onCellTapped(row: row, column: column),
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
 
-                /// Информация об игроке
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    'Вы играете ${playerType == PlayerType.x ? 'крестиками' : 'ноликами'}',
-                    style: Theme.of(context).textTheme.titleLarge,
-                    textAlign: TextAlign.center,
+                  /// Информация об игроке
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    child: Text(
+                      'Вы играете ${playerType == PlayerType.x ? 'крестиками' : 'ноликами'}',
+                      style: Theme.of(context).textTheme.titleLarge,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            connectionLost: () => const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.wifi_off, size: 64, color: Colors.orange),
-                  SizedBox(height: 16),
-                  Text('Соединение прервалось'),
                 ],
               ),
-            ),
-            opponentLeft: () => const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.person_off, size: 64, color: Colors.red),
-                  SizedBox(height: 16),
-                  Text('Соперник прервал игру'),
-                ],
-              ),
-            ),
-          );
+            _ => throw UnsupportedError('${state.runtimeType} нельзя строить'),
+          };
         },
       ),
     );
