@@ -201,38 +201,20 @@ class BluetoothRepository implements IBluetoothRepository {
   bool get isConnected => _connectedDevice != null && _notifySub != null;
 
   @override
-  Player? get connectedDevice => _connectedDevice != null
-      ? Player(
+  Device? get connectedDevice => _connectedDevice != null
+      ? Device(
           id: _connectedDevice!.remoteId.str,
-          nickname: _connectedDevice!.platformName,
-          deviceId: _connectedDevice!.remoteId.str,
-          deviceName: _connectedDevice!.platformName,
+          name: _connectedDevice!.platformName,
         )
       : null;
 
-  @override
-  Map<String, dynamic> buildInvitationMessage({
-    required Player from,
-    required Player to,
-  }) => {
-    'type': 'invitation',
-    'from': _mapper.toDto(from).toJson(),
-    'to': _mapper.toDto(to).toJson(),
-  };
-
-  @override
-  Player parsePlayer(Map<String, dynamic> json) =>
-      _mapper.fromDto(PlayerDto.fromJson(json));
-
   void _processDiscoveredDevice(BluetoothDevice device) {
-    final player = Player(
-      id: device.remoteId.str,
-      nickname: device.platformName.replaceFirst(
+    final player = Device(
+      id: _connectedDevice!.remoteId.str,
+      name: device.platformName.replaceFirst(
         AppConstants.bluetoothDevicePrefix,
         '',
       ),
-      deviceId: device.remoteId.str,
-      deviceName: device.platformName,
     );
 
     if (_foundDevices.every((p) => p.id != player.id)) {

@@ -11,6 +11,7 @@ InvitationMessageDto _$InvitationMessageDtoFromJson(
 ) => InvitationMessageDto(
   type: json['type'] as String,
   device: DeviceDto.fromJson(json['device'] as Map<String, dynamic>),
+  user: UserDto.fromJson(json['user'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$InvitationMessageDtoToJson(
@@ -18,6 +19,7 @@ Map<String, dynamic> _$InvitationMessageDtoToJson(
 ) => <String, dynamic>{
   'type': instance.type,
   'device': instance.device.toJson(),
+  'user': instance.user.toJson(),
 };
 
 AcceptanceMessageDto _$AcceptanceMessageDtoFromJson(
@@ -25,6 +27,7 @@ AcceptanceMessageDto _$AcceptanceMessageDtoFromJson(
 ) => AcceptanceMessageDto(
   type: json['type'] as String,
   device: DeviceDto.fromJson(json['device'] as Map<String, dynamic>),
+  user: UserDto.fromJson(json['user'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$AcceptanceMessageDtoToJson(
@@ -32,12 +35,14 @@ Map<String, dynamic> _$AcceptanceMessageDtoToJson(
 ) => <String, dynamic>{
   'type': instance.type,
   'device': instance.device.toJson(),
+  'user': instance.user.toJson(),
 };
 
 RejectionMessageDto _$RejectionMessageDtoFromJson(Map<String, dynamic> json) =>
     RejectionMessageDto(
       type: json['type'] as String,
       device: DeviceDto.fromJson(json['device'] as Map<String, dynamic>),
+      user: UserDto.fromJson(json['user'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$RejectionMessageDtoToJson(
@@ -45,6 +50,7 @@ Map<String, dynamic> _$RejectionMessageDtoToJson(
 ) => <String, dynamic>{
   'type': instance.type,
   'device': instance.device.toJson(),
+  'user': instance.user.toJson(),
 };
 
 TerminationMessageDto _$TerminationMessageDtoFromJson(
@@ -52,6 +58,7 @@ TerminationMessageDto _$TerminationMessageDtoFromJson(
 ) => TerminationMessageDto(
   type: json['type'] as String,
   device: DeviceDto.fromJson(json['device'] as Map<String, dynamic>),
+  user: UserDto.fromJson(json['user'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$TerminationMessageDtoToJson(
@@ -59,12 +66,14 @@ Map<String, dynamic> _$TerminationMessageDtoToJson(
 ) => <String, dynamic>{
   'type': instance.type,
   'device': instance.device.toJson(),
+  'user': instance.user.toJson(),
 };
 
 MoveMessageDto _$MoveMessageDtoFromJson(Map<String, dynamic> json) =>
     MoveMessageDto(
       type: json['type'] as String,
       device: DeviceDto.fromJson(json['device'] as Map<String, dynamic>),
+      user: UserDto.fromJson(json['user'] as Map<String, dynamic>),
       move: GameMoveDto.fromJson(json['move'] as Map<String, dynamic>),
     );
 
@@ -72,5 +81,6 @@ Map<String, dynamic> _$MoveMessageDtoToJson(MoveMessageDto instance) =>
     <String, dynamic>{
       'type': instance.type,
       'device': instance.device.toJson(),
+      'user': instance.user.toJson(),
       'move': instance.move.toJson(),
     };

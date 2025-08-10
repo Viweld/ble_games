@@ -6,14 +6,10 @@ part of 'device_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-DeviceDto _$DeviceDtoFromJson(Map<String, dynamic> json) => DeviceDto(
-  id: json['id'] as String,
-  name: json['name'] as String,
-  user: UserDto.fromJson(json['user'] as Map<String, dynamic>),
-);
+DeviceDto _$DeviceDtoFromJson(Map<String, dynamic> json) =>
+    DeviceDto(id: json['id'] as String, name: json['name'] as String);
 
 Map<String, dynamic> _$DeviceDtoToJson(DeviceDto instance) => <String, dynamic>{
   'id': instance.id,
   'name': instance.name,
-  'user': instance.user.toJson(),
 };

@@ -12,7 +12,7 @@ part 'device_dto.g.dart';
 @JsonSerializable(explicitToJson: true)
 class DeviceDto extends BaseDto<Device> {
   /// Конструктор DTO устройства
-  const DeviceDto({required this.id, required this.name, required this.user});
+  const DeviceDto({required this.id, required this.name});
 
   /// Уникальный идентификатор устройства.
   /// Пример: `"device_456"`
@@ -24,22 +24,14 @@ class DeviceDto extends BaseDto<Device> {
   @JsonKey(name: 'name')
   final String name;
 
-  /// Владелец устройства.
-  /// Пример: `{ "id": "user_123", "name": "Иван Иванов" }`
-  @JsonKey(name: 'user')
-  final UserDto user;
-
   factory DeviceDto.fromJson(Map<String, dynamic> json) =>
       _$DeviceDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$DeviceDtoToJson(this);
 
   @override
-  Device toDomain() => Device(id: id, name: name, user: user.toDomain());
+  Device toDomain() => Device(id: id, name: name);
 
-  static DeviceDto fromDomain(Device device) => DeviceDto(
-    id: device.id,
-    name: device.name,
-    user: UserDto.fromDomain(device.user),
-  );
+  static DeviceDto fromDomain(Device device) =>
+      DeviceDto(id: device.id, name: device.name);
 }

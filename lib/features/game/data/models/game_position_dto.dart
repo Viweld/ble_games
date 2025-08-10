@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../../features/game/domain/game_position.dart';
-import 'abstracts/base_dto.dart';
+import '../../../../core/data/dto/abstracts/base_dto.dart';
+import '../../domain/models/game_position.dart';
 
 part 'game_position_dto.g.dart';
 
@@ -26,6 +26,7 @@ class GamePositionDto extends BaseDto<GamePosition> {
   factory GamePositionDto.fromJson(Map<String, dynamic> json) =>
       _$GamePositionDtoFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$GamePositionDtoToJson(this);
 
   @override

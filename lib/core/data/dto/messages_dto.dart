@@ -1,4 +1,5 @@
-import 'package:bluetooth_toe/core/data/dto/game_move_dto.dart';
+import 'package:bluetooth_toe/features/game/data/models/game_move_dto.dart';
+import 'package:bluetooth_toe/core/data/dto/user_dto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -12,10 +13,15 @@ part 'messages_dto.g.dart';
 @immutable
 abstract class MessageDto<T extends Message> extends BaseDto<T> {
   /// Конструктор базового DTO для сообщений
-  const MessageDto({required this.device, required this.type});
+  const MessageDto({
+    required this.device,
+    required this.type,
+    required this.user,
+  });
 
   static const String typeKey = 'type';
   static const String deviceKey = 'device';
+  static const String userKey = 'user';
 
   /// Тип сообщения (используется для определения класса-наследника при десериализации).
   /// Пример: `"invitation"`, `"acceptance"`, `"rejection"`, `"termination"`
@@ -23,9 +29,14 @@ abstract class MessageDto<T extends Message> extends BaseDto<T> {
   final String type;
 
   /// Устройство, связанное с сообщением.
-  /// Пример: `{ "id": "device_456", "name": "Samsung Galaxy S21", "user": {...} }`
+  /// Пример: `{ "id": "device_456", "name": "Samsung Galaxy S21" }`
   @JsonKey(name: deviceKey)
   final DeviceDto device;
+
+  /// Владелец устройства.
+  /// Пример: `{ "id": "user_123", "name": "Иван Иванов" }`
+  @JsonKey(name: userKey)
+  final UserDto user;
 
   /// Универсальная фабрика для создания конкретного наследника MessageDto
   static MessageDto fromJson(Map<String, dynamic> json) =>
@@ -37,9 +48,6 @@ abstract class MessageDto<T extends Message> extends BaseDto<T> {
         MoveMessageDto.typeValue => MoveMessageDto.fromJson(json),
         _ => throw ArgumentError('Unknown message type: ${json[typeKey]}'),
       };
-
-  /// Универсальная сериализация в JSON (делегирует в конкретный класс)
-  Map<String, dynamic> toJson();
 
   /// Универсальная фабрика для создания конкретного наследника MessageDto из доменной модели
   static MessageDto fromDomain(Message message) => switch (message) {
@@ -56,7 +64,11 @@ abstract class MessageDto<T extends Message> extends BaseDto<T> {
 @immutable
 @JsonSerializable(explicitToJson: true)
 class InvitationMessageDto extends MessageDto<InvitationMessage> {
-  const InvitationMessageDto({required super.type, required super.device});
+  const InvitationMessageDto({
+    required super.type,
+    required super.device,
+    required super.user,
+  });
 
   static const String typeValue = 'invitation';
 
@@ -67,12 +79,14 @@ class InvitationMessageDto extends MessageDto<InvitationMessage> {
   Map<String, dynamic> toJson() => _$InvitationMessageDtoToJson(this);
 
   @override
-  InvitationMessage toDomain() => InvitationMessage(device: device.toDomain());
+  InvitationMessage toDomain() =>
+      InvitationMessage(device: device.toDomain(), user: user.toDomain());
 
   static InvitationMessageDto fromDomain(InvitationMessage message) =>
       InvitationMessageDto(
         type: typeValue,
         device: DeviceDto.fromDomain(message.device),
+        user: UserDto.fromDomain(message.user),
       );
 }
 
@@ -81,7 +95,11 @@ class InvitationMessageDto extends MessageDto<InvitationMessage> {
 @immutable
 @JsonSerializable(explicitToJson: true)
 class AcceptanceMessageDto extends MessageDto<AcceptanceMessage> {
-  const AcceptanceMessageDto({required super.type, required super.device});
+  const AcceptanceMessageDto({
+    required super.type,
+    required super.device,
+    required super.user,
+  });
 
   static const String typeValue = 'acceptance';
 
@@ -92,12 +110,14 @@ class AcceptanceMessageDto extends MessageDto<AcceptanceMessage> {
   Map<String, dynamic> toJson() => _$AcceptanceMessageDtoToJson(this);
 
   @override
-  AcceptanceMessage toDomain() => AcceptanceMessage(device: device.toDomain());
+  AcceptanceMessage toDomain() =>
+      AcceptanceMessage(device: device.toDomain(), user: user.toDomain());
 
   static AcceptanceMessageDto fromDomain(AcceptanceMessage message) =>
       AcceptanceMessageDto(
         type: typeValue,
         device: DeviceDto.fromDomain(message.device),
+        user: UserDto.fromDomain(message.user),
       );
 }
 
@@ -106,7 +126,11 @@ class AcceptanceMessageDto extends MessageDto<AcceptanceMessage> {
 @immutable
 @JsonSerializable(explicitToJson: true)
 class RejectionMessageDto extends MessageDto<RejectionMessage> {
-  const RejectionMessageDto({required super.type, required super.device});
+  const RejectionMessageDto({
+    required super.type,
+    required super.device,
+    required super.user,
+  });
 
   static const String typeValue = 'rejection';
 
@@ -117,12 +141,14 @@ class RejectionMessageDto extends MessageDto<RejectionMessage> {
   Map<String, dynamic> toJson() => _$RejectionMessageDtoToJson(this);
 
   @override
-  RejectionMessage toDomain() => RejectionMessage(device: device.toDomain());
+  RejectionMessage toDomain() =>
+      RejectionMessage(device: device.toDomain(), user: user.toDomain());
 
   static RejectionMessageDto fromDomain(RejectionMessage message) =>
       RejectionMessageDto(
         type: typeValue,
         device: DeviceDto.fromDomain(message.device),
+        user: UserDto.fromDomain(message.user),
       );
 }
 
@@ -131,7 +157,11 @@ class RejectionMessageDto extends MessageDto<RejectionMessage> {
 @immutable
 @JsonSerializable(explicitToJson: true)
 class TerminationMessageDto extends MessageDto<TerminationMessage> {
-  const TerminationMessageDto({required super.type, required super.device});
+  const TerminationMessageDto({
+    required super.type,
+    required super.device,
+    required super.user,
+  });
 
   static const String typeValue = 'termination';
 
@@ -143,12 +173,13 @@ class TerminationMessageDto extends MessageDto<TerminationMessage> {
 
   @override
   TerminationMessage toDomain() =>
-      TerminationMessage(device: device.toDomain());
+      TerminationMessage(device: device.toDomain(), user: user.toDomain());
 
   static TerminationMessageDto fromDomain(TerminationMessage message) =>
       TerminationMessageDto(
         type: typeValue,
         device: DeviceDto.fromDomain(message.device),
+        user: UserDto.fromDomain(message.user),
       );
 }
 
@@ -160,6 +191,7 @@ class MoveMessageDto extends MessageDto<MoveMessage> {
   const MoveMessageDto({
     required super.type,
     required super.device,
+    required super.user,
     required this.move,
   });
 
@@ -178,12 +210,16 @@ class MoveMessageDto extends MessageDto<MoveMessage> {
   Map<String, dynamic> toJson() => _$MoveMessageDtoToJson(this);
 
   @override
-  MoveMessage toDomain() =>
-      MoveMessage(device: device.toDomain(), move: move.toDomain());
+  MoveMessage toDomain() => MoveMessage(
+    device: device.toDomain(),
+    move: move.toDomain(),
+    user: user.toDomain(),
+  );
 
   static MoveMessageDto fromDomain(MoveMessage message) => MoveMessageDto(
     type: typeValue,
     device: DeviceDto.fromDomain(message.device),
+    user: UserDto.fromDomain(message.user),
     move: GameMoveDto.fromDomain(message.move),
   );
 }

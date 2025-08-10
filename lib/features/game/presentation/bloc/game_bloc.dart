@@ -4,8 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/domain/models/enums/game_winner.dart';
-import '../../../../core/domain/models/enums/player_type.dart';
 import '../../../../core/repositories/i_bluetooth_repository.dart';
 
 part 'events.dart';
