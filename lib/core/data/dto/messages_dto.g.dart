@@ -84,3 +84,37 @@ Map<String, dynamic> _$MoveMessageDtoToJson(MoveMessageDto instance) =>
       'user': instance.user.toJson(),
       'move': instance.move.toJson(),
     };
+
+RoleAssignmentMessageDto _$RoleAssignmentMessageDtoFromJson(
+  Map<String, dynamic> json,
+) => RoleAssignmentMessageDto(
+  type: json['type'] as String,
+  device: DeviceDto.fromJson(json['device'] as Map<String, dynamic>),
+  user: UserDto.fromJson(json['user'] as Map<String, dynamic>),
+  assignedType: json['assigned_type'] as String,
+);
+
+Map<String, dynamic> _$RoleAssignmentMessageDtoToJson(
+  RoleAssignmentMessageDto instance,
+) => <String, dynamic>{
+  'type': instance.type,
+  'device': instance.device.toJson(),
+  'user': instance.user.toJson(),
+  'assigned_type': instance.assignedType,
+};
+
+OpponentLeftMessageDto _$OpponentLeftMessageDtoFromJson(
+  Map<String, dynamic> json,
+) => OpponentLeftMessageDto(
+  type: json['type'] as String,
+  device: DeviceDto.fromJson(json['device'] as Map<String, dynamic>),
+  user: UserDto.fromJson(json['user'] as Map<String, dynamic>),
+);
+
+Map<String, dynamic> _$OpponentLeftMessageDtoToJson(
+  OpponentLeftMessageDto instance,
+) => <String, dynamic>{
+  'type': instance.type,
+  'device': instance.device.toJson(),
+  'user': instance.user.toJson(),
+};

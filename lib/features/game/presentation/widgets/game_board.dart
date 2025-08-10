@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/domain/models/enums/player_type.dart';
+import '../../domain/models/enums/player_type.dart';
 
 /// Виджет игрового поля
 class GameBoard extends StatelessWidget {

@@ -55,14 +55,14 @@ extension HomeEventPatterns on HomeEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( HomeEventOnInitializationRequested value)?  onInitializationRequested,TResult Function( HomeEventOnRefreshRequested value)?  onRefreshRequested,TResult Function( HomeEventOnPlayerSelected value)?  onPlayerSelected,TResult Function( HomeEventOnInvitePlayer value)?  onInvitePlayer,TResult Function( HomeEventOnCancelInvitation value)?  onCancelInvitation,TResult Function( HomeEventOnAcceptInvitation value)?  onAcceptInvitation,TResult Function( HomeEventOnRejectInvitation value)?  onRejectInvitation,TResult Function( HomeEventOnNicknameSaved value)?  onNicknameSaved,TResult Function( HomeEventOnViewStateChanged value)?  onViewStateChanged,TResult Function( HomeEventOnInvitationReceived value)?  onInvitationReceived,TResult Function( HomeEventOnInvitationRejected value)?  onInvitationRejected,TResult Function( HomeEventOnGameStarted value)?  onGameStarted,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( HomeEventOnInitializationRequested value)?  onInitializationRequested,TResult Function( HomeEventOnRefreshRequested value)?  onRefreshRequested,TResult Function( HomeEventOnDeviceSelected value)?  onDeviceSelected,TResult Function( HomeEventOnInvite value)?  onInvite,TResult Function( HomeEventOnCancelInvitation value)?  onCancelInvitation,TResult Function( HomeEventOnAcceptInvitation value)?  onAcceptInvitation,TResult Function( HomeEventOnRejectInvitation value)?  onRejectInvitation,TResult Function( HomeEventOnNicknameSaved value)?  onNicknameSaved,TResult Function( HomeEventOnViewStateChanged value)?  onViewStateChanged,TResult Function( HomeEventOnInvitationReceived value)?  onInvitationReceived,TResult Function( HomeEventOnInvitationRejected value)?  onInvitationRejected,TResult Function( HomeEventOnGameStarted value)?  onGameStarted,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested() when onInitializationRequested != null:
 return onInitializationRequested(_that);case HomeEventOnRefreshRequested() when onRefreshRequested != null:
-return onRefreshRequested(_that);case HomeEventOnPlayerSelected() when onPlayerSelected != null:
-return onPlayerSelected(_that);case HomeEventOnInvitePlayer() when onInvitePlayer != null:
-return onInvitePlayer(_that);case HomeEventOnCancelInvitation() when onCancelInvitation != null:
+return onRefreshRequested(_that);case HomeEventOnDeviceSelected() when onDeviceSelected != null:
+return onDeviceSelected(_that);case HomeEventOnInvite() when onInvite != null:
+return onInvite(_that);case HomeEventOnCancelInvitation() when onCancelInvitation != null:
 return onCancelInvitation(_that);case HomeEventOnAcceptInvitation() when onAcceptInvitation != null:
 return onAcceptInvitation(_that);case HomeEventOnRejectInvitation() when onRejectInvitation != null:
 return onRejectInvitation(_that);case HomeEventOnNicknameSaved() when onNicknameSaved != null:
@@ -88,14 +88,14 @@ return onGameStarted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( HomeEventOnInitializationRequested value)  onInitializationRequested,required TResult Function( HomeEventOnRefreshRequested value)  onRefreshRequested,required TResult Function( HomeEventOnPlayerSelected value)  onPlayerSelected,required TResult Function( HomeEventOnInvitePlayer value)  onInvitePlayer,required TResult Function( HomeEventOnCancelInvitation value)  onCancelInvitation,required TResult Function( HomeEventOnAcceptInvitation value)  onAcceptInvitation,required TResult Function( HomeEventOnRejectInvitation value)  onRejectInvitation,required TResult Function( HomeEventOnNicknameSaved value)  onNicknameSaved,required TResult Function( HomeEventOnViewStateChanged value)  onViewStateChanged,required TResult Function( HomeEventOnInvitationReceived value)  onInvitationReceived,required TResult Function( HomeEventOnInvitationRejected value)  onInvitationRejected,required TResult Function( HomeEventOnGameStarted value)  onGameStarted,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( HomeEventOnInitializationRequested value)  onInitializationRequested,required TResult Function( HomeEventOnRefreshRequested value)  onRefreshRequested,required TResult Function( HomeEventOnDeviceSelected value)  onDeviceSelected,required TResult Function( HomeEventOnInvite value)  onInvite,required TResult Function( HomeEventOnCancelInvitation value)  onCancelInvitation,required TResult Function( HomeEventOnAcceptInvitation value)  onAcceptInvitation,required TResult Function( HomeEventOnRejectInvitation value)  onRejectInvitation,required TResult Function( HomeEventOnNicknameSaved value)  onNicknameSaved,required TResult Function( HomeEventOnViewStateChanged value)  onViewStateChanged,required TResult Function( HomeEventOnInvitationReceived value)  onInvitationReceived,required TResult Function( HomeEventOnInvitationRejected value)  onInvitationRejected,required TResult Function( HomeEventOnGameStarted value)  onGameStarted,}){
 final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested():
 return onInitializationRequested(_that);case HomeEventOnRefreshRequested():
-return onRefreshRequested(_that);case HomeEventOnPlayerSelected():
-return onPlayerSelected(_that);case HomeEventOnInvitePlayer():
-return onInvitePlayer(_that);case HomeEventOnCancelInvitation():
+return onRefreshRequested(_that);case HomeEventOnDeviceSelected():
+return onDeviceSelected(_that);case HomeEventOnInvite():
+return onInvite(_that);case HomeEventOnCancelInvitation():
 return onCancelInvitation(_that);case HomeEventOnAcceptInvitation():
 return onAcceptInvitation(_that);case HomeEventOnRejectInvitation():
 return onRejectInvitation(_that);case HomeEventOnNicknameSaved():
@@ -120,14 +120,14 @@ return onGameStarted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( HomeEventOnInitializationRequested value)?  onInitializationRequested,TResult? Function( HomeEventOnRefreshRequested value)?  onRefreshRequested,TResult? Function( HomeEventOnPlayerSelected value)?  onPlayerSelected,TResult? Function( HomeEventOnInvitePlayer value)?  onInvitePlayer,TResult? Function( HomeEventOnCancelInvitation value)?  onCancelInvitation,TResult? Function( HomeEventOnAcceptInvitation value)?  onAcceptInvitation,TResult? Function( HomeEventOnRejectInvitation value)?  onRejectInvitation,TResult? Function( HomeEventOnNicknameSaved value)?  onNicknameSaved,TResult? Function( HomeEventOnViewStateChanged value)?  onViewStateChanged,TResult? Function( HomeEventOnInvitationReceived value)?  onInvitationReceived,TResult? Function( HomeEventOnInvitationRejected value)?  onInvitationRejected,TResult? Function( HomeEventOnGameStarted value)?  onGameStarted,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( HomeEventOnInitializationRequested value)?  onInitializationRequested,TResult? Function( HomeEventOnRefreshRequested value)?  onRefreshRequested,TResult? Function( HomeEventOnDeviceSelected value)?  onDeviceSelected,TResult? Function( HomeEventOnInvite value)?  onInvite,TResult? Function( HomeEventOnCancelInvitation value)?  onCancelInvitation,TResult? Function( HomeEventOnAcceptInvitation value)?  onAcceptInvitation,TResult? Function( HomeEventOnRejectInvitation value)?  onRejectInvitation,TResult? Function( HomeEventOnNicknameSaved value)?  onNicknameSaved,TResult? Function( HomeEventOnViewStateChanged value)?  onViewStateChanged,TResult? Function( HomeEventOnInvitationReceived value)?  onInvitationReceived,TResult? Function( HomeEventOnInvitationRejected value)?  onInvitationRejected,TResult? Function( HomeEventOnGameStarted value)?  onGameStarted,}){
 final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested() when onInitializationRequested != null:
 return onInitializationRequested(_that);case HomeEventOnRefreshRequested() when onRefreshRequested != null:
-return onRefreshRequested(_that);case HomeEventOnPlayerSelected() when onPlayerSelected != null:
-return onPlayerSelected(_that);case HomeEventOnInvitePlayer() when onInvitePlayer != null:
-return onInvitePlayer(_that);case HomeEventOnCancelInvitation() when onCancelInvitation != null:
+return onRefreshRequested(_that);case HomeEventOnDeviceSelected() when onDeviceSelected != null:
+return onDeviceSelected(_that);case HomeEventOnInvite() when onInvite != null:
+return onInvite(_that);case HomeEventOnCancelInvitation() when onCancelInvitation != null:
 return onCancelInvitation(_that);case HomeEventOnAcceptInvitation() when onAcceptInvitation != null:
 return onAcceptInvitation(_that);case HomeEventOnRejectInvitation() when onRejectInvitation != null:
 return onRejectInvitation(_that);case HomeEventOnNicknameSaved() when onNicknameSaved != null:
@@ -152,20 +152,20 @@ return onGameStarted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  onInitializationRequested,TResult Function()?  onRefreshRequested,TResult Function( Player player)?  onPlayerSelected,TResult Function( Player player)?  onInvitePlayer,TResult Function()?  onCancelInvitation,TResult Function()?  onAcceptInvitation,TResult Function()?  onRejectInvitation,TResult Function( String nickname)?  onNicknameSaved,TResult Function()?  onViewStateChanged,TResult Function( Player invitingPlayer)?  onInvitationReceived,TResult Function( Player rejectedPlayer)?  onInvitationRejected,TResult Function( Player opponent)?  onGameStarted,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  onInitializationRequested,TResult Function()?  onRefreshRequested,TResult Function( Device device)?  onDeviceSelected,TResult Function()?  onInvite,TResult Function()?  onCancelInvitation,TResult Function()?  onAcceptInvitation,TResult Function()?  onRejectInvitation,TResult Function( String nickname)?  onNicknameSaved,TResult Function()?  onViewStateChanged,TResult Function( User invitingUser)?  onInvitationReceived,TResult Function( User rejectedUser)?  onInvitationRejected,TResult Function( User opponent)?  onGameStarted,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested() when onInitializationRequested != null:
 return onInitializationRequested();case HomeEventOnRefreshRequested() when onRefreshRequested != null:
-return onRefreshRequested();case HomeEventOnPlayerSelected() when onPlayerSelected != null:
-return onPlayerSelected(_that.player);case HomeEventOnInvitePlayer() when onInvitePlayer != null:
-return onInvitePlayer(_that.player);case HomeEventOnCancelInvitation() when onCancelInvitation != null:
+return onRefreshRequested();case HomeEventOnDeviceSelected() when onDeviceSelected != null:
+return onDeviceSelected(_that.device);case HomeEventOnInvite() when onInvite != null:
+return onInvite();case HomeEventOnCancelInvitation() when onCancelInvitation != null:
 return onCancelInvitation();case HomeEventOnAcceptInvitation() when onAcceptInvitation != null:
 return onAcceptInvitation();case HomeEventOnRejectInvitation() when onRejectInvitation != null:
 return onRejectInvitation();case HomeEventOnNicknameSaved() when onNicknameSaved != null:
 return onNicknameSaved(_that.nickname);case HomeEventOnViewStateChanged() when onViewStateChanged != null:
 return onViewStateChanged();case HomeEventOnInvitationReceived() when onInvitationReceived != null:
-return onInvitationReceived(_that.invitingPlayer);case HomeEventOnInvitationRejected() when onInvitationRejected != null:
-return onInvitationRejected(_that.rejectedPlayer);case HomeEventOnGameStarted() when onGameStarted != null:
+return onInvitationReceived(_that.invitingUser);case HomeEventOnInvitationRejected() when onInvitationRejected != null:
+return onInvitationRejected(_that.rejectedUser);case HomeEventOnGameStarted() when onGameStarted != null:
 return onGameStarted(_that.opponent);case _:
   return orElse();
 
@@ -184,20 +184,20 @@ return onGameStarted(_that.opponent);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  onInitializationRequested,required TResult Function()  onRefreshRequested,required TResult Function( Player player)  onPlayerSelected,required TResult Function( Player player)  onInvitePlayer,required TResult Function()  onCancelInvitation,required TResult Function()  onAcceptInvitation,required TResult Function()  onRejectInvitation,required TResult Function( String nickname)  onNicknameSaved,required TResult Function()  onViewStateChanged,required TResult Function( Player invitingPlayer)  onInvitationReceived,required TResult Function( Player rejectedPlayer)  onInvitationRejected,required TResult Function( Player opponent)  onGameStarted,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  onInitializationRequested,required TResult Function()  onRefreshRequested,required TResult Function( Device device)  onDeviceSelected,required TResult Function()  onInvite,required TResult Function()  onCancelInvitation,required TResult Function()  onAcceptInvitation,required TResult Function()  onRejectInvitation,required TResult Function( String nickname)  onNicknameSaved,required TResult Function()  onViewStateChanged,required TResult Function( User invitingUser)  onInvitationReceived,required TResult Function( User rejectedUser)  onInvitationRejected,required TResult Function( User opponent)  onGameStarted,}) {final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested():
 return onInitializationRequested();case HomeEventOnRefreshRequested():
-return onRefreshRequested();case HomeEventOnPlayerSelected():
-return onPlayerSelected(_that.player);case HomeEventOnInvitePlayer():
-return onInvitePlayer(_that.player);case HomeEventOnCancelInvitation():
+return onRefreshRequested();case HomeEventOnDeviceSelected():
+return onDeviceSelected(_that.device);case HomeEventOnInvite():
+return onInvite();case HomeEventOnCancelInvitation():
 return onCancelInvitation();case HomeEventOnAcceptInvitation():
 return onAcceptInvitation();case HomeEventOnRejectInvitation():
 return onRejectInvitation();case HomeEventOnNicknameSaved():
 return onNicknameSaved(_that.nickname);case HomeEventOnViewStateChanged():
 return onViewStateChanged();case HomeEventOnInvitationReceived():
-return onInvitationReceived(_that.invitingPlayer);case HomeEventOnInvitationRejected():
-return onInvitationRejected(_that.rejectedPlayer);case HomeEventOnGameStarted():
+return onInvitationReceived(_that.invitingUser);case HomeEventOnInvitationRejected():
+return onInvitationRejected(_that.rejectedUser);case HomeEventOnGameStarted():
 return onGameStarted(_that.opponent);case _:
   throw StateError('Unexpected subclass');
 
@@ -215,20 +215,20 @@ return onGameStarted(_that.opponent);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  onInitializationRequested,TResult? Function()?  onRefreshRequested,TResult? Function( Player player)?  onPlayerSelected,TResult? Function( Player player)?  onInvitePlayer,TResult? Function()?  onCancelInvitation,TResult? Function()?  onAcceptInvitation,TResult? Function()?  onRejectInvitation,TResult? Function( String nickname)?  onNicknameSaved,TResult? Function()?  onViewStateChanged,TResult? Function( Player invitingPlayer)?  onInvitationReceived,TResult? Function( Player rejectedPlayer)?  onInvitationRejected,TResult? Function( Player opponent)?  onGameStarted,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  onInitializationRequested,TResult? Function()?  onRefreshRequested,TResult? Function( Device device)?  onDeviceSelected,TResult? Function()?  onInvite,TResult? Function()?  onCancelInvitation,TResult? Function()?  onAcceptInvitation,TResult? Function()?  onRejectInvitation,TResult? Function( String nickname)?  onNicknameSaved,TResult? Function()?  onViewStateChanged,TResult? Function( User invitingUser)?  onInvitationReceived,TResult? Function( User rejectedUser)?  onInvitationRejected,TResult? Function( User opponent)?  onGameStarted,}) {final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested() when onInitializationRequested != null:
 return onInitializationRequested();case HomeEventOnRefreshRequested() when onRefreshRequested != null:
-return onRefreshRequested();case HomeEventOnPlayerSelected() when onPlayerSelected != null:
-return onPlayerSelected(_that.player);case HomeEventOnInvitePlayer() when onInvitePlayer != null:
-return onInvitePlayer(_that.player);case HomeEventOnCancelInvitation() when onCancelInvitation != null:
+return onRefreshRequested();case HomeEventOnDeviceSelected() when onDeviceSelected != null:
+return onDeviceSelected(_that.device);case HomeEventOnInvite() when onInvite != null:
+return onInvite();case HomeEventOnCancelInvitation() when onCancelInvitation != null:
 return onCancelInvitation();case HomeEventOnAcceptInvitation() when onAcceptInvitation != null:
 return onAcceptInvitation();case HomeEventOnRejectInvitation() when onRejectInvitation != null:
 return onRejectInvitation();case HomeEventOnNicknameSaved() when onNicknameSaved != null:
 return onNicknameSaved(_that.nickname);case HomeEventOnViewStateChanged() when onViewStateChanged != null:
 return onViewStateChanged();case HomeEventOnInvitationReceived() when onInvitationReceived != null:
-return onInvitationReceived(_that.invitingPlayer);case HomeEventOnInvitationRejected() when onInvitationRejected != null:
-return onInvitationRejected(_that.rejectedPlayer);case HomeEventOnGameStarted() when onGameStarted != null:
+return onInvitationReceived(_that.invitingUser);case HomeEventOnInvitationRejected() when onInvitationRejected != null:
+return onInvitationRejected(_that.rejectedUser);case HomeEventOnGameStarted() when onGameStarted != null:
 return onGameStarted(_that.opponent);case _:
   return null;
 
@@ -304,43 +304,43 @@ String toString() {
 /// @nodoc
 
 
-class HomeEventOnPlayerSelected implements HomeEvent {
-  const HomeEventOnPlayerSelected({required this.player});
+class HomeEventOnDeviceSelected implements HomeEvent {
+  const HomeEventOnDeviceSelected({required this.device});
   
 
- final  Player player;
+ final  Device device;
 
 /// Create a copy of HomeEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$HomeEventOnPlayerSelectedCopyWith<HomeEventOnPlayerSelected> get copyWith => _$HomeEventOnPlayerSelectedCopyWithImpl<HomeEventOnPlayerSelected>(this, _$identity);
+$HomeEventOnDeviceSelectedCopyWith<HomeEventOnDeviceSelected> get copyWith => _$HomeEventOnDeviceSelectedCopyWithImpl<HomeEventOnDeviceSelected>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnPlayerSelected&&const DeepCollectionEquality().equals(other.player, player));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnDeviceSelected&&(identical(other.device, device) || other.device == device));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(player));
+int get hashCode => Object.hash(runtimeType,device);
 
 @override
 String toString() {
-  return 'HomeEvent.onPlayerSelected(player: $player)';
+  return 'HomeEvent.onDeviceSelected(device: $device)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $HomeEventOnPlayerSelectedCopyWith<$Res> implements $HomeEventCopyWith<$Res> {
-  factory $HomeEventOnPlayerSelectedCopyWith(HomeEventOnPlayerSelected value, $Res Function(HomeEventOnPlayerSelected) _then) = _$HomeEventOnPlayerSelectedCopyWithImpl;
+abstract mixin class $HomeEventOnDeviceSelectedCopyWith<$Res> implements $HomeEventCopyWith<$Res> {
+  factory $HomeEventOnDeviceSelectedCopyWith(HomeEventOnDeviceSelected value, $Res Function(HomeEventOnDeviceSelected) _then) = _$HomeEventOnDeviceSelectedCopyWithImpl;
 @useResult
 $Res call({
- Player player
+ Device device
 });
 
 
@@ -348,19 +348,19 @@ $Res call({
 
 }
 /// @nodoc
-class _$HomeEventOnPlayerSelectedCopyWithImpl<$Res>
-    implements $HomeEventOnPlayerSelectedCopyWith<$Res> {
-  _$HomeEventOnPlayerSelectedCopyWithImpl(this._self, this._then);
+class _$HomeEventOnDeviceSelectedCopyWithImpl<$Res>
+    implements $HomeEventOnDeviceSelectedCopyWith<$Res> {
+  _$HomeEventOnDeviceSelectedCopyWithImpl(this._self, this._then);
 
-  final HomeEventOnPlayerSelected _self;
-  final $Res Function(HomeEventOnPlayerSelected) _then;
+  final HomeEventOnDeviceSelected _self;
+  final $Res Function(HomeEventOnDeviceSelected) _then;
 
 /// Create a copy of HomeEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? player = freezed,}) {
-  return _then(HomeEventOnPlayerSelected(
-player: freezed == player ? _self.player : player // ignore: cast_nullable_to_non_nullable
-as Player,
+@pragma('vm:prefer-inline') $Res call({Object? device = null,}) {
+  return _then(HomeEventOnDeviceSelected(
+device: null == device ? _self.device : device // ignore: cast_nullable_to_non_nullable
+as Device,
   ));
 }
 
@@ -370,68 +370,34 @@ as Player,
 /// @nodoc
 
 
-class HomeEventOnInvitePlayer implements HomeEvent {
-  const HomeEventOnInvitePlayer({required this.player});
+class HomeEventOnInvite implements HomeEvent {
+  const HomeEventOnInvite();
   
 
- final  Player player;
 
-/// Create a copy of HomeEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$HomeEventOnInvitePlayerCopyWith<HomeEventOnInvitePlayer> get copyWith => _$HomeEventOnInvitePlayerCopyWithImpl<HomeEventOnInvitePlayer>(this, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnInvitePlayer&&const DeepCollectionEquality().equals(other.player, player));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnInvite);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(player));
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'HomeEvent.onInvitePlayer(player: $player)';
+  return 'HomeEvent.onInvite()';
 }
 
 
 }
 
-/// @nodoc
-abstract mixin class $HomeEventOnInvitePlayerCopyWith<$Res> implements $HomeEventCopyWith<$Res> {
-  factory $HomeEventOnInvitePlayerCopyWith(HomeEventOnInvitePlayer value, $Res Function(HomeEventOnInvitePlayer) _then) = _$HomeEventOnInvitePlayerCopyWithImpl;
-@useResult
-$Res call({
- Player player
-});
 
 
-
-
-}
-/// @nodoc
-class _$HomeEventOnInvitePlayerCopyWithImpl<$Res>
-    implements $HomeEventOnInvitePlayerCopyWith<$Res> {
-  _$HomeEventOnInvitePlayerCopyWithImpl(this._self, this._then);
-
-  final HomeEventOnInvitePlayer _self;
-  final $Res Function(HomeEventOnInvitePlayer) _then;
-
-/// Create a copy of HomeEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? player = freezed,}) {
-  return _then(HomeEventOnInvitePlayer(
-player: freezed == player ? _self.player : player // ignore: cast_nullable_to_non_nullable
-as Player,
-  ));
-}
-
-
-}
 
 /// @nodoc
 
@@ -631,10 +597,10 @@ String toString() {
 
 
 class HomeEventOnInvitationReceived implements HomeEvent {
-  const HomeEventOnInvitationReceived({required this.invitingPlayer});
+  const HomeEventOnInvitationReceived({required this.invitingUser});
   
 
- final  Player invitingPlayer;
+ final  User invitingUser;
 
 /// Create a copy of HomeEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -646,16 +612,16 @@ $HomeEventOnInvitationReceivedCopyWith<HomeEventOnInvitationReceived> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnInvitationReceived&&const DeepCollectionEquality().equals(other.invitingPlayer, invitingPlayer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnInvitationReceived&&(identical(other.invitingUser, invitingUser) || other.invitingUser == invitingUser));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(invitingPlayer));
+int get hashCode => Object.hash(runtimeType,invitingUser);
 
 @override
 String toString() {
-  return 'HomeEvent.onInvitationReceived(invitingPlayer: $invitingPlayer)';
+  return 'HomeEvent.onInvitationReceived(invitingUser: $invitingUser)';
 }
 
 
@@ -666,7 +632,7 @@ abstract mixin class $HomeEventOnInvitationReceivedCopyWith<$Res> implements $Ho
   factory $HomeEventOnInvitationReceivedCopyWith(HomeEventOnInvitationReceived value, $Res Function(HomeEventOnInvitationReceived) _then) = _$HomeEventOnInvitationReceivedCopyWithImpl;
 @useResult
 $Res call({
- Player invitingPlayer
+ User invitingUser
 });
 
 
@@ -683,10 +649,10 @@ class _$HomeEventOnInvitationReceivedCopyWithImpl<$Res>
 
 /// Create a copy of HomeEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? invitingPlayer = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? invitingUser = null,}) {
   return _then(HomeEventOnInvitationReceived(
-invitingPlayer: freezed == invitingPlayer ? _self.invitingPlayer : invitingPlayer // ignore: cast_nullable_to_non_nullable
-as Player,
+invitingUser: null == invitingUser ? _self.invitingUser : invitingUser // ignore: cast_nullable_to_non_nullable
+as User,
   ));
 }
 
@@ -697,10 +663,10 @@ as Player,
 
 
 class HomeEventOnInvitationRejected implements HomeEvent {
-  const HomeEventOnInvitationRejected({required this.rejectedPlayer});
+  const HomeEventOnInvitationRejected({required this.rejectedUser});
   
 
- final  Player rejectedPlayer;
+ final  User rejectedUser;
 
 /// Create a copy of HomeEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -712,16 +678,16 @@ $HomeEventOnInvitationRejectedCopyWith<HomeEventOnInvitationRejected> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnInvitationRejected&&const DeepCollectionEquality().equals(other.rejectedPlayer, rejectedPlayer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnInvitationRejected&&(identical(other.rejectedUser, rejectedUser) || other.rejectedUser == rejectedUser));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(rejectedPlayer));
+int get hashCode => Object.hash(runtimeType,rejectedUser);
 
 @override
 String toString() {
-  return 'HomeEvent.onInvitationRejected(rejectedPlayer: $rejectedPlayer)';
+  return 'HomeEvent.onInvitationRejected(rejectedUser: $rejectedUser)';
 }
 
 
@@ -732,7 +698,7 @@ abstract mixin class $HomeEventOnInvitationRejectedCopyWith<$Res> implements $Ho
   factory $HomeEventOnInvitationRejectedCopyWith(HomeEventOnInvitationRejected value, $Res Function(HomeEventOnInvitationRejected) _then) = _$HomeEventOnInvitationRejectedCopyWithImpl;
 @useResult
 $Res call({
- Player rejectedPlayer
+ User rejectedUser
 });
 
 
@@ -749,10 +715,10 @@ class _$HomeEventOnInvitationRejectedCopyWithImpl<$Res>
 
 /// Create a copy of HomeEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? rejectedPlayer = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? rejectedUser = null,}) {
   return _then(HomeEventOnInvitationRejected(
-rejectedPlayer: freezed == rejectedPlayer ? _self.rejectedPlayer : rejectedPlayer // ignore: cast_nullable_to_non_nullable
-as Player,
+rejectedUser: null == rejectedUser ? _self.rejectedUser : rejectedUser // ignore: cast_nullable_to_non_nullable
+as User,
   ));
 }
 
@@ -766,7 +732,7 @@ class HomeEventOnGameStarted implements HomeEvent {
   const HomeEventOnGameStarted({required this.opponent});
   
 
- final  Player opponent;
+ final  User opponent;
 
 /// Create a copy of HomeEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -778,12 +744,12 @@ $HomeEventOnGameStartedCopyWith<HomeEventOnGameStarted> get copyWith => _$HomeEv
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnGameStarted&&const DeepCollectionEquality().equals(other.opponent, opponent));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnGameStarted&&(identical(other.opponent, opponent) || other.opponent == opponent));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(opponent));
+int get hashCode => Object.hash(runtimeType,opponent);
 
 @override
 String toString() {
@@ -798,7 +764,7 @@ abstract mixin class $HomeEventOnGameStartedCopyWith<$Res> implements $HomeEvent
   factory $HomeEventOnGameStartedCopyWith(HomeEventOnGameStarted value, $Res Function(HomeEventOnGameStarted) _then) = _$HomeEventOnGameStartedCopyWithImpl;
 @useResult
 $Res call({
- Player opponent
+ User opponent
 });
 
 
@@ -815,10 +781,10 @@ class _$HomeEventOnGameStartedCopyWithImpl<$Res>
 
 /// Create a copy of HomeEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? opponent = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? opponent = null,}) {
   return _then(HomeEventOnGameStarted(
-opponent: freezed == opponent ? _self.opponent : opponent // ignore: cast_nullable_to_non_nullable
-as Player,
+opponent: null == opponent ? _self.opponent : opponent // ignore: cast_nullable_to_non_nullable
+as User,
   ));
 }
 
@@ -951,16 +917,16 @@ return gameStarted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initializationPending,TResult Function( String message)?  initializationError,TResult Function( List<Player> players,  Player? selectedPlayer,  bool isFirstLaunch)?  view,TResult Function( Player invitedPlayer)?  invitationPending,TResult Function( Player invitingPlayer)?  invitationReceived,TResult Function( Player rejectedPlayer)?  invitationRejected,TResult Function( Player opponent)?  gameStarted,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initializationPending,TResult Function( String message)?  initializationError,TResult Function( List<Device> devices,  Device? selectedDevice,  bool isFirstLaunch)?  view,TResult Function( Device invitedDevice)?  invitationPending,TResult Function( User invitingUser)?  invitationReceived,TResult Function( User rejectedUser)?  invitationRejected,TResult Function( User opponent,  PlayerType myPlayerType)?  gameStarted,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case HomeStateInitializationPending() when initializationPending != null:
 return initializationPending();case HomeStateInitializationError() when initializationError != null:
 return initializationError(_that.message);case HomeStateView() when view != null:
-return view(_that.players,_that.selectedPlayer,_that.isFirstLaunch);case HomeStateInvitationPending() when invitationPending != null:
-return invitationPending(_that.invitedPlayer);case HomeStateInvitationReceived() when invitationReceived != null:
-return invitationReceived(_that.invitingPlayer);case HomeStateInvitationRejected() when invitationRejected != null:
-return invitationRejected(_that.rejectedPlayer);case HomeStateGameStarted() when gameStarted != null:
-return gameStarted(_that.opponent);case _:
+return view(_that.devices,_that.selectedDevice,_that.isFirstLaunch);case HomeStateInvitationPending() when invitationPending != null:
+return invitationPending(_that.invitedDevice);case HomeStateInvitationReceived() when invitationReceived != null:
+return invitationReceived(_that.invitingUser);case HomeStateInvitationRejected() when invitationRejected != null:
+return invitationRejected(_that.rejectedUser);case HomeStateGameStarted() when gameStarted != null:
+return gameStarted(_that.opponent,_that.myPlayerType);case _:
   return orElse();
 
 }
@@ -978,16 +944,16 @@ return gameStarted(_that.opponent);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initializationPending,required TResult Function( String message)  initializationError,required TResult Function( List<Player> players,  Player? selectedPlayer,  bool isFirstLaunch)  view,required TResult Function( Player invitedPlayer)  invitationPending,required TResult Function( Player invitingPlayer)  invitationReceived,required TResult Function( Player rejectedPlayer)  invitationRejected,required TResult Function( Player opponent)  gameStarted,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initializationPending,required TResult Function( String message)  initializationError,required TResult Function( List<Device> devices,  Device? selectedDevice,  bool isFirstLaunch)  view,required TResult Function( Device invitedDevice)  invitationPending,required TResult Function( User invitingUser)  invitationReceived,required TResult Function( User rejectedUser)  invitationRejected,required TResult Function( User opponent,  PlayerType myPlayerType)  gameStarted,}) {final _that = this;
 switch (_that) {
 case HomeStateInitializationPending():
 return initializationPending();case HomeStateInitializationError():
 return initializationError(_that.message);case HomeStateView():
-return view(_that.players,_that.selectedPlayer,_that.isFirstLaunch);case HomeStateInvitationPending():
-return invitationPending(_that.invitedPlayer);case HomeStateInvitationReceived():
-return invitationReceived(_that.invitingPlayer);case HomeStateInvitationRejected():
-return invitationRejected(_that.rejectedPlayer);case HomeStateGameStarted():
-return gameStarted(_that.opponent);case _:
+return view(_that.devices,_that.selectedDevice,_that.isFirstLaunch);case HomeStateInvitationPending():
+return invitationPending(_that.invitedDevice);case HomeStateInvitationReceived():
+return invitationReceived(_that.invitingUser);case HomeStateInvitationRejected():
+return invitationRejected(_that.rejectedUser);case HomeStateGameStarted():
+return gameStarted(_that.opponent,_that.myPlayerType);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1004,16 +970,16 @@ return gameStarted(_that.opponent);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initializationPending,TResult? Function( String message)?  initializationError,TResult? Function( List<Player> players,  Player? selectedPlayer,  bool isFirstLaunch)?  view,TResult? Function( Player invitedPlayer)?  invitationPending,TResult? Function( Player invitingPlayer)?  invitationReceived,TResult? Function( Player rejectedPlayer)?  invitationRejected,TResult? Function( Player opponent)?  gameStarted,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initializationPending,TResult? Function( String message)?  initializationError,TResult? Function( List<Device> devices,  Device? selectedDevice,  bool isFirstLaunch)?  view,TResult? Function( Device invitedDevice)?  invitationPending,TResult? Function( User invitingUser)?  invitationReceived,TResult? Function( User rejectedUser)?  invitationRejected,TResult? Function( User opponent,  PlayerType myPlayerType)?  gameStarted,}) {final _that = this;
 switch (_that) {
 case HomeStateInitializationPending() when initializationPending != null:
 return initializationPending();case HomeStateInitializationError() when initializationError != null:
 return initializationError(_that.message);case HomeStateView() when view != null:
-return view(_that.players,_that.selectedPlayer,_that.isFirstLaunch);case HomeStateInvitationPending() when invitationPending != null:
-return invitationPending(_that.invitedPlayer);case HomeStateInvitationReceived() when invitationReceived != null:
-return invitationReceived(_that.invitingPlayer);case HomeStateInvitationRejected() when invitationRejected != null:
-return invitationRejected(_that.rejectedPlayer);case HomeStateGameStarted() when gameStarted != null:
-return gameStarted(_that.opponent);case _:
+return view(_that.devices,_that.selectedDevice,_that.isFirstLaunch);case HomeStateInvitationPending() when invitationPending != null:
+return invitationPending(_that.invitedDevice);case HomeStateInvitationReceived() when invitationReceived != null:
+return invitationReceived(_that.invitingUser);case HomeStateInvitationRejected() when invitationRejected != null:
+return invitationRejected(_that.rejectedUser);case HomeStateGameStarted() when gameStarted != null:
+return gameStarted(_that.opponent,_that.myPlayerType);case _:
   return null;
 
 }
@@ -1123,17 +1089,17 @@ as String,
 
 
 class HomeStateView implements HomeState {
-  const HomeStateView({required final  List<Player> players, this.selectedPlayer, required this.isFirstLaunch}): _players = players;
+  const HomeStateView({required final  List<Device> devices, this.selectedDevice, required this.isFirstLaunch}): _devices = devices;
   
 
- final  List<Player> _players;
- List<Player> get players {
-  if (_players is EqualUnmodifiableListView) return _players;
+ final  List<Device> _devices;
+ List<Device> get devices {
+  if (_devices is EqualUnmodifiableListView) return _devices;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_players);
+  return EqualUnmodifiableListView(_devices);
 }
 
- final  Player? selectedPlayer;
+ final  Device? selectedDevice;
  final  bool isFirstLaunch;
 
 /// Create a copy of HomeState
@@ -1146,16 +1112,16 @@ $HomeStateViewCopyWith<HomeStateView> get copyWith => _$HomeStateViewCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeStateView&&const DeepCollectionEquality().equals(other._players, _players)&&const DeepCollectionEquality().equals(other.selectedPlayer, selectedPlayer)&&(identical(other.isFirstLaunch, isFirstLaunch) || other.isFirstLaunch == isFirstLaunch));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeStateView&&const DeepCollectionEquality().equals(other._devices, _devices)&&(identical(other.selectedDevice, selectedDevice) || other.selectedDevice == selectedDevice)&&(identical(other.isFirstLaunch, isFirstLaunch) || other.isFirstLaunch == isFirstLaunch));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_players),const DeepCollectionEquality().hash(selectedPlayer),isFirstLaunch);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_devices),selectedDevice,isFirstLaunch);
 
 @override
 String toString() {
-  return 'HomeState.view(players: $players, selectedPlayer: $selectedPlayer, isFirstLaunch: $isFirstLaunch)';
+  return 'HomeState.view(devices: $devices, selectedDevice: $selectedDevice, isFirstLaunch: $isFirstLaunch)';
 }
 
 
@@ -1166,7 +1132,7 @@ abstract mixin class $HomeStateViewCopyWith<$Res> implements $HomeStateCopyWith<
   factory $HomeStateViewCopyWith(HomeStateView value, $Res Function(HomeStateView) _then) = _$HomeStateViewCopyWithImpl;
 @useResult
 $Res call({
- List<Player> players, Player? selectedPlayer, bool isFirstLaunch
+ List<Device> devices, Device? selectedDevice, bool isFirstLaunch
 });
 
 
@@ -1183,11 +1149,11 @@ class _$HomeStateViewCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? players = null,Object? selectedPlayer = freezed,Object? isFirstLaunch = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? devices = null,Object? selectedDevice = freezed,Object? isFirstLaunch = null,}) {
   return _then(HomeStateView(
-players: null == players ? _self._players : players // ignore: cast_nullable_to_non_nullable
-as List<Player>,selectedPlayer: freezed == selectedPlayer ? _self.selectedPlayer : selectedPlayer // ignore: cast_nullable_to_non_nullable
-as Player?,isFirstLaunch: null == isFirstLaunch ? _self.isFirstLaunch : isFirstLaunch // ignore: cast_nullable_to_non_nullable
+devices: null == devices ? _self._devices : devices // ignore: cast_nullable_to_non_nullable
+as List<Device>,selectedDevice: freezed == selectedDevice ? _self.selectedDevice : selectedDevice // ignore: cast_nullable_to_non_nullable
+as Device?,isFirstLaunch: null == isFirstLaunch ? _self.isFirstLaunch : isFirstLaunch // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -1199,10 +1165,10 @@ as bool,
 
 
 class HomeStateInvitationPending implements HomeState {
-  const HomeStateInvitationPending({required this.invitedPlayer});
+  const HomeStateInvitationPending({required this.invitedDevice});
   
 
- final  Player invitedPlayer;
+ final  Device invitedDevice;
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
@@ -1214,16 +1180,16 @@ $HomeStateInvitationPendingCopyWith<HomeStateInvitationPending> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeStateInvitationPending&&const DeepCollectionEquality().equals(other.invitedPlayer, invitedPlayer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeStateInvitationPending&&(identical(other.invitedDevice, invitedDevice) || other.invitedDevice == invitedDevice));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(invitedPlayer));
+int get hashCode => Object.hash(runtimeType,invitedDevice);
 
 @override
 String toString() {
-  return 'HomeState.invitationPending(invitedPlayer: $invitedPlayer)';
+  return 'HomeState.invitationPending(invitedDevice: $invitedDevice)';
 }
 
 
@@ -1234,7 +1200,7 @@ abstract mixin class $HomeStateInvitationPendingCopyWith<$Res> implements $HomeS
   factory $HomeStateInvitationPendingCopyWith(HomeStateInvitationPending value, $Res Function(HomeStateInvitationPending) _then) = _$HomeStateInvitationPendingCopyWithImpl;
 @useResult
 $Res call({
- Player invitedPlayer
+ Device invitedDevice
 });
 
 
@@ -1251,10 +1217,10 @@ class _$HomeStateInvitationPendingCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? invitedPlayer = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? invitedDevice = null,}) {
   return _then(HomeStateInvitationPending(
-invitedPlayer: freezed == invitedPlayer ? _self.invitedPlayer : invitedPlayer // ignore: cast_nullable_to_non_nullable
-as Player,
+invitedDevice: null == invitedDevice ? _self.invitedDevice : invitedDevice // ignore: cast_nullable_to_non_nullable
+as Device,
   ));
 }
 
@@ -1265,10 +1231,10 @@ as Player,
 
 
 class HomeStateInvitationReceived implements HomeState {
-  const HomeStateInvitationReceived({required this.invitingPlayer});
+  const HomeStateInvitationReceived({required this.invitingUser});
   
 
- final  Player invitingPlayer;
+ final  User invitingUser;
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
@@ -1280,16 +1246,16 @@ $HomeStateInvitationReceivedCopyWith<HomeStateInvitationReceived> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeStateInvitationReceived&&const DeepCollectionEquality().equals(other.invitingPlayer, invitingPlayer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeStateInvitationReceived&&(identical(other.invitingUser, invitingUser) || other.invitingUser == invitingUser));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(invitingPlayer));
+int get hashCode => Object.hash(runtimeType,invitingUser);
 
 @override
 String toString() {
-  return 'HomeState.invitationReceived(invitingPlayer: $invitingPlayer)';
+  return 'HomeState.invitationReceived(invitingUser: $invitingUser)';
 }
 
 
@@ -1300,7 +1266,7 @@ abstract mixin class $HomeStateInvitationReceivedCopyWith<$Res> implements $Home
   factory $HomeStateInvitationReceivedCopyWith(HomeStateInvitationReceived value, $Res Function(HomeStateInvitationReceived) _then) = _$HomeStateInvitationReceivedCopyWithImpl;
 @useResult
 $Res call({
- Player invitingPlayer
+ User invitingUser
 });
 
 
@@ -1317,10 +1283,10 @@ class _$HomeStateInvitationReceivedCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? invitingPlayer = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? invitingUser = null,}) {
   return _then(HomeStateInvitationReceived(
-invitingPlayer: freezed == invitingPlayer ? _self.invitingPlayer : invitingPlayer // ignore: cast_nullable_to_non_nullable
-as Player,
+invitingUser: null == invitingUser ? _self.invitingUser : invitingUser // ignore: cast_nullable_to_non_nullable
+as User,
   ));
 }
 
@@ -1331,10 +1297,10 @@ as Player,
 
 
 class HomeStateInvitationRejected implements HomeState {
-  const HomeStateInvitationRejected({required this.rejectedPlayer});
+  const HomeStateInvitationRejected({required this.rejectedUser});
   
 
- final  Player rejectedPlayer;
+ final  User rejectedUser;
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
@@ -1346,16 +1312,16 @@ $HomeStateInvitationRejectedCopyWith<HomeStateInvitationRejected> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeStateInvitationRejected&&const DeepCollectionEquality().equals(other.rejectedPlayer, rejectedPlayer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeStateInvitationRejected&&(identical(other.rejectedUser, rejectedUser) || other.rejectedUser == rejectedUser));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(rejectedPlayer));
+int get hashCode => Object.hash(runtimeType,rejectedUser);
 
 @override
 String toString() {
-  return 'HomeState.invitationRejected(rejectedPlayer: $rejectedPlayer)';
+  return 'HomeState.invitationRejected(rejectedUser: $rejectedUser)';
 }
 
 
@@ -1366,7 +1332,7 @@ abstract mixin class $HomeStateInvitationRejectedCopyWith<$Res> implements $Home
   factory $HomeStateInvitationRejectedCopyWith(HomeStateInvitationRejected value, $Res Function(HomeStateInvitationRejected) _then) = _$HomeStateInvitationRejectedCopyWithImpl;
 @useResult
 $Res call({
- Player rejectedPlayer
+ User rejectedUser
 });
 
 
@@ -1383,10 +1349,10 @@ class _$HomeStateInvitationRejectedCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? rejectedPlayer = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? rejectedUser = null,}) {
   return _then(HomeStateInvitationRejected(
-rejectedPlayer: freezed == rejectedPlayer ? _self.rejectedPlayer : rejectedPlayer // ignore: cast_nullable_to_non_nullable
-as Player,
+rejectedUser: null == rejectedUser ? _self.rejectedUser : rejectedUser // ignore: cast_nullable_to_non_nullable
+as User,
   ));
 }
 
@@ -1397,10 +1363,11 @@ as Player,
 
 
 class HomeStateGameStarted implements HomeState {
-  const HomeStateGameStarted({required this.opponent});
+  const HomeStateGameStarted({required this.opponent, required this.myPlayerType});
   
 
- final  Player opponent;
+ final  User opponent;
+ final  PlayerType myPlayerType;
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
@@ -1412,16 +1379,16 @@ $HomeStateGameStartedCopyWith<HomeStateGameStarted> get copyWith => _$HomeStateG
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeStateGameStarted&&const DeepCollectionEquality().equals(other.opponent, opponent));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeStateGameStarted&&(identical(other.opponent, opponent) || other.opponent == opponent)&&(identical(other.myPlayerType, myPlayerType) || other.myPlayerType == myPlayerType));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(opponent));
+int get hashCode => Object.hash(runtimeType,opponent,myPlayerType);
 
 @override
 String toString() {
-  return 'HomeState.gameStarted(opponent: $opponent)';
+  return 'HomeState.gameStarted(opponent: $opponent, myPlayerType: $myPlayerType)';
 }
 
 
@@ -1432,7 +1399,7 @@ abstract mixin class $HomeStateGameStartedCopyWith<$Res> implements $HomeStateCo
   factory $HomeStateGameStartedCopyWith(HomeStateGameStarted value, $Res Function(HomeStateGameStarted) _then) = _$HomeStateGameStartedCopyWithImpl;
 @useResult
 $Res call({
- Player opponent
+ User opponent, PlayerType myPlayerType
 });
 
 
@@ -1449,10 +1416,11 @@ class _$HomeStateGameStartedCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? opponent = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? opponent = null,Object? myPlayerType = null,}) {
   return _then(HomeStateGameStarted(
-opponent: freezed == opponent ? _self.opponent : opponent // ignore: cast_nullable_to_non_nullable
-as Player,
+opponent: null == opponent ? _self.opponent : opponent // ignore: cast_nullable_to_non_nullable
+as User,myPlayerType: null == myPlayerType ? _self.myPlayerType : myPlayerType // ignore: cast_nullable_to_non_nullable
+as PlayerType,
   ));
 }
 

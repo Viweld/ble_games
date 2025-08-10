@@ -209,16 +209,16 @@ class BluetoothRepository implements IBluetoothRepository {
       : null;
 
   void _processDiscoveredDevice(BluetoothDevice device) {
-    final player = Device(
-      id: _connectedDevice!.remoteId.str,
+    final discovered = Device(
+      id: device.remoteId.str,
       name: device.platformName.replaceFirst(
         AppConstants.bluetoothDevicePrefix,
         '',
       ),
     );
 
-    if (_foundDevices.every((p) => p.id != player.id)) {
-      _foundDevices.add(player);
+    if (_foundDevices.every((p) => p.id != discovered.id)) {
+      _foundDevices.add(discovered);
       _discoveredDevicesController.add(List.unmodifiable(_foundDevices));
     }
   }

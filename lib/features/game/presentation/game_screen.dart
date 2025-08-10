@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/build_context_extension.dart';
-import '../../../core/domain/models/enums/game_winner.dart';
-import '../../../core/domain/models/enums/player_type.dart';
+import '../../game/domain/models/enums/game_winner.dart';
+import '../../game/domain/models/enums/player_type.dart';
 import 'bloc/game_bloc.dart';
 import 'widgets/game_board.dart';
 
@@ -15,8 +15,16 @@ class GameScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)?.settings.arguments;
+    final initialType = args is PlayerType ? args : null;
     return BlocProvider(
-      create: (context) => DepProvider.of(context).buildGameBloc(),
+      create: (context) {
+        final bloc = DepProvider.of(context).buildGameBloc();
+        if (initialType != null) {
+          bloc.add(GameEvent.onRoleAssigned(myPlayerType: initialType));
+        }
+        return bloc;
+      },
       child: const _GameView(),
     );
   }
@@ -57,7 +65,7 @@ class _GameView extends StatelessWidget {
             gameWinner != GameWinner.none
                 ? _showGameResultDialog(context, gameWinner, playerType)
                 : null,
-          GameStateConnectionLost() => _showConnectionLostDialog(context),
+          GameStateConnectionLost() => _showOpponentLeftDialog(context),
           GameStateOpponentLeft() => _showOpponentLeftDialog(context),
           _ => null,
         },
@@ -158,27 +166,6 @@ class _GameView extends StatelessWidget {
       builder: (context) => AlertDialog(
         title: const Text('Результат игры'),
         content: Text(message),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Закрыть диалог
-              Navigator.of(context).pop(); // Вернуться на главный экран
-            },
-            child: const Text('Ок'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Показать диалог потери соединения
-  void _showConnectionLostDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Ошибка'),
-        content: const Text('Соединение прервалось'),
         actions: [
           ElevatedButton(
             onPressed: () {

@@ -55,12 +55,15 @@ extension GameEventPatterns on GameEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( GameEventOnInitializationRequested value)?  onInitializationRequested,TResult Function( GameEventOnCellTapped value)?  onCellTapped,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( GameEventOnInitializationRequested value)?  onInitializationRequested,TResult Function( GameEventOnCellTapped value)?  onCellTapped,TResult Function( GameEventOnIncomingMove value)?  onIncomingMove,TResult Function( GameEventOnConnectionLost value)?  onConnectionLost,TResult Function( GameEventOnRoleAssigned value)?  onRoleAssigned,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case GameEventOnInitializationRequested() when onInitializationRequested != null:
 return onInitializationRequested(_that);case GameEventOnCellTapped() when onCellTapped != null:
-return onCellTapped(_that);case _:
+return onCellTapped(_that);case GameEventOnIncomingMove() when onIncomingMove != null:
+return onIncomingMove(_that);case GameEventOnConnectionLost() when onConnectionLost != null:
+return onConnectionLost(_that);case GameEventOnRoleAssigned() when onRoleAssigned != null:
+return onRoleAssigned(_that);case _:
   return orElse();
 
 }
@@ -78,12 +81,15 @@ return onCellTapped(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( GameEventOnInitializationRequested value)  onInitializationRequested,required TResult Function( GameEventOnCellTapped value)  onCellTapped,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( GameEventOnInitializationRequested value)  onInitializationRequested,required TResult Function( GameEventOnCellTapped value)  onCellTapped,required TResult Function( GameEventOnIncomingMove value)  onIncomingMove,required TResult Function( GameEventOnConnectionLost value)  onConnectionLost,required TResult Function( GameEventOnRoleAssigned value)  onRoleAssigned,}){
 final _that = this;
 switch (_that) {
 case GameEventOnInitializationRequested():
 return onInitializationRequested(_that);case GameEventOnCellTapped():
-return onCellTapped(_that);case _:
+return onCellTapped(_that);case GameEventOnIncomingMove():
+return onIncomingMove(_that);case GameEventOnConnectionLost():
+return onConnectionLost(_that);case GameEventOnRoleAssigned():
+return onRoleAssigned(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -100,12 +106,15 @@ return onCellTapped(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( GameEventOnInitializationRequested value)?  onInitializationRequested,TResult? Function( GameEventOnCellTapped value)?  onCellTapped,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( GameEventOnInitializationRequested value)?  onInitializationRequested,TResult? Function( GameEventOnCellTapped value)?  onCellTapped,TResult? Function( GameEventOnIncomingMove value)?  onIncomingMove,TResult? Function( GameEventOnConnectionLost value)?  onConnectionLost,TResult? Function( GameEventOnRoleAssigned value)?  onRoleAssigned,}){
 final _that = this;
 switch (_that) {
 case GameEventOnInitializationRequested() when onInitializationRequested != null:
 return onInitializationRequested(_that);case GameEventOnCellTapped() when onCellTapped != null:
-return onCellTapped(_that);case _:
+return onCellTapped(_that);case GameEventOnIncomingMove() when onIncomingMove != null:
+return onIncomingMove(_that);case GameEventOnConnectionLost() when onConnectionLost != null:
+return onConnectionLost(_that);case GameEventOnRoleAssigned() when onRoleAssigned != null:
+return onRoleAssigned(_that);case _:
   return null;
 
 }
@@ -122,11 +131,14 @@ return onCellTapped(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  onInitializationRequested,TResult Function( int row,  int column)?  onCellTapped,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  onInitializationRequested,TResult Function( int row,  int column)?  onCellTapped,TResult Function( int row,  int column,  PlayerType playerType)?  onIncomingMove,TResult Function()?  onConnectionLost,TResult Function( PlayerType myPlayerType)?  onRoleAssigned,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case GameEventOnInitializationRequested() when onInitializationRequested != null:
 return onInitializationRequested();case GameEventOnCellTapped() when onCellTapped != null:
-return onCellTapped(_that.row,_that.column);case _:
+return onCellTapped(_that.row,_that.column);case GameEventOnIncomingMove() when onIncomingMove != null:
+return onIncomingMove(_that.row,_that.column,_that.playerType);case GameEventOnConnectionLost() when onConnectionLost != null:
+return onConnectionLost();case GameEventOnRoleAssigned() when onRoleAssigned != null:
+return onRoleAssigned(_that.myPlayerType);case _:
   return orElse();
 
 }
@@ -144,11 +156,14 @@ return onCellTapped(_that.row,_that.column);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  onInitializationRequested,required TResult Function( int row,  int column)  onCellTapped,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  onInitializationRequested,required TResult Function( int row,  int column)  onCellTapped,required TResult Function( int row,  int column,  PlayerType playerType)  onIncomingMove,required TResult Function()  onConnectionLost,required TResult Function( PlayerType myPlayerType)  onRoleAssigned,}) {final _that = this;
 switch (_that) {
 case GameEventOnInitializationRequested():
 return onInitializationRequested();case GameEventOnCellTapped():
-return onCellTapped(_that.row,_that.column);case _:
+return onCellTapped(_that.row,_that.column);case GameEventOnIncomingMove():
+return onIncomingMove(_that.row,_that.column,_that.playerType);case GameEventOnConnectionLost():
+return onConnectionLost();case GameEventOnRoleAssigned():
+return onRoleAssigned(_that.myPlayerType);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -165,11 +180,14 @@ return onCellTapped(_that.row,_that.column);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  onInitializationRequested,TResult? Function( int row,  int column)?  onCellTapped,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  onInitializationRequested,TResult? Function( int row,  int column)?  onCellTapped,TResult? Function( int row,  int column,  PlayerType playerType)?  onIncomingMove,TResult? Function()?  onConnectionLost,TResult? Function( PlayerType myPlayerType)?  onRoleAssigned,}) {final _that = this;
 switch (_that) {
 case GameEventOnInitializationRequested() when onInitializationRequested != null:
 return onInitializationRequested();case GameEventOnCellTapped() when onCellTapped != null:
-return onCellTapped(_that.row,_that.column);case _:
+return onCellTapped(_that.row,_that.column);case GameEventOnIncomingMove() when onIncomingMove != null:
+return onIncomingMove(_that.row,_that.column,_that.playerType);case GameEventOnConnectionLost() when onConnectionLost != null:
+return onConnectionLost();case GameEventOnRoleAssigned() when onRoleAssigned != null:
+return onRoleAssigned(_that.myPlayerType);case _:
   return null;
 
 }
@@ -271,6 +289,174 @@ class _$GameEventOnCellTappedCopyWithImpl<$Res>
 row: null == row ? _self.row : row // ignore: cast_nullable_to_non_nullable
 as int,column: null == column ? _self.column : column // ignore: cast_nullable_to_non_nullable
 as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class GameEventOnIncomingMove implements GameEvent {
+  const GameEventOnIncomingMove({required this.row, required this.column, required this.playerType});
+  
+
+ final  int row;
+ final  int column;
+ final  PlayerType playerType;
+
+/// Create a copy of GameEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$GameEventOnIncomingMoveCopyWith<GameEventOnIncomingMove> get copyWith => _$GameEventOnIncomingMoveCopyWithImpl<GameEventOnIncomingMove>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameEventOnIncomingMove&&(identical(other.row, row) || other.row == row)&&(identical(other.column, column) || other.column == column)&&(identical(other.playerType, playerType) || other.playerType == playerType));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,row,column,playerType);
+
+@override
+String toString() {
+  return 'GameEvent.onIncomingMove(row: $row, column: $column, playerType: $playerType)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $GameEventOnIncomingMoveCopyWith<$Res> implements $GameEventCopyWith<$Res> {
+  factory $GameEventOnIncomingMoveCopyWith(GameEventOnIncomingMove value, $Res Function(GameEventOnIncomingMove) _then) = _$GameEventOnIncomingMoveCopyWithImpl;
+@useResult
+$Res call({
+ int row, int column, PlayerType playerType
+});
+
+
+
+
+}
+/// @nodoc
+class _$GameEventOnIncomingMoveCopyWithImpl<$Res>
+    implements $GameEventOnIncomingMoveCopyWith<$Res> {
+  _$GameEventOnIncomingMoveCopyWithImpl(this._self, this._then);
+
+  final GameEventOnIncomingMove _self;
+  final $Res Function(GameEventOnIncomingMove) _then;
+
+/// Create a copy of GameEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? row = null,Object? column = null,Object? playerType = null,}) {
+  return _then(GameEventOnIncomingMove(
+row: null == row ? _self.row : row // ignore: cast_nullable_to_non_nullable
+as int,column: null == column ? _self.column : column // ignore: cast_nullable_to_non_nullable
+as int,playerType: null == playerType ? _self.playerType : playerType // ignore: cast_nullable_to_non_nullable
+as PlayerType,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class GameEventOnConnectionLost implements GameEvent {
+  const GameEventOnConnectionLost();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameEventOnConnectionLost);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'GameEvent.onConnectionLost()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class GameEventOnRoleAssigned implements GameEvent {
+  const GameEventOnRoleAssigned({required this.myPlayerType});
+  
+
+ final  PlayerType myPlayerType;
+
+/// Create a copy of GameEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$GameEventOnRoleAssignedCopyWith<GameEventOnRoleAssigned> get copyWith => _$GameEventOnRoleAssignedCopyWithImpl<GameEventOnRoleAssigned>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameEventOnRoleAssigned&&(identical(other.myPlayerType, myPlayerType) || other.myPlayerType == myPlayerType));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,myPlayerType);
+
+@override
+String toString() {
+  return 'GameEvent.onRoleAssigned(myPlayerType: $myPlayerType)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $GameEventOnRoleAssignedCopyWith<$Res> implements $GameEventCopyWith<$Res> {
+  factory $GameEventOnRoleAssignedCopyWith(GameEventOnRoleAssigned value, $Res Function(GameEventOnRoleAssigned) _then) = _$GameEventOnRoleAssignedCopyWithImpl;
+@useResult
+$Res call({
+ PlayerType myPlayerType
+});
+
+
+
+
+}
+/// @nodoc
+class _$GameEventOnRoleAssignedCopyWithImpl<$Res>
+    implements $GameEventOnRoleAssignedCopyWith<$Res> {
+  _$GameEventOnRoleAssignedCopyWithImpl(this._self, this._then);
+
+  final GameEventOnRoleAssigned _self;
+  final $Res Function(GameEventOnRoleAssigned) _then;
+
+/// Create a copy of GameEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? myPlayerType = null,}) {
+  return _then(GameEventOnRoleAssigned(
+myPlayerType: null == myPlayerType ? _self.myPlayerType : myPlayerType // ignore: cast_nullable_to_non_nullable
+as PlayerType,
   ));
 }
 
@@ -587,12 +773,12 @@ $GameStateViewCopyWith<GameStateView> get copyWith => _$GameStateViewCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameStateView&&const DeepCollectionEquality().equals(other._gameBoard, _gameBoard)&&const DeepCollectionEquality().equals(other.currentPlayer, currentPlayer)&&const DeepCollectionEquality().equals(other.playerType, playerType)&&const DeepCollectionEquality().equals(other.gameWinner, gameWinner));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameStateView&&const DeepCollectionEquality().equals(other._gameBoard, _gameBoard)&&(identical(other.currentPlayer, currentPlayer) || other.currentPlayer == currentPlayer)&&(identical(other.playerType, playerType) || other.playerType == playerType)&&(identical(other.gameWinner, gameWinner) || other.gameWinner == gameWinner));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_gameBoard),const DeepCollectionEquality().hash(currentPlayer),const DeepCollectionEquality().hash(playerType),const DeepCollectionEquality().hash(gameWinner));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_gameBoard),currentPlayer,playerType,gameWinner);
 
 @override
 String toString() {
@@ -624,12 +810,12 @@ class _$GameStateViewCopyWithImpl<$Res>
 
 /// Create a copy of GameState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? gameBoard = null,Object? currentPlayer = freezed,Object? playerType = freezed,Object? gameWinner = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? gameBoard = null,Object? currentPlayer = null,Object? playerType = null,Object? gameWinner = null,}) {
   return _then(GameStateView(
 gameBoard: null == gameBoard ? _self._gameBoard : gameBoard // ignore: cast_nullable_to_non_nullable
-as List<List<PlayerType?>>,currentPlayer: freezed == currentPlayer ? _self.currentPlayer : currentPlayer // ignore: cast_nullable_to_non_nullable
-as PlayerType,playerType: freezed == playerType ? _self.playerType : playerType // ignore: cast_nullable_to_non_nullable
-as PlayerType,gameWinner: freezed == gameWinner ? _self.gameWinner : gameWinner // ignore: cast_nullable_to_non_nullable
+as List<List<PlayerType?>>,currentPlayer: null == currentPlayer ? _self.currentPlayer : currentPlayer // ignore: cast_nullable_to_non_nullable
+as PlayerType,playerType: null == playerType ? _self.playerType : playerType // ignore: cast_nullable_to_non_nullable
+as PlayerType,gameWinner: null == gameWinner ? _self.gameWinner : gameWinner // ignore: cast_nullable_to_non_nullable
 as GameWinner,
   ));
 }

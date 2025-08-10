@@ -13,24 +13,26 @@ class HomeState with _$HomeState {
 
   /// Основное состояние
   const factory HomeState.view({
-    required List<Player> players,
-    Player? selectedPlayer,
+    required List<Device> devices,
+    Device? selectedDevice,
     required bool isFirstLaunch,
   }) = HomeStateView;
 
   /// Ожидание ответа на приглашение
-  const factory HomeState.invitationPending({required Player invitedPlayer}) =
+  const factory HomeState.invitationPending({required Device invitedDevice}) =
       HomeStateInvitationPending;
 
   /// Получено приглашение
-  const factory HomeState.invitationReceived({required Player invitingPlayer}) =
+  const factory HomeState.invitationReceived({required User invitingUser}) =
       HomeStateInvitationReceived;
 
   /// Приглашение отклонено
-  const factory HomeState.invitationRejected({required Player rejectedPlayer}) =
+  const factory HomeState.invitationRejected({required User rejectedUser}) =
       HomeStateInvitationRejected;
 
   /// Игра началась
-  const factory HomeState.gameStarted({required Player opponent}) =
-      HomeStateGameStarted;
+  const factory HomeState.gameStarted({
+    required User opponent,
+    required PlayerType myPlayerType,
+  }) = HomeStateGameStarted;
 }

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/domain/models/player.dart';
+import '../../../../core/domain/models/device.dart';
 
 /// Виджет элемента списка игроков
 class PlayerListItem extends StatelessWidget {
   const PlayerListItem({
     super.key,
-    required this.player,
+    required this.device,
     required this.isSelected,
     required this.onTap,
   });
 
-  final Player player;
+  final Device device;
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -24,7 +24,7 @@ class PlayerListItem extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: Theme.of(context).colorScheme.primary,
           child: Text(
-            player.nickname[0].toUpperCase(),
+            (device.name.isNotEmpty ? device.name[0] : '?').toUpperCase(),
             style: TextStyle(
               color: Theme.of(context).colorScheme.onPrimary,
               fontWeight: FontWeight.bold,
@@ -32,12 +32,12 @@ class PlayerListItem extends StatelessWidget {
           ),
         ),
         title: Text(
-          player.nickname,
+          device.name,
           style: TextStyle(
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
         ),
-        subtitle: Text(player.deviceName),
+        subtitle: Text(device.id),
         trailing: isSelected
             ? Icon(
                 Icons.check_circle,

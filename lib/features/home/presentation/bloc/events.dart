@@ -11,12 +11,11 @@ class HomeEvent with _$HomeEvent {
   const factory HomeEvent.onRefreshRequested() = HomeEventOnRefreshRequested;
 
   /// Выбор игрока
-  const factory HomeEvent.onPlayerSelected({required Player player}) =
-      HomeEventOnPlayerSelected;
+  const factory HomeEvent.onDeviceSelected({required Device device}) =
+      HomeEventOnDeviceSelected;
 
   /// Приглашение игрока
-  const factory HomeEvent.onInvitePlayer({required Player player}) =
-      HomeEventOnInvitePlayer;
+  const factory HomeEvent.onInvite() = HomeEventOnInvite;
 
   /// Отмена приглашения
   const factory HomeEvent.onCancelInvitation() = HomeEventOnCancelInvitation;
@@ -35,16 +34,14 @@ class HomeEvent with _$HomeEvent {
   const factory HomeEvent.onViewStateChanged() = HomeEventOnViewStateChanged;
 
   /// Получено приглашение
-  const factory HomeEvent.onInvitationReceived({
-    required Player invitingPlayer,
-  }) = HomeEventOnInvitationReceived;
+  const factory HomeEvent.onInvitationReceived({required User invitingUser}) =
+      HomeEventOnInvitationReceived;
 
   /// Приглашение отклонено
-  const factory HomeEvent.onInvitationRejected({
-    required Player rejectedPlayer,
-  }) = HomeEventOnInvitationRejected;
+  const factory HomeEvent.onInvitationRejected({required User rejectedUser}) =
+      HomeEventOnInvitationRejected;
 
   /// Игра началась
-  const factory HomeEvent.onGameStarted({required Player opponent}) =
+  const factory HomeEvent.onGameStarted({required User opponent}) =
       HomeEventOnGameStarted;
 }

@@ -6,6 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'abstracts/base_dto.dart';
 import '../../domain/models/messages.dart';
 import 'device_dto.dart';
+import '../../../features/game/domain/models/enums/player_type.dart';
 
 part 'messages_dto.g.dart';
 
@@ -39,15 +40,19 @@ abstract class MessageDto<T extends Message> extends BaseDto<T> {
   final UserDto user;
 
   /// Универсальная фабрика для создания конкретного наследника MessageDto
-  static MessageDto fromJson(Map<String, dynamic> json) =>
-      switch (json[typeKey] as String) {
-        InvitationMessageDto.typeValue => InvitationMessageDto.fromJson(json),
-        AcceptanceMessageDto.typeValue => AcceptanceMessageDto.fromJson(json),
-        RejectionMessageDto.typeValue => RejectionMessageDto.fromJson(json),
-        TerminationMessageDto.typeValue => TerminationMessageDto.fromJson(json),
-        MoveMessageDto.typeValue => MoveMessageDto.fromJson(json),
-        _ => throw ArgumentError('Unknown message type: ${json[typeKey]}'),
-      };
+  static MessageDto fromJson(Map<String, dynamic> json) => switch (json[typeKey]
+      as String) {
+    InvitationMessageDto.typeValue => InvitationMessageDto.fromJson(json),
+    AcceptanceMessageDto.typeValue => AcceptanceMessageDto.fromJson(json),
+    RejectionMessageDto.typeValue => RejectionMessageDto.fromJson(json),
+    TerminationMessageDto.typeValue => TerminationMessageDto.fromJson(json),
+    MoveMessageDto.typeValue => MoveMessageDto.fromJson(json),
+    RoleAssignmentMessageDto.typeValue => RoleAssignmentMessageDto.fromJson(
+      json,
+    ),
+    OpponentLeftMessageDto.typeValue => OpponentLeftMessageDto.fromJson(json),
+    _ => throw ArgumentError('Unknown message type: ${json[typeKey]}'),
+  };
 
   /// Универсальная фабрика для создания конкретного наследника MessageDto из доменной модели
   static MessageDto fromDomain(Message message) => switch (message) {
@@ -56,6 +61,8 @@ abstract class MessageDto<T extends Message> extends BaseDto<T> {
     RejectionMessage m => RejectionMessageDto.fromDomain(m),
     TerminationMessage m => TerminationMessageDto.fromDomain(m),
     MoveMessage m => MoveMessageDto.fromDomain(m),
+    RoleAssignmentMessage m => RoleAssignmentMessageDto.fromDomain(m),
+    OpponentLeftMessage m => OpponentLeftMessageDto.fromDomain(m),
   };
 }
 
@@ -222,4 +229,78 @@ class MoveMessageDto extends MessageDto<MoveMessage> {
     user: UserDto.fromDomain(message.user),
     move: GameMoveDto.fromDomain(message.move),
   );
+}
+
+// -----------------------------------------------------------------------------
+/// DTO назначения роли игрока
+@immutable
+@JsonSerializable(explicitToJson: true)
+class RoleAssignmentMessageDto extends MessageDto<RoleAssignmentMessage> {
+  const RoleAssignmentMessageDto({
+    required super.type,
+    required super.device,
+    required super.user,
+    required this.assignedType,
+  });
+
+  static const String typeValue = 'role_assignment';
+  static const String assignedTypeKey = 'assigned_type';
+
+  @JsonKey(name: assignedTypeKey)
+  final String assignedType;
+
+  factory RoleAssignmentMessageDto.fromJson(Map<String, dynamic> json) =>
+      _$RoleAssignmentMessageDtoFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$RoleAssignmentMessageDtoToJson(this);
+
+  @override
+  RoleAssignmentMessage toDomain() => RoleAssignmentMessage(
+    device: device.toDomain(),
+    user: user.toDomain(),
+    assignedType: PlayerType.values.firstWhere(
+      (e) => e.name == assignedType,
+      orElse: () => PlayerType.x,
+    ),
+  );
+
+  static RoleAssignmentMessageDto fromDomain(RoleAssignmentMessage message) =>
+      RoleAssignmentMessageDto(
+        type: typeValue,
+        device: DeviceDto.fromDomain(message.device),
+        user: UserDto.fromDomain(message.user),
+        assignedType: message.assignedType.name,
+      );
+}
+
+// -----------------------------------------------------------------------------
+/// DTO выхода соперника из игры
+@immutable
+@JsonSerializable(explicitToJson: true)
+class OpponentLeftMessageDto extends MessageDto<OpponentLeftMessage> {
+  const OpponentLeftMessageDto({
+    required super.type,
+    required super.device,
+    required super.user,
+  });
+
+  static const String typeValue = 'opponent_left';
+
+  factory OpponentLeftMessageDto.fromJson(Map<String, dynamic> json) =>
+      _$OpponentLeftMessageDtoFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$OpponentLeftMessageDtoToJson(this);
+
+  @override
+  OpponentLeftMessage toDomain() =>
+      OpponentLeftMessage(device: device.toDomain(), user: user.toDomain());
+
+  static OpponentLeftMessageDto fromDomain(OpponentLeftMessage message) =>
+      OpponentLeftMessageDto(
+        type: typeValue,
+        device: DeviceDto.fromDomain(message.device),
+        user: UserDto.fromDomain(message.user),
+      );
 }

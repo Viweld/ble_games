@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/domain/models/player.dart';
+import '../../../../core/domain/models/device.dart';
+import '../../../../core/domain/models/user.dart';
 import '../../../../core/extensions/build_context_extension.dart';
 import '../../../core/di/builders.dep_gen.dart';
 import 'bloc/home_bloc.dart';
@@ -46,13 +47,15 @@ class _HomeView extends StatelessWidget {
           HomeStateInitializationError(:final message) => context.showSnackBar(
             'Ошибка: $message',
           ),
-          HomeStateInvitationPending(:final invitedPlayer) =>
-            _showWaitingDialog(context, invitedPlayer),
-          HomeStateInvitationReceived(:final invitingPlayer) =>
-            _showInvitationDialog(context, invitingPlayer),
-          HomeStateInvitationRejected(:final rejectedPlayer) =>
-            _showRejectionDialog(context, rejectedPlayer),
-          HomeStateGameStarted() => Navigator.of(context).pushNamed('/game'),
+          HomeStateInvitationPending(:final invitedDevice) =>
+            _showWaitingDialog(context, invitedDevice),
+          HomeStateInvitationReceived(:final invitingUser) =>
+            _showInvitationDialog(context, invitingUser),
+          HomeStateInvitationRejected(:final rejectedUser) =>
+            _showRejectionDialog(context, rejectedUser),
+          HomeStateGameStarted(:final myPlayerType) => Navigator.of(
+            context,
+          ).pushNamed('/game', arguments: myPlayerType),
           _ => null,
         },
         builder: (context, state) {
@@ -79,22 +82,22 @@ class _HomeView extends StatelessWidget {
                 ],
               ),
             ),
-            HomeStateView(:final players, :final selectedPlayer) => Column(
+            HomeStateView(:final devices, :final selectedDevice) => Column(
               children: [
                 /// Список игроков
                 Expanded(
                   flex: 2,
                   child: ListView.builder(
                     padding: const EdgeInsets.all(16),
-                    itemCount: players.length,
+                    itemCount: devices.length,
                     itemBuilder: (context, index) {
-                      final player = players[index];
+                      final device = devices[index];
                       return PlayerListItem(
-                        player: player,
-                        isSelected: selectedPlayer?.id == player.id,
+                        device: device,
+                        isSelected: selectedDevice?.id == device.id,
                         onTap: () {
                           context.read<HomeBloc>().add(
-                            HomeEvent.onPlayerSelected(player: player),
+                            HomeEvent.onDeviceSelected(device: device),
                           );
                         },
                       );
@@ -106,10 +109,10 @@ class _HomeView extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: ElevatedButton(
-                    onPressed: selectedPlayer != null
+                    onPressed: selectedDevice != null
                         ? () {
                             context.read<HomeBloc>().add(
-                              HomeEvent.onInvitePlayer(player: selectedPlayer),
+                              const HomeEvent.onInvite(),
                             );
                           }
                         : null,
@@ -138,13 +141,15 @@ class _HomeView extends StatelessWidget {
   }
 
   /// Показать диалог ожидания
-  void _showWaitingDialog(BuildContext context, Player invitedPlayer) {
+  void _showWaitingDialog(BuildContext context, Device invitedDevice) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: const Text('Ожидание'),
-        content: Text('Ожидайте когда ${invitedPlayer.nickname} согласится'),
+        content: Text(
+          'Ожидайте когда устройство ${invitedDevice.name} ответит',
+        ),
         actions: [
           TextButton(
             onPressed: () {
@@ -161,13 +166,13 @@ class _HomeView extends StatelessWidget {
   }
 
   /// Показать диалог приглашения
-  void _showInvitationDialog(BuildContext context, Player invitingPlayer) {
+  void _showInvitationDialog(BuildContext context, User invitingUser) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: const Text('Приглашение'),
-        content: Text('${invitingPlayer.nickname} пригласил вас поиграть'),
+        content: Text('${invitingUser.name} пригласил вас поиграть'),
         actions: [
           TextButton(
             onPressed: () {
@@ -193,12 +198,12 @@ class _HomeView extends StatelessWidget {
   }
 
   /// Показать диалог отказа
-  void _showRejectionDialog(BuildContext context, Player rejectedPlayer) {
+  void _showRejectionDialog(BuildContext context, User rejectedUser) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Отказ'),
-        content: Text('${rejectedPlayer.nickname} отказался играть'),
+        content: Text('${rejectedUser.name} отказался играть'),
         actions: [
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),

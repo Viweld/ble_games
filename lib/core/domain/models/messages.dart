@@ -1,6 +1,7 @@
 import 'package:bluetooth_toe/core/domain/models/user.dart';
 import 'package:flutter/foundation.dart';
 import '../../../features/game/domain/models/game_move.dart';
+import '../../../features/game/domain/models/enums/player_type.dart';
 import 'device.dart';
 
 @immutable
@@ -46,4 +47,22 @@ class MoveMessage extends Message {
 
   /// Устройство, отправившее ход и параметры хода
   final GameMove move;
+}
+
+/// Назначение роли игрока перед началом партии
+@immutable
+class RoleAssignmentMessage extends Message {
+  const RoleAssignmentMessage({
+    required super.device,
+    required super.user,
+    required this.assignedType,
+  });
+
+  final PlayerType assignedType;
+}
+
+/// Соперник вышел из игры (в пределах активного соединения)
+@immutable
+class OpponentLeftMessage extends Message {
+  const OpponentLeftMessage({required super.device, required super.user});
 }

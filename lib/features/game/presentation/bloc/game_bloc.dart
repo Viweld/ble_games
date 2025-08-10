@@ -4,7 +4,15 @@ import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../../core/domain/models/messages.dart';
+import '../../../../core/domain/models/user.dart';
 import '../../../../core/repositories/i_bluetooth_repository.dart';
+import '../../../../core/repositories/i_user_repository.dart';
+import '../../domain/models/enums/game_winner.dart';
+import '../../domain/models/enums/player_type.dart';
+import '../../domain/models/game_move.dart';
+import '../../domain/models/game_position.dart';
+import '../../domain/services/game_rules.dart';
 
 part 'events.dart';
 
@@ -15,30 +23,55 @@ part 'game_bloc.freezed.dart';
 /// BLoC для игры
 @DepGen()
 class GameBloc extends Bloc<GameEvent, GameState> {
-  GameBloc({@DepArg() required IBluetoothRepository bluetoothRepository})
-    : _bluetoothRepository = bluetoothRepository,
-      super(const GameState.initializationPending()) {
+  GameBloc({
+    @DepArg() required IBluetoothRepository bluetoothRepository,
+    @DepArg() required IUserRepository userRepository,
+  }) : _bluetoothRepository = bluetoothRepository,
+       _userRepository = userRepository,
+       super(const GameState.initializationPending()) {
     on<GameEvent>(
       (event, emit) => switch (event) {
         GameEventOnInitializationRequested() => _onInitializationRequested(
           emit,
         ),
         GameEventOnCellTapped() => _onCellTapped(event, emit),
+        GameEventOnIncomingMove() => _onIncomingMove(event, emit),
+        GameEventOnConnectionLost() => _onConnectionLost(emit),
+        GameEventOnRoleAssigned() => _onRoleAssigned(event, emit),
         _ => throw UnimplementedError('Unhandled event: $event'),
       },
     );
 
-    // Подписка на входящие данные
-    _incomingDataSubscription = _bluetoothRepository.incomingMessages.listen(
-      (data) => _handleIncomingData(data),
-    );
+    // Подписка на входящие сообщения доменного уровня
+    _incomingDataSubscription = _bluetoothRepository.incomingMessages.listen((
+      message,
+    ) {
+      if (isClosed) return;
+      switch (message) {
+        case MoveMessage(:final move):
+          add(
+            GameEvent.onIncomingMove(
+              row: move.position.row,
+              column: move.position.column,
+              playerType: move.playerType,
+            ),
+          );
+        case TerminationMessage():
+          add(const GameEvent.onConnectionLost());
+        case OpponentLeftMessage():
+          add(const GameEvent.onConnectionLost());
+        default:
+          break;
+      }
+    });
 
     add(const GameEvent.onInitializationRequested());
   }
 
   final IBluetoothRepository _bluetoothRepository;
+  final IUserRepository _userRepository;
 
-  late final StreamSubscription<Map<String, dynamic>> _incomingDataSubscription;
+  late final StreamSubscription<Message> _incomingDataSubscription;
 
   List<List<PlayerType?>> _gameBoard = List.generate(
     3,
@@ -47,6 +80,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   PlayerType _currentPlayer = PlayerType.x;
   PlayerType _playerType = PlayerType.x;
   GameWinner _gameWinner = GameWinner.none;
+  User? _currentUser;
   GameStateView? _viewState;
 
   @override
@@ -58,9 +92,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   /// Обработчик запроса инициализации
   Future<void> _onInitializationRequested(Emitter<GameState> emit) async {
     try {
-      // Случайно выбираем первого игрока
-      _currentPlayer = PlayerType.values[DateTime.now().millisecond % 2];
-      _playerType = _currentPlayer;
+      // Загружаем текущего пользователя
+      _currentUser = await _userRepository.getCurrentUser();
+      // Роль назначается через RoleAssignmentMessage/аргументы экрана
+      _currentPlayer = PlayerType.x;
+      _playerType = PlayerType.x;
 
       _viewState = GameStateView(
         gameBoard: _gameBoard,
@@ -94,15 +130,22 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       _gameBoard[event.row][event.column] = _currentPlayer;
 
       // Проверяем победу
-      _gameWinner = _checkWinner();
+      _gameWinner = GameRules.determineWinner(_gameBoard);
 
-      // Отправляем ход сопернику
-      await _bluetoothRepository.sendMessage({
-        'type': 'move',
-        'row': event.row,
-        'column': event.column,
-        'playerType': _currentPlayer.name,
-      });
+      // Отправляем ход сопернику доменной моделью
+      final device = _bluetoothRepository.connectedDevice;
+      if (device != null && _currentUser != null) {
+        await _bluetoothRepository.sendMessage(
+          MoveMessage(
+            device: device,
+            user: _currentUser!,
+            move: GameMove(
+              position: GamePosition(row: event.row, column: event.column),
+              playerType: _currentPlayer,
+            ),
+          ),
+        );
+      }
 
       // Обновляем состояние
       if (_viewState != null) {
@@ -128,98 +171,53 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
   }
 
-  /// Обработка входящих данных
-  void _handleIncomingData(Map<String, dynamic> data) {
-    final type = data['type'] as String?;
+  /// Обработчик входящего хода (через событие)
+  Future<void> _onIncomingMove(
+    GameEventOnIncomingMove event,
+    Emitter<GameState> emit,
+  ) async {
+    _gameBoard[event.row][event.column] = event.playerType;
 
-    switch (type) {
-      case 'move':
-        final row = data['row'] as int;
-        final column = data['column'] as int;
-        final playerTypeName = data['playerType'] as String;
-        final playerType = PlayerType.values.firstWhere(
-          (e) => e.name == playerTypeName,
-        );
+    _gameWinner = GameRules.determineWinner(_gameBoard);
 
-        // Делаем ход соперника
-        _gameBoard[row][column] = playerType;
+    if (_viewState != null) {
+      _viewState = _viewState!.copyWith(
+        gameBoard: _gameBoard,
+        gameWinner: _gameWinner,
+      );
+      emit(_viewState!);
+    }
 
-        // Проверяем победу
-        _gameWinner = _checkWinner();
-
-        // Обновляем состояние
-        if (_viewState != null) {
-          _viewState = _viewState!.copyWith(
-            gameBoard: _gameBoard,
-            gameWinner: _gameWinner,
-          );
-          emit(_viewState!);
-        }
-
-        // Если игра не закончена, меняем игрока
-        if (_gameWinner == GameWinner.none) {
-          _currentPlayer = _currentPlayer == PlayerType.x
-              ? PlayerType.o
-              : PlayerType.x;
-          if (_viewState != null) {
-            _viewState = _viewState!.copyWith(currentPlayer: _currentPlayer);
-            emit(_viewState!);
-          }
-        }
-        break;
-      case 'disconnect':
-        emit(const GameState.connectionLost());
-        break;
-      case 'opponent_left':
-        emit(const GameState.opponentLeft());
-        break;
+    if (_gameWinner == GameWinner.none) {
+      _currentPlayer = _currentPlayer == PlayerType.x
+          ? PlayerType.o
+          : PlayerType.x;
+      if (_viewState != null) {
+        _viewState = _viewState!.copyWith(currentPlayer: _currentPlayer);
+        emit(_viewState!);
+      }
     }
   }
 
-  /// Проверка победителя
-  GameWinner _checkWinner() {
-    // Проверяем строки
-    for (int i = 0; i < 3; i++) {
-      if (_gameBoard[i][0] != null &&
-          _gameBoard[i][0] == _gameBoard[i][1] &&
-          _gameBoard[i][1] == _gameBoard[i][2]) {
-        return _gameBoard[i][0] == PlayerType.x ? GameWinner.x : GameWinner.o;
-      }
-    }
-
-    // Проверяем столбцы
-    for (int i = 0; i < 3; i++) {
-      if (_gameBoard[0][i] != null &&
-          _gameBoard[0][i] == _gameBoard[1][i] &&
-          _gameBoard[1][i] == _gameBoard[2][i]) {
-        return _gameBoard[0][i] == PlayerType.x ? GameWinner.x : GameWinner.o;
-      }
-    }
-
-    // Проверяем диагонали
-    if (_gameBoard[0][0] != null &&
-        _gameBoard[0][0] == _gameBoard[1][1] &&
-        _gameBoard[1][1] == _gameBoard[2][2]) {
-      return _gameBoard[0][0] == PlayerType.x ? GameWinner.x : GameWinner.o;
-    }
-
-    if (_gameBoard[0][2] != null &&
-        _gameBoard[0][2] == _gameBoard[1][1] &&
-        _gameBoard[1][1] == _gameBoard[2][0]) {
-      return _gameBoard[0][2] == PlayerType.x ? GameWinner.x : GameWinner.o;
-    }
-
-    // Проверяем ничью
-    bool isBoardFull = true;
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
-        if (_gameBoard[i][j] == null) {
-          isBoardFull = false;
-          break;
-        }
-      }
-    }
-
-    return isBoardFull ? GameWinner.draw : GameWinner.none;
+  /// Обработчик потери соединения (через событие)
+  void _onConnectionLost(Emitter<GameState> emit) {
+    emit(const GameState.connectionLost());
   }
+
+  Future<void> _onRoleAssigned(
+    GameEventOnRoleAssigned event,
+    Emitter<GameState> emit,
+  ) async {
+    _playerType = event.myPlayerType;
+    _currentPlayer = _playerType;
+    if (_viewState != null) {
+      _viewState = _viewState!.copyWith(
+        currentPlayer: _currentPlayer,
+        playerType: _playerType,
+      );
+      emit(_viewState!);
+    }
+  }
+
+  // Логика победителя вынесена в GameRules.determineWinner
 }
