@@ -6,7 +6,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/domain/models/messages.dart';
 import '../../../../core/domain/models/user.dart';
-import '../../../../core/repositories/i_bluetooth_repository.dart';
+import '../../../../core/repositories/i_nearby_connections_repository.dart';
 import '../../../../core/repositories/i_user_repository.dart';
 import '../../domain/models/enums/game_winner.dart';
 import '../../domain/models/enums/player_type.dart';
@@ -24,9 +24,9 @@ part 'game_bloc.freezed.dart';
 @DepGen()
 class GameBloc extends Bloc<GameEvent, GameState> {
   GameBloc({
-    @DepArg() required IBluetoothRepository bluetoothRepository,
+    @DepArg() required INearbyConnectionsRepository nearbyRepository,
     @DepArg() required IUserRepository userRepository,
-  }) : _bluetoothRepository = bluetoothRepository,
+  }) : _nearbyRepository = nearbyRepository,
        _userRepository = userRepository,
        super(const GameState.initializationPending()) {
     on<GameEvent>(
@@ -43,7 +43,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     );
 
     // Подписка на входящие сообщения доменного уровня
-    _incomingDataSubscription = _bluetoothRepository.incomingMessages.listen((
+    _incomingDataSubscription = _nearbyRepository.incomingMessages.listen((
       message,
     ) {
       if (isClosed) return;
@@ -68,7 +68,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     add(const GameEvent.onInitializationRequested());
   }
 
-  final IBluetoothRepository _bluetoothRepository;
+  final INearbyConnectionsRepository _nearbyRepository;
   final IUserRepository _userRepository;
 
   late final StreamSubscription<Message> _incomingDataSubscription;
@@ -133,9 +133,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       _gameWinner = GameRules.determineWinner(_gameBoard);
 
       // Отправляем ход сопернику доменной моделью
-      final device = _bluetoothRepository.connectedDevice;
+      final device = _nearbyRepository.connectedDevice;
       if (device != null && _currentUser != null) {
-        await _bluetoothRepository.sendMessage(
+        await _nearbyRepository.sendMessage(
           MoveMessage(
             device: device,
             user: _currentUser!,

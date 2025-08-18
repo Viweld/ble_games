@@ -36,8 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # BLoC для управления состоянием
-  flutter_bloc: ^8.1.6
-  bloc: ^8.1.3
+  flutter_bloc: ^9.1.1
+  bloc: ^9.0.0
 
   # Freezed для генерации кода
   freezed_annotation: ^3.1.0
@@ -46,10 +46,9 @@ dependencies:
   # Dependency Injection
   dep_gen: ^1.0.0
 
-  # Bluetooth
-  flutter_blue_plus: ^1.35.5
-  flutter_ble_peripheral: ^1.2.6
-  permission_handler: ^11.3.1
+  # Nearby Connections для поиска и сопряжения устройств
+  nearby_connections: ^3.3.1
+  permission_handler: ^12.0.1
 
   # Локализация
   flutter_localizations:
@@ -57,7 +56,7 @@ dependencies:
   intl: ^0.20.2
 
   # Утилиты
-  device_info_plus: ^10.1.0
+  device_info_plus: ^11.5.0
   shared_preferences: ^2.2.3
 
 dev_dependencies:
@@ -69,15 +68,15 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
   # Генераторы кода
   build_runner: ^2.4.10
   freezed: ^3.2.0
   json_serializable: ^6.8.0
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
+# For information on the generic Dart part of this file, see
+# the following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:

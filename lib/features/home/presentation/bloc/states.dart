@@ -16,6 +16,7 @@ class HomeState with _$HomeState {
     required List<Device> devices,
     Device? selectedDevice,
     required bool isFirstLaunch,
+    required bool isConnected,
   }) = HomeStateView;
 
   /// Ожидание ответа на приглашение

@@ -44,4 +44,16 @@ class HomeEvent with _$HomeEvent {
   /// Игра началась
   const factory HomeEvent.onGameStarted({required User opponent}) =
       HomeEventOnGameStarted;
+
+  /// Поиск устройств
+  const factory HomeEvent.onSearchDevicesRequested() =
+      HomeEventOnSearchDevicesRequested;
+
+  /// Начать рекламу
+  const factory HomeEvent.onStartAdvertisingRequested() =
+      HomeEventOnStartAdvertisingRequested;
+
+  /// Отключиться
+  const factory HomeEvent.onDisconnectRequested() =
+      HomeEventOnDisconnectRequested;
 }

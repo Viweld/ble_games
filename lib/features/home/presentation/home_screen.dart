@@ -1,12 +1,14 @@
+import 'package:bluetooth_toe/core/di/builders.dep_gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/domain/models/device.dart';
 import '../../../../core/domain/models/user.dart';
+import '../../../../core/domain/models/game.dart';
 import '../../../../core/extensions/build_context_extension.dart';
-import '../../../core/di/builders.dep_gen.dart';
 import 'bloc/home_bloc.dart';
-import 'widgets/player_list_item.dart';
+import 'widgets/connection_manager.dart';
+import 'widgets/games_list.dart';
 
 /// Главный экран приложения
 class HomeScreen extends StatelessWidget {
@@ -15,7 +17,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => DepProvider.of(context).buildHomeBloc(),
+      create: (context) => context.depGen().buildHomeBloc(),
       child: const _HomeView(),
     );
   }
@@ -48,9 +50,27 @@ class _HomeView extends StatelessWidget {
             'Ошибка: $message',
           ),
           HomeStateInvitationPending(:final invitedDevice) =>
-            _showWaitingDialog(context, invitedDevice),
+            _showWaitingDialog(context, invitedDevice).then((_) {
+              if (context.mounted) {
+                context.read<HomeBloc>().add(
+                  const HomeEvent.onCancelInvitation(),
+                );
+              }
+            }),
           HomeStateInvitationReceived(:final invitingUser) =>
-            _showInvitationDialog(context, invitingUser),
+            _showInvitationDialog(context, invitingUser).then((result) {
+              if (context.mounted) {
+                if (result == true) {
+                  context.read<HomeBloc>().add(
+                    const HomeEvent.onAcceptInvitation(),
+                  );
+                } else if (result == false) {
+                  context.read<HomeBloc>().add(
+                    const HomeEvent.onRejectInvitation(),
+                  );
+                }
+              }
+            }),
           HomeStateInvitationRejected(:final rejectedUser) =>
             _showRejectionDialog(context, rejectedUser),
           HomeStateGameStarted(:final myPlayerType) => Navigator.of(
@@ -82,57 +102,26 @@ class _HomeView extends StatelessWidget {
                 ],
               ),
             ),
-            HomeStateView(:final devices, :final selectedDevice) => Column(
-              children: [
-                /// Список игроков
-                Expanded(
-                  flex: 2,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: devices.length,
-                    itemBuilder: (context, index) {
-                      final device = devices[index];
-                      return PlayerListItem(
-                        device: device,
-                        isSelected: selectedDevice?.id == device.id,
-                        onTap: () {
-                          context.read<HomeBloc>().add(
-                            HomeEvent.onDeviceSelected(device: device),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
+            HomeStateView(
+              :final devices,
+              :final selectedDevice,
+              :final isConnected,
+            ) =>
+              Column(
+                children: [
+                  /// Менеджер подключений
+                  ConnectionManager(),
 
-                /// Кнопка приглашения
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: ElevatedButton(
-                    onPressed: selectedDevice != null
-                        ? () {
-                            context.read<HomeBloc>().add(
-                              const HomeEvent.onInvite(),
-                            );
-                          }
-                        : null,
-                    child: const Text('Пригласить'),
-                  ),
-                ),
-
-                /// Кнопка ручного обновления
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: TextButton.icon(
-                    onPressed: () => context.read<HomeBloc>().add(
-                      const HomeEvent.onRefreshRequested(),
+                  /// Список игр
+                  Expanded(
+                    child: GamesList(
+                      games: _getAvailableGames(),
+                      isConnected: isConnected,
+                      onGameSelected: (game) => _onGameSelected(context, game),
                     ),
-                    icon: const Icon(Icons.refresh),
-                    label: const Text('Обновить список устройств'),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
             _ => throw UnsupportedError('${state.runtimeType} нельзя строить'),
           };
         },
@@ -140,9 +129,34 @@ class _HomeView extends StatelessWidget {
     );
   }
 
+  /// Получить список доступных игр
+  List<Game> _getAvailableGames() {
+    return [
+      const Game(
+        id: 'tic_tac_toe',
+        name: 'Крестики-Нолики',
+        description: 'Классическая игра для двух игроков',
+        icon: '0xe3b2', // Icons.games
+        isAvailable: true,
+        route: '/game',
+      ),
+      // Здесь можно добавить другие игры в будущем
+    ];
+  }
+
+  /// Обработка выбора игры
+  void _onGameSelected(BuildContext context, Game game) {
+    if (game.id == 'tic_tac_toe') {
+      Navigator.of(context).pushNamed('/game');
+    }
+  }
+
   /// Показать диалог ожидания
-  void _showWaitingDialog(BuildContext context, Device invitedDevice) {
-    showDialog(
+  Future<void> _showWaitingDialog(
+    BuildContext context,
+    Device invitedDevice,
+  ) async {
+    return showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
@@ -154,9 +168,6 @@ class _HomeView extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              context.read<HomeBloc>().add(
-                const HomeEvent.onCancelInvitation(),
-              );
             },
             child: const Text('Отмена'),
           ),
@@ -166,8 +177,11 @@ class _HomeView extends StatelessWidget {
   }
 
   /// Показать диалог приглашения
-  void _showInvitationDialog(BuildContext context, User invitingUser) {
-    showDialog(
+  Future<bool?> _showInvitationDialog(
+    BuildContext context,
+    User invitingUser,
+  ) async {
+    return showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
@@ -176,19 +190,13 @@ class _HomeView extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
-              context.read<HomeBloc>().add(
-                const HomeEvent.onRejectInvitation(),
-              );
+              Navigator.of(context).pop(false);
             },
             child: const Text('Отмена'),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).pop();
-              context.read<HomeBloc>().add(
-                const HomeEvent.onAcceptInvitation(),
-              );
+              Navigator.of(context).pop(true);
             },
             child: const Text('Начать'),
           ),

@@ -31,13 +31,30 @@ class PlayerListItem extends StatelessWidget {
             ),
           ),
         ),
-        title: Text(
-          device.name,
-          style: TextStyle(
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          ),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(
+                device.name,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            if (device.isApp)
+              Tooltip(
+                message: 'Устройство с приложением',
+                child: Icon(
+                  Icons.flutter_dash,
+                  size: 18,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+          ],
         ),
-        subtitle: Text(device.id),
+        subtitle: Text('MAC: ${device.id}'),
         trailing: isSelected
             ? Icon(
                 Icons.check_circle,

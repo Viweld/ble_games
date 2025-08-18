@@ -12,11 +12,17 @@ part of 'home_bloc.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$HomeEvent {
+mixin _$HomeEvent implements DiagnosticableTreeMixin {
 
 
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeEvent'))
+    ;
+}
 
 @override
 bool operator ==(Object other) {
@@ -28,7 +34,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeEvent()';
 }
 
@@ -55,7 +61,7 @@ extension HomeEventPatterns on HomeEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( HomeEventOnInitializationRequested value)?  onInitializationRequested,TResult Function( HomeEventOnRefreshRequested value)?  onRefreshRequested,TResult Function( HomeEventOnDeviceSelected value)?  onDeviceSelected,TResult Function( HomeEventOnInvite value)?  onInvite,TResult Function( HomeEventOnCancelInvitation value)?  onCancelInvitation,TResult Function( HomeEventOnAcceptInvitation value)?  onAcceptInvitation,TResult Function( HomeEventOnRejectInvitation value)?  onRejectInvitation,TResult Function( HomeEventOnNicknameSaved value)?  onNicknameSaved,TResult Function( HomeEventOnViewStateChanged value)?  onViewStateChanged,TResult Function( HomeEventOnInvitationReceived value)?  onInvitationReceived,TResult Function( HomeEventOnInvitationRejected value)?  onInvitationRejected,TResult Function( HomeEventOnGameStarted value)?  onGameStarted,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( HomeEventOnInitializationRequested value)?  onInitializationRequested,TResult Function( HomeEventOnRefreshRequested value)?  onRefreshRequested,TResult Function( HomeEventOnDeviceSelected value)?  onDeviceSelected,TResult Function( HomeEventOnInvite value)?  onInvite,TResult Function( HomeEventOnCancelInvitation value)?  onCancelInvitation,TResult Function( HomeEventOnAcceptInvitation value)?  onAcceptInvitation,TResult Function( HomeEventOnRejectInvitation value)?  onRejectInvitation,TResult Function( HomeEventOnNicknameSaved value)?  onNicknameSaved,TResult Function( HomeEventOnViewStateChanged value)?  onViewStateChanged,TResult Function( HomeEventOnInvitationReceived value)?  onInvitationReceived,TResult Function( HomeEventOnInvitationRejected value)?  onInvitationRejected,TResult Function( HomeEventOnGameStarted value)?  onGameStarted,TResult Function( HomeEventOnSearchDevicesRequested value)?  onSearchDevicesRequested,TResult Function( HomeEventOnStartAdvertisingRequested value)?  onStartAdvertisingRequested,TResult Function( HomeEventOnDisconnectRequested value)?  onDisconnectRequested,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested() when onInitializationRequested != null:
@@ -70,7 +76,10 @@ return onNicknameSaved(_that);case HomeEventOnViewStateChanged() when onViewStat
 return onViewStateChanged(_that);case HomeEventOnInvitationReceived() when onInvitationReceived != null:
 return onInvitationReceived(_that);case HomeEventOnInvitationRejected() when onInvitationRejected != null:
 return onInvitationRejected(_that);case HomeEventOnGameStarted() when onGameStarted != null:
-return onGameStarted(_that);case _:
+return onGameStarted(_that);case HomeEventOnSearchDevicesRequested() when onSearchDevicesRequested != null:
+return onSearchDevicesRequested(_that);case HomeEventOnStartAdvertisingRequested() when onStartAdvertisingRequested != null:
+return onStartAdvertisingRequested(_that);case HomeEventOnDisconnectRequested() when onDisconnectRequested != null:
+return onDisconnectRequested(_that);case _:
   return orElse();
 
 }
@@ -88,7 +97,7 @@ return onGameStarted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( HomeEventOnInitializationRequested value)  onInitializationRequested,required TResult Function( HomeEventOnRefreshRequested value)  onRefreshRequested,required TResult Function( HomeEventOnDeviceSelected value)  onDeviceSelected,required TResult Function( HomeEventOnInvite value)  onInvite,required TResult Function( HomeEventOnCancelInvitation value)  onCancelInvitation,required TResult Function( HomeEventOnAcceptInvitation value)  onAcceptInvitation,required TResult Function( HomeEventOnRejectInvitation value)  onRejectInvitation,required TResult Function( HomeEventOnNicknameSaved value)  onNicknameSaved,required TResult Function( HomeEventOnViewStateChanged value)  onViewStateChanged,required TResult Function( HomeEventOnInvitationReceived value)  onInvitationReceived,required TResult Function( HomeEventOnInvitationRejected value)  onInvitationRejected,required TResult Function( HomeEventOnGameStarted value)  onGameStarted,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( HomeEventOnInitializationRequested value)  onInitializationRequested,required TResult Function( HomeEventOnRefreshRequested value)  onRefreshRequested,required TResult Function( HomeEventOnDeviceSelected value)  onDeviceSelected,required TResult Function( HomeEventOnInvite value)  onInvite,required TResult Function( HomeEventOnCancelInvitation value)  onCancelInvitation,required TResult Function( HomeEventOnAcceptInvitation value)  onAcceptInvitation,required TResult Function( HomeEventOnRejectInvitation value)  onRejectInvitation,required TResult Function( HomeEventOnNicknameSaved value)  onNicknameSaved,required TResult Function( HomeEventOnViewStateChanged value)  onViewStateChanged,required TResult Function( HomeEventOnInvitationReceived value)  onInvitationReceived,required TResult Function( HomeEventOnInvitationRejected value)  onInvitationRejected,required TResult Function( HomeEventOnGameStarted value)  onGameStarted,required TResult Function( HomeEventOnSearchDevicesRequested value)  onSearchDevicesRequested,required TResult Function( HomeEventOnStartAdvertisingRequested value)  onStartAdvertisingRequested,required TResult Function( HomeEventOnDisconnectRequested value)  onDisconnectRequested,}){
 final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested():
@@ -103,7 +112,10 @@ return onNicknameSaved(_that);case HomeEventOnViewStateChanged():
 return onViewStateChanged(_that);case HomeEventOnInvitationReceived():
 return onInvitationReceived(_that);case HomeEventOnInvitationRejected():
 return onInvitationRejected(_that);case HomeEventOnGameStarted():
-return onGameStarted(_that);case _:
+return onGameStarted(_that);case HomeEventOnSearchDevicesRequested():
+return onSearchDevicesRequested(_that);case HomeEventOnStartAdvertisingRequested():
+return onStartAdvertisingRequested(_that);case HomeEventOnDisconnectRequested():
+return onDisconnectRequested(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -120,7 +132,7 @@ return onGameStarted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( HomeEventOnInitializationRequested value)?  onInitializationRequested,TResult? Function( HomeEventOnRefreshRequested value)?  onRefreshRequested,TResult? Function( HomeEventOnDeviceSelected value)?  onDeviceSelected,TResult? Function( HomeEventOnInvite value)?  onInvite,TResult? Function( HomeEventOnCancelInvitation value)?  onCancelInvitation,TResult? Function( HomeEventOnAcceptInvitation value)?  onAcceptInvitation,TResult? Function( HomeEventOnRejectInvitation value)?  onRejectInvitation,TResult? Function( HomeEventOnNicknameSaved value)?  onNicknameSaved,TResult? Function( HomeEventOnViewStateChanged value)?  onViewStateChanged,TResult? Function( HomeEventOnInvitationReceived value)?  onInvitationReceived,TResult? Function( HomeEventOnInvitationRejected value)?  onInvitationRejected,TResult? Function( HomeEventOnGameStarted value)?  onGameStarted,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( HomeEventOnInitializationRequested value)?  onInitializationRequested,TResult? Function( HomeEventOnRefreshRequested value)?  onRefreshRequested,TResult? Function( HomeEventOnDeviceSelected value)?  onDeviceSelected,TResult? Function( HomeEventOnInvite value)?  onInvite,TResult? Function( HomeEventOnCancelInvitation value)?  onCancelInvitation,TResult? Function( HomeEventOnAcceptInvitation value)?  onAcceptInvitation,TResult? Function( HomeEventOnRejectInvitation value)?  onRejectInvitation,TResult? Function( HomeEventOnNicknameSaved value)?  onNicknameSaved,TResult? Function( HomeEventOnViewStateChanged value)?  onViewStateChanged,TResult? Function( HomeEventOnInvitationReceived value)?  onInvitationReceived,TResult? Function( HomeEventOnInvitationRejected value)?  onInvitationRejected,TResult? Function( HomeEventOnGameStarted value)?  onGameStarted,TResult? Function( HomeEventOnSearchDevicesRequested value)?  onSearchDevicesRequested,TResult? Function( HomeEventOnStartAdvertisingRequested value)?  onStartAdvertisingRequested,TResult? Function( HomeEventOnDisconnectRequested value)?  onDisconnectRequested,}){
 final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested() when onInitializationRequested != null:
@@ -135,7 +147,10 @@ return onNicknameSaved(_that);case HomeEventOnViewStateChanged() when onViewStat
 return onViewStateChanged(_that);case HomeEventOnInvitationReceived() when onInvitationReceived != null:
 return onInvitationReceived(_that);case HomeEventOnInvitationRejected() when onInvitationRejected != null:
 return onInvitationRejected(_that);case HomeEventOnGameStarted() when onGameStarted != null:
-return onGameStarted(_that);case _:
+return onGameStarted(_that);case HomeEventOnSearchDevicesRequested() when onSearchDevicesRequested != null:
+return onSearchDevicesRequested(_that);case HomeEventOnStartAdvertisingRequested() when onStartAdvertisingRequested != null:
+return onStartAdvertisingRequested(_that);case HomeEventOnDisconnectRequested() when onDisconnectRequested != null:
+return onDisconnectRequested(_that);case _:
   return null;
 
 }
@@ -152,7 +167,7 @@ return onGameStarted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  onInitializationRequested,TResult Function()?  onRefreshRequested,TResult Function( Device device)?  onDeviceSelected,TResult Function()?  onInvite,TResult Function()?  onCancelInvitation,TResult Function()?  onAcceptInvitation,TResult Function()?  onRejectInvitation,TResult Function( String nickname)?  onNicknameSaved,TResult Function()?  onViewStateChanged,TResult Function( User invitingUser)?  onInvitationReceived,TResult Function( User rejectedUser)?  onInvitationRejected,TResult Function( User opponent)?  onGameStarted,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  onInitializationRequested,TResult Function()?  onRefreshRequested,TResult Function( Device device)?  onDeviceSelected,TResult Function()?  onInvite,TResult Function()?  onCancelInvitation,TResult Function()?  onAcceptInvitation,TResult Function()?  onRejectInvitation,TResult Function( String nickname)?  onNicknameSaved,TResult Function()?  onViewStateChanged,TResult Function( User invitingUser)?  onInvitationReceived,TResult Function( User rejectedUser)?  onInvitationRejected,TResult Function( User opponent)?  onGameStarted,TResult Function()?  onSearchDevicesRequested,TResult Function()?  onStartAdvertisingRequested,TResult Function()?  onDisconnectRequested,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested() when onInitializationRequested != null:
 return onInitializationRequested();case HomeEventOnRefreshRequested() when onRefreshRequested != null:
@@ -166,7 +181,10 @@ return onNicknameSaved(_that.nickname);case HomeEventOnViewStateChanged() when o
 return onViewStateChanged();case HomeEventOnInvitationReceived() when onInvitationReceived != null:
 return onInvitationReceived(_that.invitingUser);case HomeEventOnInvitationRejected() when onInvitationRejected != null:
 return onInvitationRejected(_that.rejectedUser);case HomeEventOnGameStarted() when onGameStarted != null:
-return onGameStarted(_that.opponent);case _:
+return onGameStarted(_that.opponent);case HomeEventOnSearchDevicesRequested() when onSearchDevicesRequested != null:
+return onSearchDevicesRequested();case HomeEventOnStartAdvertisingRequested() when onStartAdvertisingRequested != null:
+return onStartAdvertisingRequested();case HomeEventOnDisconnectRequested() when onDisconnectRequested != null:
+return onDisconnectRequested();case _:
   return orElse();
 
 }
@@ -184,7 +202,7 @@ return onGameStarted(_that.opponent);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  onInitializationRequested,required TResult Function()  onRefreshRequested,required TResult Function( Device device)  onDeviceSelected,required TResult Function()  onInvite,required TResult Function()  onCancelInvitation,required TResult Function()  onAcceptInvitation,required TResult Function()  onRejectInvitation,required TResult Function( String nickname)  onNicknameSaved,required TResult Function()  onViewStateChanged,required TResult Function( User invitingUser)  onInvitationReceived,required TResult Function( User rejectedUser)  onInvitationRejected,required TResult Function( User opponent)  onGameStarted,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  onInitializationRequested,required TResult Function()  onRefreshRequested,required TResult Function( Device device)  onDeviceSelected,required TResult Function()  onInvite,required TResult Function()  onCancelInvitation,required TResult Function()  onAcceptInvitation,required TResult Function()  onRejectInvitation,required TResult Function( String nickname)  onNicknameSaved,required TResult Function()  onViewStateChanged,required TResult Function( User invitingUser)  onInvitationReceived,required TResult Function( User rejectedUser)  onInvitationRejected,required TResult Function( User opponent)  onGameStarted,required TResult Function()  onSearchDevicesRequested,required TResult Function()  onStartAdvertisingRequested,required TResult Function()  onDisconnectRequested,}) {final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested():
 return onInitializationRequested();case HomeEventOnRefreshRequested():
@@ -198,7 +216,10 @@ return onNicknameSaved(_that.nickname);case HomeEventOnViewStateChanged():
 return onViewStateChanged();case HomeEventOnInvitationReceived():
 return onInvitationReceived(_that.invitingUser);case HomeEventOnInvitationRejected():
 return onInvitationRejected(_that.rejectedUser);case HomeEventOnGameStarted():
-return onGameStarted(_that.opponent);case _:
+return onGameStarted(_that.opponent);case HomeEventOnSearchDevicesRequested():
+return onSearchDevicesRequested();case HomeEventOnStartAdvertisingRequested():
+return onStartAdvertisingRequested();case HomeEventOnDisconnectRequested():
+return onDisconnectRequested();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -215,7 +236,7 @@ return onGameStarted(_that.opponent);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  onInitializationRequested,TResult? Function()?  onRefreshRequested,TResult? Function( Device device)?  onDeviceSelected,TResult? Function()?  onInvite,TResult? Function()?  onCancelInvitation,TResult? Function()?  onAcceptInvitation,TResult? Function()?  onRejectInvitation,TResult? Function( String nickname)?  onNicknameSaved,TResult? Function()?  onViewStateChanged,TResult? Function( User invitingUser)?  onInvitationReceived,TResult? Function( User rejectedUser)?  onInvitationRejected,TResult? Function( User opponent)?  onGameStarted,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  onInitializationRequested,TResult? Function()?  onRefreshRequested,TResult? Function( Device device)?  onDeviceSelected,TResult? Function()?  onInvite,TResult? Function()?  onCancelInvitation,TResult? Function()?  onAcceptInvitation,TResult? Function()?  onRejectInvitation,TResult? Function( String nickname)?  onNicknameSaved,TResult? Function()?  onViewStateChanged,TResult? Function( User invitingUser)?  onInvitationReceived,TResult? Function( User rejectedUser)?  onInvitationRejected,TResult? Function( User opponent)?  onGameStarted,TResult? Function()?  onSearchDevicesRequested,TResult? Function()?  onStartAdvertisingRequested,TResult? Function()?  onDisconnectRequested,}) {final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested() when onInitializationRequested != null:
 return onInitializationRequested();case HomeEventOnRefreshRequested() when onRefreshRequested != null:
@@ -229,7 +250,10 @@ return onNicknameSaved(_that.nickname);case HomeEventOnViewStateChanged() when o
 return onViewStateChanged();case HomeEventOnInvitationReceived() when onInvitationReceived != null:
 return onInvitationReceived(_that.invitingUser);case HomeEventOnInvitationRejected() when onInvitationRejected != null:
 return onInvitationRejected(_that.rejectedUser);case HomeEventOnGameStarted() when onGameStarted != null:
-return onGameStarted(_that.opponent);case _:
+return onGameStarted(_that.opponent);case HomeEventOnSearchDevicesRequested() when onSearchDevicesRequested != null:
+return onSearchDevicesRequested();case HomeEventOnStartAdvertisingRequested() when onStartAdvertisingRequested != null:
+return onStartAdvertisingRequested();case HomeEventOnDisconnectRequested() when onDisconnectRequested != null:
+return onDisconnectRequested();case _:
   return null;
 
 }
@@ -240,7 +264,7 @@ return onGameStarted(_that.opponent);case _:
 /// @nodoc
 
 
-class HomeEventOnInitializationRequested implements HomeEvent {
+class HomeEventOnInitializationRequested with DiagnosticableTreeMixin implements HomeEvent {
   const HomeEventOnInitializationRequested();
   
 
@@ -248,6 +272,12 @@ class HomeEventOnInitializationRequested implements HomeEvent {
 
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeEvent.onInitializationRequested'))
+    ;
+}
 
 @override
 bool operator ==(Object other) {
@@ -259,7 +289,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeEvent.onInitializationRequested()';
 }
 
@@ -272,7 +302,7 @@ String toString() {
 /// @nodoc
 
 
-class HomeEventOnRefreshRequested implements HomeEvent {
+class HomeEventOnRefreshRequested with DiagnosticableTreeMixin implements HomeEvent {
   const HomeEventOnRefreshRequested();
   
 
@@ -280,6 +310,12 @@ class HomeEventOnRefreshRequested implements HomeEvent {
 
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeEvent.onRefreshRequested'))
+    ;
+}
 
 @override
 bool operator ==(Object other) {
@@ -291,7 +327,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeEvent.onRefreshRequested()';
 }
 
@@ -304,7 +340,7 @@ String toString() {
 /// @nodoc
 
 
-class HomeEventOnDeviceSelected implements HomeEvent {
+class HomeEventOnDeviceSelected with DiagnosticableTreeMixin implements HomeEvent {
   const HomeEventOnDeviceSelected({required this.device});
   
 
@@ -317,6 +353,12 @@ class HomeEventOnDeviceSelected implements HomeEvent {
 $HomeEventOnDeviceSelectedCopyWith<HomeEventOnDeviceSelected> get copyWith => _$HomeEventOnDeviceSelectedCopyWithImpl<HomeEventOnDeviceSelected>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeEvent.onDeviceSelected'))
+    ..add(DiagnosticsProperty('device', device));
+}
 
 @override
 bool operator ==(Object other) {
@@ -328,7 +370,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,device);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeEvent.onDeviceSelected(device: $device)';
 }
 
@@ -370,7 +412,7 @@ as Device,
 /// @nodoc
 
 
-class HomeEventOnInvite implements HomeEvent {
+class HomeEventOnInvite with DiagnosticableTreeMixin implements HomeEvent {
   const HomeEventOnInvite();
   
 
@@ -378,6 +420,12 @@ class HomeEventOnInvite implements HomeEvent {
 
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeEvent.onInvite'))
+    ;
+}
 
 @override
 bool operator ==(Object other) {
@@ -389,7 +437,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeEvent.onInvite()';
 }
 
@@ -402,7 +450,7 @@ String toString() {
 /// @nodoc
 
 
-class HomeEventOnCancelInvitation implements HomeEvent {
+class HomeEventOnCancelInvitation with DiagnosticableTreeMixin implements HomeEvent {
   const HomeEventOnCancelInvitation();
   
 
@@ -410,6 +458,12 @@ class HomeEventOnCancelInvitation implements HomeEvent {
 
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeEvent.onCancelInvitation'))
+    ;
+}
 
 @override
 bool operator ==(Object other) {
@@ -421,7 +475,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeEvent.onCancelInvitation()';
 }
 
@@ -434,7 +488,7 @@ String toString() {
 /// @nodoc
 
 
-class HomeEventOnAcceptInvitation implements HomeEvent {
+class HomeEventOnAcceptInvitation with DiagnosticableTreeMixin implements HomeEvent {
   const HomeEventOnAcceptInvitation();
   
 
@@ -442,6 +496,12 @@ class HomeEventOnAcceptInvitation implements HomeEvent {
 
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeEvent.onAcceptInvitation'))
+    ;
+}
 
 @override
 bool operator ==(Object other) {
@@ -453,7 +513,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeEvent.onAcceptInvitation()';
 }
 
@@ -466,7 +526,7 @@ String toString() {
 /// @nodoc
 
 
-class HomeEventOnRejectInvitation implements HomeEvent {
+class HomeEventOnRejectInvitation with DiagnosticableTreeMixin implements HomeEvent {
   const HomeEventOnRejectInvitation();
   
 
@@ -474,6 +534,12 @@ class HomeEventOnRejectInvitation implements HomeEvent {
 
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeEvent.onRejectInvitation'))
+    ;
+}
 
 @override
 bool operator ==(Object other) {
@@ -485,7 +551,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeEvent.onRejectInvitation()';
 }
 
@@ -498,7 +564,7 @@ String toString() {
 /// @nodoc
 
 
-class HomeEventOnNicknameSaved implements HomeEvent {
+class HomeEventOnNicknameSaved with DiagnosticableTreeMixin implements HomeEvent {
   const HomeEventOnNicknameSaved({required this.nickname});
   
 
@@ -511,6 +577,12 @@ class HomeEventOnNicknameSaved implements HomeEvent {
 $HomeEventOnNicknameSavedCopyWith<HomeEventOnNicknameSaved> get copyWith => _$HomeEventOnNicknameSavedCopyWithImpl<HomeEventOnNicknameSaved>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeEvent.onNicknameSaved'))
+    ..add(DiagnosticsProperty('nickname', nickname));
+}
 
 @override
 bool operator ==(Object other) {
@@ -522,7 +594,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,nickname);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeEvent.onNicknameSaved(nickname: $nickname)';
 }
 
@@ -564,7 +636,7 @@ as String,
 /// @nodoc
 
 
-class HomeEventOnViewStateChanged implements HomeEvent {
+class HomeEventOnViewStateChanged with DiagnosticableTreeMixin implements HomeEvent {
   const HomeEventOnViewStateChanged();
   
 
@@ -572,6 +644,12 @@ class HomeEventOnViewStateChanged implements HomeEvent {
 
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeEvent.onViewStateChanged'))
+    ;
+}
 
 @override
 bool operator ==(Object other) {
@@ -583,7 +661,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeEvent.onViewStateChanged()';
 }
 
@@ -596,7 +674,7 @@ String toString() {
 /// @nodoc
 
 
-class HomeEventOnInvitationReceived implements HomeEvent {
+class HomeEventOnInvitationReceived with DiagnosticableTreeMixin implements HomeEvent {
   const HomeEventOnInvitationReceived({required this.invitingUser});
   
 
@@ -609,6 +687,12 @@ class HomeEventOnInvitationReceived implements HomeEvent {
 $HomeEventOnInvitationReceivedCopyWith<HomeEventOnInvitationReceived> get copyWith => _$HomeEventOnInvitationReceivedCopyWithImpl<HomeEventOnInvitationReceived>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeEvent.onInvitationReceived'))
+    ..add(DiagnosticsProperty('invitingUser', invitingUser));
+}
 
 @override
 bool operator ==(Object other) {
@@ -620,7 +704,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,invitingUser);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeEvent.onInvitationReceived(invitingUser: $invitingUser)';
 }
 
@@ -662,7 +746,7 @@ as User,
 /// @nodoc
 
 
-class HomeEventOnInvitationRejected implements HomeEvent {
+class HomeEventOnInvitationRejected with DiagnosticableTreeMixin implements HomeEvent {
   const HomeEventOnInvitationRejected({required this.rejectedUser});
   
 
@@ -675,6 +759,12 @@ class HomeEventOnInvitationRejected implements HomeEvent {
 $HomeEventOnInvitationRejectedCopyWith<HomeEventOnInvitationRejected> get copyWith => _$HomeEventOnInvitationRejectedCopyWithImpl<HomeEventOnInvitationRejected>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeEvent.onInvitationRejected'))
+    ..add(DiagnosticsProperty('rejectedUser', rejectedUser));
+}
 
 @override
 bool operator ==(Object other) {
@@ -686,7 +776,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,rejectedUser);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeEvent.onInvitationRejected(rejectedUser: $rejectedUser)';
 }
 
@@ -728,7 +818,7 @@ as User,
 /// @nodoc
 
 
-class HomeEventOnGameStarted implements HomeEvent {
+class HomeEventOnGameStarted with DiagnosticableTreeMixin implements HomeEvent {
   const HomeEventOnGameStarted({required this.opponent});
   
 
@@ -741,6 +831,12 @@ class HomeEventOnGameStarted implements HomeEvent {
 $HomeEventOnGameStartedCopyWith<HomeEventOnGameStarted> get copyWith => _$HomeEventOnGameStartedCopyWithImpl<HomeEventOnGameStarted>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeEvent.onGameStarted'))
+    ..add(DiagnosticsProperty('opponent', opponent));
+}
 
 @override
 bool operator ==(Object other) {
@@ -752,7 +848,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,opponent);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeEvent.onGameStarted(opponent: $opponent)';
 }
 
@@ -792,11 +888,131 @@ as User,
 }
 
 /// @nodoc
-mixin _$HomeState {
+
+
+class HomeEventOnSearchDevicesRequested with DiagnosticableTreeMixin implements HomeEvent {
+  const HomeEventOnSearchDevicesRequested();
+  
 
 
 
 
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeEvent.onSearchDevicesRequested'))
+    ;
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnSearchDevicesRequested);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'HomeEvent.onSearchDevicesRequested()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeEventOnStartAdvertisingRequested with DiagnosticableTreeMixin implements HomeEvent {
+  const HomeEventOnStartAdvertisingRequested();
+  
+
+
+
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeEvent.onStartAdvertisingRequested'))
+    ;
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnStartAdvertisingRequested);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'HomeEvent.onStartAdvertisingRequested()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeEventOnDisconnectRequested with DiagnosticableTreeMixin implements HomeEvent {
+  const HomeEventOnDisconnectRequested();
+  
+
+
+
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeEvent.onDisconnectRequested'))
+    ;
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnDisconnectRequested);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'HomeEvent.onDisconnectRequested()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+mixin _$HomeState implements DiagnosticableTreeMixin {
+
+
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeState'))
+    ;
+}
 
 @override
 bool operator ==(Object other) {
@@ -808,7 +1024,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeState()';
 }
 
@@ -917,12 +1133,12 @@ return gameStarted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initializationPending,TResult Function( String message)?  initializationError,TResult Function( List<Device> devices,  Device? selectedDevice,  bool isFirstLaunch)?  view,TResult Function( Device invitedDevice)?  invitationPending,TResult Function( User invitingUser)?  invitationReceived,TResult Function( User rejectedUser)?  invitationRejected,TResult Function( User opponent,  PlayerType myPlayerType)?  gameStarted,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initializationPending,TResult Function( String message)?  initializationError,TResult Function( List<Device> devices,  Device? selectedDevice,  bool isFirstLaunch,  bool isConnected)?  view,TResult Function( Device invitedDevice)?  invitationPending,TResult Function( User invitingUser)?  invitationReceived,TResult Function( User rejectedUser)?  invitationRejected,TResult Function( User opponent,  PlayerType myPlayerType)?  gameStarted,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case HomeStateInitializationPending() when initializationPending != null:
 return initializationPending();case HomeStateInitializationError() when initializationError != null:
 return initializationError(_that.message);case HomeStateView() when view != null:
-return view(_that.devices,_that.selectedDevice,_that.isFirstLaunch);case HomeStateInvitationPending() when invitationPending != null:
+return view(_that.devices,_that.selectedDevice,_that.isFirstLaunch,_that.isConnected);case HomeStateInvitationPending() when invitationPending != null:
 return invitationPending(_that.invitedDevice);case HomeStateInvitationReceived() when invitationReceived != null:
 return invitationReceived(_that.invitingUser);case HomeStateInvitationRejected() when invitationRejected != null:
 return invitationRejected(_that.rejectedUser);case HomeStateGameStarted() when gameStarted != null:
@@ -944,12 +1160,12 @@ return gameStarted(_that.opponent,_that.myPlayerType);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initializationPending,required TResult Function( String message)  initializationError,required TResult Function( List<Device> devices,  Device? selectedDevice,  bool isFirstLaunch)  view,required TResult Function( Device invitedDevice)  invitationPending,required TResult Function( User invitingUser)  invitationReceived,required TResult Function( User rejectedUser)  invitationRejected,required TResult Function( User opponent,  PlayerType myPlayerType)  gameStarted,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initializationPending,required TResult Function( String message)  initializationError,required TResult Function( List<Device> devices,  Device? selectedDevice,  bool isFirstLaunch,  bool isConnected)  view,required TResult Function( Device invitedDevice)  invitationPending,required TResult Function( User invitingUser)  invitationReceived,required TResult Function( User rejectedUser)  invitationRejected,required TResult Function( User opponent,  PlayerType myPlayerType)  gameStarted,}) {final _that = this;
 switch (_that) {
 case HomeStateInitializationPending():
 return initializationPending();case HomeStateInitializationError():
 return initializationError(_that.message);case HomeStateView():
-return view(_that.devices,_that.selectedDevice,_that.isFirstLaunch);case HomeStateInvitationPending():
+return view(_that.devices,_that.selectedDevice,_that.isFirstLaunch,_that.isConnected);case HomeStateInvitationPending():
 return invitationPending(_that.invitedDevice);case HomeStateInvitationReceived():
 return invitationReceived(_that.invitingUser);case HomeStateInvitationRejected():
 return invitationRejected(_that.rejectedUser);case HomeStateGameStarted():
@@ -970,12 +1186,12 @@ return gameStarted(_that.opponent,_that.myPlayerType);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initializationPending,TResult? Function( String message)?  initializationError,TResult? Function( List<Device> devices,  Device? selectedDevice,  bool isFirstLaunch)?  view,TResult? Function( Device invitedDevice)?  invitationPending,TResult? Function( User invitingUser)?  invitationReceived,TResult? Function( User rejectedUser)?  invitationRejected,TResult? Function( User opponent,  PlayerType myPlayerType)?  gameStarted,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initializationPending,TResult? Function( String message)?  initializationError,TResult? Function( List<Device> devices,  Device? selectedDevice,  bool isFirstLaunch,  bool isConnected)?  view,TResult? Function( Device invitedDevice)?  invitationPending,TResult? Function( User invitingUser)?  invitationReceived,TResult? Function( User rejectedUser)?  invitationRejected,TResult? Function( User opponent,  PlayerType myPlayerType)?  gameStarted,}) {final _that = this;
 switch (_that) {
 case HomeStateInitializationPending() when initializationPending != null:
 return initializationPending();case HomeStateInitializationError() when initializationError != null:
 return initializationError(_that.message);case HomeStateView() when view != null:
-return view(_that.devices,_that.selectedDevice,_that.isFirstLaunch);case HomeStateInvitationPending() when invitationPending != null:
+return view(_that.devices,_that.selectedDevice,_that.isFirstLaunch,_that.isConnected);case HomeStateInvitationPending() when invitationPending != null:
 return invitationPending(_that.invitedDevice);case HomeStateInvitationReceived() when invitationReceived != null:
 return invitationReceived(_that.invitingUser);case HomeStateInvitationRejected() when invitationRejected != null:
 return invitationRejected(_that.rejectedUser);case HomeStateGameStarted() when gameStarted != null:
@@ -990,7 +1206,7 @@ return gameStarted(_that.opponent,_that.myPlayerType);case _:
 /// @nodoc
 
 
-class HomeStateInitializationPending implements HomeState {
+class HomeStateInitializationPending with DiagnosticableTreeMixin implements HomeState {
   const HomeStateInitializationPending();
   
 
@@ -998,6 +1214,12 @@ class HomeStateInitializationPending implements HomeState {
 
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeState.initializationPending'))
+    ;
+}
 
 @override
 bool operator ==(Object other) {
@@ -1009,7 +1231,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeState.initializationPending()';
 }
 
@@ -1022,7 +1244,7 @@ String toString() {
 /// @nodoc
 
 
-class HomeStateInitializationError implements HomeState {
+class HomeStateInitializationError with DiagnosticableTreeMixin implements HomeState {
   const HomeStateInitializationError({required this.message});
   
 
@@ -1035,6 +1257,12 @@ class HomeStateInitializationError implements HomeState {
 $HomeStateInitializationErrorCopyWith<HomeStateInitializationError> get copyWith => _$HomeStateInitializationErrorCopyWithImpl<HomeStateInitializationError>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeState.initializationError'))
+    ..add(DiagnosticsProperty('message', message));
+}
 
 @override
 bool operator ==(Object other) {
@@ -1046,7 +1274,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,message);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeState.initializationError(message: $message)';
 }
 
@@ -1088,8 +1316,8 @@ as String,
 /// @nodoc
 
 
-class HomeStateView implements HomeState {
-  const HomeStateView({required final  List<Device> devices, this.selectedDevice, required this.isFirstLaunch}): _devices = devices;
+class HomeStateView with DiagnosticableTreeMixin implements HomeState {
+  const HomeStateView({required final  List<Device> devices, this.selectedDevice, required this.isFirstLaunch, required this.isConnected}): _devices = devices;
   
 
  final  List<Device> _devices;
@@ -1101,6 +1329,7 @@ class HomeStateView implements HomeState {
 
  final  Device? selectedDevice;
  final  bool isFirstLaunch;
+ final  bool isConnected;
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
@@ -1109,19 +1338,25 @@ class HomeStateView implements HomeState {
 $HomeStateViewCopyWith<HomeStateView> get copyWith => _$HomeStateViewCopyWithImpl<HomeStateView>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeState.view'))
+    ..add(DiagnosticsProperty('devices', devices))..add(DiagnosticsProperty('selectedDevice', selectedDevice))..add(DiagnosticsProperty('isFirstLaunch', isFirstLaunch))..add(DiagnosticsProperty('isConnected', isConnected));
+}
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeStateView&&const DeepCollectionEquality().equals(other._devices, _devices)&&(identical(other.selectedDevice, selectedDevice) || other.selectedDevice == selectedDevice)&&(identical(other.isFirstLaunch, isFirstLaunch) || other.isFirstLaunch == isFirstLaunch));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeStateView&&const DeepCollectionEquality().equals(other._devices, _devices)&&(identical(other.selectedDevice, selectedDevice) || other.selectedDevice == selectedDevice)&&(identical(other.isFirstLaunch, isFirstLaunch) || other.isFirstLaunch == isFirstLaunch)&&(identical(other.isConnected, isConnected) || other.isConnected == isConnected));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_devices),selectedDevice,isFirstLaunch);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_devices),selectedDevice,isFirstLaunch,isConnected);
 
 @override
-String toString() {
-  return 'HomeState.view(devices: $devices, selectedDevice: $selectedDevice, isFirstLaunch: $isFirstLaunch)';
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'HomeState.view(devices: $devices, selectedDevice: $selectedDevice, isFirstLaunch: $isFirstLaunch, isConnected: $isConnected)';
 }
 
 
@@ -1132,7 +1367,7 @@ abstract mixin class $HomeStateViewCopyWith<$Res> implements $HomeStateCopyWith<
   factory $HomeStateViewCopyWith(HomeStateView value, $Res Function(HomeStateView) _then) = _$HomeStateViewCopyWithImpl;
 @useResult
 $Res call({
- List<Device> devices, Device? selectedDevice, bool isFirstLaunch
+ List<Device> devices, Device? selectedDevice, bool isFirstLaunch, bool isConnected
 });
 
 
@@ -1149,11 +1384,12 @@ class _$HomeStateViewCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? devices = null,Object? selectedDevice = freezed,Object? isFirstLaunch = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? devices = null,Object? selectedDevice = freezed,Object? isFirstLaunch = null,Object? isConnected = null,}) {
   return _then(HomeStateView(
 devices: null == devices ? _self._devices : devices // ignore: cast_nullable_to_non_nullable
 as List<Device>,selectedDevice: freezed == selectedDevice ? _self.selectedDevice : selectedDevice // ignore: cast_nullable_to_non_nullable
 as Device?,isFirstLaunch: null == isFirstLaunch ? _self.isFirstLaunch : isFirstLaunch // ignore: cast_nullable_to_non_nullable
+as bool,isConnected: null == isConnected ? _self.isConnected : isConnected // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -1164,7 +1400,7 @@ as bool,
 /// @nodoc
 
 
-class HomeStateInvitationPending implements HomeState {
+class HomeStateInvitationPending with DiagnosticableTreeMixin implements HomeState {
   const HomeStateInvitationPending({required this.invitedDevice});
   
 
@@ -1177,6 +1413,12 @@ class HomeStateInvitationPending implements HomeState {
 $HomeStateInvitationPendingCopyWith<HomeStateInvitationPending> get copyWith => _$HomeStateInvitationPendingCopyWithImpl<HomeStateInvitationPending>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeState.invitationPending'))
+    ..add(DiagnosticsProperty('invitedDevice', invitedDevice));
+}
 
 @override
 bool operator ==(Object other) {
@@ -1188,7 +1430,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,invitedDevice);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeState.invitationPending(invitedDevice: $invitedDevice)';
 }
 
@@ -1230,7 +1472,7 @@ as Device,
 /// @nodoc
 
 
-class HomeStateInvitationReceived implements HomeState {
+class HomeStateInvitationReceived with DiagnosticableTreeMixin implements HomeState {
   const HomeStateInvitationReceived({required this.invitingUser});
   
 
@@ -1243,6 +1485,12 @@ class HomeStateInvitationReceived implements HomeState {
 $HomeStateInvitationReceivedCopyWith<HomeStateInvitationReceived> get copyWith => _$HomeStateInvitationReceivedCopyWithImpl<HomeStateInvitationReceived>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeState.invitationReceived'))
+    ..add(DiagnosticsProperty('invitingUser', invitingUser));
+}
 
 @override
 bool operator ==(Object other) {
@@ -1254,7 +1502,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,invitingUser);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeState.invitationReceived(invitingUser: $invitingUser)';
 }
 
@@ -1296,7 +1544,7 @@ as User,
 /// @nodoc
 
 
-class HomeStateInvitationRejected implements HomeState {
+class HomeStateInvitationRejected with DiagnosticableTreeMixin implements HomeState {
   const HomeStateInvitationRejected({required this.rejectedUser});
   
 
@@ -1309,6 +1557,12 @@ class HomeStateInvitationRejected implements HomeState {
 $HomeStateInvitationRejectedCopyWith<HomeStateInvitationRejected> get copyWith => _$HomeStateInvitationRejectedCopyWithImpl<HomeStateInvitationRejected>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeState.invitationRejected'))
+    ..add(DiagnosticsProperty('rejectedUser', rejectedUser));
+}
 
 @override
 bool operator ==(Object other) {
@@ -1320,7 +1574,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,rejectedUser);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeState.invitationRejected(rejectedUser: $rejectedUser)';
 }
 
@@ -1362,7 +1616,7 @@ as User,
 /// @nodoc
 
 
-class HomeStateGameStarted implements HomeState {
+class HomeStateGameStarted with DiagnosticableTreeMixin implements HomeState {
   const HomeStateGameStarted({required this.opponent, required this.myPlayerType});
   
 
@@ -1376,6 +1630,12 @@ class HomeStateGameStarted implements HomeState {
 $HomeStateGameStartedCopyWith<HomeStateGameStarted> get copyWith => _$HomeStateGameStartedCopyWithImpl<HomeStateGameStarted>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'HomeState.gameStarted'))
+    ..add(DiagnosticsProperty('opponent', opponent))..add(DiagnosticsProperty('myPlayerType', myPlayerType));
+}
 
 @override
 bool operator ==(Object other) {
@@ -1387,7 +1647,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,opponent,myPlayerType);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'HomeState.gameStarted(opponent: $opponent, myPlayerType: $myPlayerType)';
 }
 

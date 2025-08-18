@@ -13,15 +13,17 @@ import 'package:flutter/widgets.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:bluetooth_toe/features/game/data/models/game_move_dto.dart';
+import 'package:bluetooth_toe/core/data/dto/user_dto.dart';
+import 'package:bluetooth_toe/core/domain/models/user.dart';
 import 'package:flutter/material.dart';
-import 'package:dep_gen/dep_gen.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:bloc/bloc.dart';
-import 'package:bluetooth_toe/core/di/builders.dep_gen.dart';
+import 'package:dep_gen/dep_gen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
-import 'package:bluetooth_toe/core/repositories/i_bluetooth_repository.dart';
+import 'package:bluetooth_toe/core/repositories/i_nearby_connections_repository.dart';
 import 'package:bluetooth_toe/core/repositories/i_user_repository.dart';
 import 'package:bluetooth_toe/features/game/presentation/bloc/game_bloc.dart';
 import 'package:bluetooth_toe/features/home/presentation/bloc/home_bloc.dart';
@@ -112,13 +114,15 @@ class DepProvider extends InheritedWidget {
   T? mayBeGet<T>() => _env.mayBeGet<T>();
 
   // ---------------------------------------------------------------------------
-  GameBloc buildGameBloc() =>
-      GameBloc(bluetoothRepository: _env.g<IBluetoothRepository>());
+  GameBloc buildGameBloc() => GameBloc(
+    nearbyRepository: _env.g<INearbyConnectionsRepository>(),
+    userRepository: _env.g<IUserRepository>(),
+  );
 
   // ---------------------------------------------------------------------------
   HomeBloc buildHomeBloc() => HomeBloc(
     playerRepository: _env.g<IUserRepository>(),
-    bluetoothRepository: _env.g<IBluetoothRepository>(),
+    nearbyRepository: _env.g<INearbyConnectionsRepository>(),
   );
 
   // ---------------------------------------------------------------------------
@@ -128,7 +132,7 @@ class DepProvider extends InheritedWidget {
   // ---------------------------------------------------------------------------
   SplashBloc buildSplashBloc() => SplashBloc(
     playerRepository: _env.g<IUserRepository>(),
-    bluetoothRepository: _env.g<IBluetoothRepository>(),
+    nearbyRepository: _env.g<INearbyConnectionsRepository>(),
   );
 }
 

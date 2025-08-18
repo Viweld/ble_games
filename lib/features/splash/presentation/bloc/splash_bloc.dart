@@ -3,7 +3,7 @@ import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/repositories/i_user_repository.dart';
-import '../../../../core/repositories/i_bluetooth_repository.dart';
+import '../../../../core/repositories/i_nearby_connections_repository.dart';
 import '../../../../core/constants/app_constants.dart';
 
 part 'events.dart';
@@ -15,9 +15,9 @@ part 'splash_bloc.freezed.dart';
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
   SplashBloc({
     @DepArg() required IUserRepository playerRepository,
-    @DepArg() required IBluetoothRepository bluetoothRepository,
+    @DepArg() required INearbyConnectionsRepository nearbyRepository,
   }) : _playerRepository = playerRepository,
-       _bluetoothRepository = bluetoothRepository,
+       _nearbyRepository = nearbyRepository,
        super(const SplashState.initializationPending()) {
     on<SplashEvent>(
       (event, emit) => switch (event) {
@@ -32,13 +32,13 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
   }
 
   final IUserRepository _playerRepository;
-  final IBluetoothRepository _bluetoothRepository;
+  final INearbyConnectionsRepository _nearbyRepository;
 
   /// Обработчик запроса инициализации
   Future<void> _onInitializationRequested(Emitter<SplashState> emitter) async {
     try {
-      // Инициализация Bluetooth
-      await _bluetoothRepository.initialize();
+      // Инициализация Nearby Connections
+      await _nearbyRepository.initialize();
 
       // Задержка для показа сплэш-скрина
       await Future.delayed(Duration(milliseconds: AppConstants.splashDelayMs));

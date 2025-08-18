@@ -11,19 +11,18 @@ import 'features/game/presentation/game_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Инициализация зависимостей
-  final environment = Environment();
-  await environment.prepare();
-
   // Устанавливаем ориентацию экрана
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
+  // Инициализируем зависимости
+  final environment = await Environment().prepare();
+
   runApp(
     DepProvider(
-      environment: (await Environment().prepare()).lock(),
+      environment: environment.lock(),
       child: const BluetoothToeApp(),
     ),
   );

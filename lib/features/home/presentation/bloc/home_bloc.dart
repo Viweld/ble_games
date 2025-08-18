@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../../core/domain/models/device.dart';
 import '../../../../core/domain/models/messages.dart';
 import '../../../../core/domain/models/user.dart';
 import '../../../../core/repositories/i_user_repository.dart';
-import '../../../../core/repositories/i_bluetooth_repository.dart';
+import '../../../../core/repositories/i_nearby_connections_repository.dart';
 import '../../../game/domain/models/enums/player_type.dart';
 
 part 'events.dart';
@@ -22,9 +23,9 @@ part 'home_bloc.freezed.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc({
     @DepArg() required IUserRepository playerRepository,
-    @DepArg() required IBluetoothRepository bluetoothRepository,
+    @DepArg() required INearbyConnectionsRepository nearbyRepository,
   }) : _playerRepository = playerRepository,
-       _bluetoothRepository = bluetoothRepository,
+       _nearbyRepository = nearbyRepository,
        super(const HomeState.initializationPending()) {
     on<HomeEvent>(
       (event, emitter) => switch (event) {
@@ -48,16 +49,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           emitter,
         ),
         HomeEventOnGameStarted() => _onGameStarted(event, emitter),
+        HomeEventOnSearchDevicesRequested() => _onSearchDevicesRequested(
+          emitter,
+        ),
+        HomeEventOnStartAdvertisingRequested() => _onStartAdvertisingRequested(
+          emitter,
+        ),
+        HomeEventOnDisconnectRequested() => _onDisconnectRequested(emitter),
         _ => throw UnimplementedError('Unhandled event: $event'),
       },
     );
 
-    // Подписка на найденные устройства
-    _discoveredDevicesSubscription = _bluetoothRepository.discoveredDevices
-        .listen(_updateDiscoveredDevices);
-
     // Подписка на входящие данные
-    _incomingDataSubscription = _bluetoothRepository.incomingMessages.listen(
+    _incomingDataSubscription = _nearbyRepository.incomingMessages.listen(
       _handleIncomingMessage,
     );
 
@@ -65,9 +69,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   final IUserRepository _playerRepository;
-  final IBluetoothRepository _bluetoothRepository;
+  final INearbyConnectionsRepository _nearbyRepository;
 
-  late final StreamSubscription<List<Device>> _discoveredDevicesSubscription;
   late final StreamSubscription<Message> _incomingDataSubscription;
 
   List<Device> _devices = [];
@@ -77,29 +80,50 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   @override
   Future<void> close() {
-    _discoveredDevicesSubscription.cancel();
     _incomingDataSubscription.cancel();
-    _bluetoothRepository.dispose();
+    _nearbyRepository.dispose();
     return super.close();
   }
 
   /// Обработчик запроса инициализации
   Future<void> _onInitializationRequested(Emitter<HomeState> emitter) async {
     try {
+      // Инициализация Nearby Connections
+      await _nearbyRepository.initialize();
+
       // Получаем текущего игрока
       _currentUser = await _playerRepository.getCurrentUser();
+
+      if (kDebugMode) {
+        print('Получен пользователь: ${_currentUser?.name ?? "null"}');
+      }
 
       // Проверяем, является ли это первым запуском
       final isFirstLaunch = await _playerRepository.isFirstLaunch();
 
-      // Запускаем рекламу и поиск устройств
-      await _bluetoothRepository.startAdvertising();
-      await _bluetoothRepository.startDiscovery();
+      if (kDebugMode) {
+        print('Первый запуск: $isFirstLaunch');
+      }
+
+      // Если это первый запуск и пользователь не создан, создаем его автоматически
+      if (isFirstLaunch && _currentUser == null) {
+        _currentUser = User(
+          id: 'local_user_${DateTime.now().millisecondsSinceEpoch}',
+          name: 'Игрок ${DateTime.now().millisecondsSinceEpoch % 1000}',
+        );
+        await _playerRepository.saveCurrentUser(_currentUser!);
+        await _playerRepository.setFirstLaunch(false);
+
+        if (kDebugMode) {
+          print('Автоматически создан пользователь: ${_currentUser!.name}');
+        }
+      }
 
       _viewState = HomeStateView(
         devices: _devices,
         selectedDevice: _selectedDevice,
-        isFirstLaunch: isFirstLaunch,
+        isFirstLaunch: false,
+        isConnected: false,
       );
       emitter(_viewState!);
     } catch (e) {
@@ -110,10 +134,42 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   /// Обработчик ручного обновления
   Future<void> _onRefreshRequested(Emitter<HomeState> emitter) async {
     try {
-      await _bluetoothRepository.stopDiscovery();
-      await _bluetoothRepository.startDiscovery();
+      await _nearbyRepository.stopDiscovery();
+      await _nearbyRepository.startDiscovery();
     } catch (e) {
       emitter(HomeState.initializationError(message: 'Ошибка обновления: $e'));
+    }
+  }
+
+  /// Обработчик поиска устройств
+  Future<void> _onSearchDevicesRequested(Emitter<HomeState> emitter) async {
+    try {
+      await _nearbyRepository.startDiscovery();
+      // В реальном приложении здесь будет логика обработки найденных устройств
+    } catch (e) {
+      emitter(HomeState.initializationError(message: 'Ошибка поиска: $e'));
+    }
+  }
+
+  /// Обработчик начала рекламы
+  Future<void> _onStartAdvertisingRequested(Emitter<HomeState> emitter) async {
+    try {
+      await _nearbyRepository.startAdvertising();
+    } catch (e) {
+      emitter(HomeState.initializationError(message: 'Ошибка рекламы: $e'));
+    }
+  }
+
+  /// Обработчик отключения
+  Future<void> _onDisconnectRequested(Emitter<HomeState> emitter) async {
+    try {
+      await _nearbyRepository.disconnect();
+      if (_viewState != null) {
+        _viewState = _viewState!.copyWith(isConnected: false);
+        emitter(_viewState!);
+      }
+    } catch (e) {
+      emitter(HomeState.initializationError(message: 'Ошибка отключения: $e'));
     }
   }
 
@@ -133,21 +189,37 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   /// Обработчик приглашения игрока
   Future<void> _onInvite(Emitter<HomeState> emitter) async {
     try {
+      // Проверяем и создаем пользователя если нужно
       if (_currentUser == null) {
-        throw StateError('Текущий пользователь не инициализирован');
+        // Попробуем получить пользователя из репозитория
+        _currentUser = await _playerRepository.getCurrentUser();
+
+        // Если все еще нет, создаем нового
+        if (_currentUser == null) {
+          _currentUser = User(
+            id: 'local_user_${DateTime.now().millisecondsSinceEpoch}',
+            name: 'Игрок ${DateTime.now().millisecondsSinceEpoch % 1000}',
+          );
+          await _playerRepository.saveCurrentUser(_currentUser!);
+
+          if (kDebugMode) {
+            print('Создан пользователь в _onInvite: ${_currentUser!.name}');
+          }
+        }
       }
+
       // Приглашаем пользователя: в нашей модели отправляем InvitationMessage
-      final connected = _bluetoothRepository.connectedDevice;
+      final connected = _nearbyRepository.connectedDevice;
       if (connected == null) {
         if (_selectedDevice == null) {
           throw StateError('Устройство не выбрано');
         }
-        await _bluetoothRepository.connectToDevice(_selectedDevice!);
+        await _nearbyRepository.connectToDevice(_selectedDevice!);
       }
 
-      await _bluetoothRepository.sendMessage(
+      await _nearbyRepository.sendMessage(
         InvitationMessage(
-          device: _bluetoothRepository.connectedDevice ?? _selectedDevice!,
+          device: _nearbyRepository.connectedDevice ?? _selectedDevice!,
           user: _currentUser!,
         ),
       );
@@ -165,13 +237,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   /// Обработчик отмены приглашения
   Future<void> _onCancelInvitation(Emitter<HomeState> emitter) async {
     try {
-      final device = _bluetoothRepository.connectedDevice;
-      if (device == null || _currentUser == null) {
-        throw StateError(
-          'Нет активного соединения или пользователь не инициализирован',
-        );
+      // Проверяем пользователя
+      if (_currentUser == null) {
+        _currentUser = await _playerRepository.getCurrentUser();
+        if (_currentUser == null) {
+          throw StateError('Пользователь не инициализирован');
+        }
       }
-      await _bluetoothRepository.sendMessage(
+
+      final device = _nearbyRepository.connectedDevice;
+      if (device == null) {
+        throw StateError('Нет активного соединения');
+      }
+
+      await _nearbyRepository.sendMessage(
         TerminationMessage(device: device, user: _currentUser!),
       );
 
@@ -188,15 +267,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   /// Обработчик принятия приглашения
   Future<void> _onAcceptInvitation(Emitter<HomeState> emitter) async {
     try {
-      final device = _bluetoothRepository.connectedDevice;
-      if (device == null || _currentUser == null) {
-        throw StateError(
-          'Нет активного соединения или пользователь не инициализирован',
-        );
+      // Проверяем пользователя
+      if (_currentUser == null) {
+        _currentUser = await _playerRepository.getCurrentUser();
+        if (_currentUser == null) {
+          throw StateError('Пользователь не инициализирован');
+        }
+      }
+
+      final device = _nearbyRepository.connectedDevice;
+      if (device == null) {
+        throw StateError('Нет активного соединения');
       }
 
       // Приглашённый получает O. Удалённой стороне (пригласившему) назначаем X
-      await _bluetoothRepository.sendMessage(
+      await _nearbyRepository.sendMessage(
         RoleAssignmentMessage(
           device: device,
           user: _currentUser!,
@@ -204,7 +289,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         ),
       );
 
-      await _bluetoothRepository.sendMessage(
+      await _nearbyRepository.sendMessage(
         AcceptanceMessage(device: device, user: _currentUser!),
       );
 
@@ -230,11 +315,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   /// Обработчик отклонения приглашения
   Future<void> _onRejectInvitation(Emitter<HomeState> emitter) async {
     try {
-      await _bluetoothRepository.sendMessage(
-        RejectionMessage(
-          device: _bluetoothRepository.connectedDevice!,
-          user: _currentUser!,
-        ),
+      // Проверяем пользователя
+      if (_currentUser == null) {
+        _currentUser = await _playerRepository.getCurrentUser();
+        if (_currentUser == null) {
+          throw StateError('Пользователь не инициализирован');
+        }
+      }
+
+      final device = _nearbyRepository.connectedDevice;
+      if (device == null) {
+        throw StateError('Нет активного соединения');
+      }
+
+      await _nearbyRepository.sendMessage(
+        RejectionMessage(device: device, user: _currentUser!),
       );
 
       final currentState = state;
@@ -313,44 +408,66 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     );
   }
 
-  /// Обновление списка найденных устройств
-  void _updateDiscoveredDevices(List<Device> devices) {
-    if (isClosed) return;
-    _devices = devices;
-
-    if (_viewState == null) return;
-    _viewState = _viewState!.copyWith(devices: _devices);
-    add(const HomeEvent.onViewStateChanged());
-  }
-
   /// Обработка входящих данных
   void _handleIncomingMessage(Message message) {
     if (isClosed) return;
+
+    if (kDebugMode) {
+      print(
+        '[MESSAGE] Получено сообщение: ${message.runtimeType} от ${message.user.name}',
+      );
+    }
+
     switch (message) {
       case InvitationMessage(:final user):
+        if (kDebugMode) {
+          print('[MESSAGE] Обрабатываем приглашение от: ${user.name}');
+        }
         add(HomeEvent.onInvitationReceived(invitingUser: user));
       case AcceptanceMessage(:final user):
+        if (kDebugMode) {
+          print('[MESSAGE] Обрабатываем принятие от: ${user.name}');
+        }
         final currentState = state;
         if (currentState is HomeStateInvitationPending) {
           // Мы пригласили → мы X. Унифицируем запуск через событие
           add(HomeEvent.onGameStarted(opponent: user));
         }
       case RejectionMessage(:final user):
+        if (kDebugMode) {
+          print('[MESSAGE] Обрабатываем отказ от: ${user.name}');
+        }
         final currentState = state;
         if (currentState is HomeStateInvitationPending) {
           add(HomeEvent.onInvitationRejected(rejectedUser: user));
         }
       case TerminationMessage():
-        if (_viewState == null) return;
-        add(const HomeEvent.onViewStateChanged());
+        if (kDebugMode) {
+          print('[MESSAGE] Обрабатываем завершение соединения');
+        }
+        if (_viewState != null) {
+          _viewState = _viewState!.copyWith(isConnected: false);
+          add(const HomeEvent.onViewStateChanged());
+        }
       case OpponentLeftMessage():
-        if (_viewState == null) return;
-        add(const HomeEvent.onViewStateChanged());
+        if (kDebugMode) {
+          print('[MESSAGE] Обрабатываем выход соперника');
+        }
+        if (_viewState != null) {
+          _viewState = _viewState!.copyWith(isConnected: false);
+          add(const HomeEvent.onViewStateChanged());
+        }
       case RoleAssignmentMessage():
+        if (kDebugMode) {
+          print('[MESSAGE] Обрабатываем назначение роли');
+        }
         // Пробрасывается в GameBloc через аргументы route (см. game_screen)
         // Здесь можно сохранить в локальный стейт при надобности
         break;
       case MoveMessage():
+        if (kDebugMode) {
+          print('[MESSAGE] Обрабатываем ход в игре');
+        }
         // Игровые сообщения обрабатываются GameBloc, игнорируем здесь
         break;
     }

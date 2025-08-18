@@ -11,7 +11,7 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => DepProvider.of(context).buildSplashBloc(),
+      create: (context) => context.depGen().buildSplashBloc(),
       child: const _SplashView(),
     );
   }
@@ -75,7 +75,7 @@ class _SplashView extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Theme.of(
                       context,
-                    ).colorScheme.onPrimary.withOpacity(0.8),
+                    ).colorScheme.onPrimary.withValues(alpha: 0.8),
                   ),
                 ),
 

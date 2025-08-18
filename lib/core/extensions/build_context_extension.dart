@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:dep_gen/dep_gen.dart';
 
 /// Расширения для BuildContext
 extension BuildContextExtension on BuildContext {
-  /// Получить экземпляр DI
-  DepGen get depGen => DepGen();
-
   /// Получить тему
   ThemeData get theme => Theme.of(this);
 

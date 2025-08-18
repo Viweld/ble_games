@@ -19,7 +19,7 @@ class GameScreen extends StatelessWidget {
     final initialType = args is PlayerType ? args : null;
     return BlocProvider(
       create: (context) {
-        final bloc = DepProvider.of(context).buildGameBloc();
+        final bloc = context.depGen().buildGameBloc();
         if (initialType != null) {
           bloc.add(GameEvent.onRoleAssigned(myPlayerType: initialType));
         }
