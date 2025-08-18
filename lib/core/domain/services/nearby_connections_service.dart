@@ -1,162 +1,149 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
-/// Упрощенный сервис для работы с Nearby Connections
-class NearbyConnectionsService {
+import 'package:nearby_connections/nearby_connections.dart';
+import '../../data/dto/messages_dto.dart';
+import 'i_nearby_connections_service.dart';
+import '../models/messages.dart';
+
+class NearbyConnectionsService implements INearbyConnectionsService {
   static const String _serviceId = 'com.example.bluetooth_toe';
+  static const Strategy _strategy = Strategy.P2P_CLUSTER;
 
-  final StreamController<Map<String, String>> _connectionsController =
+  final _connectionsController =
       StreamController<Map<String, String>>.broadcast();
-
-  final StreamController<Message> _messagesController =
-      StreamController<Message>.broadcast();
+  final _messagesController = StreamController<Message>.broadcast();
 
   final Map<String, String> _connections = {};
   bool _isInitialized = false;
 
-  /// Поток активных соединений
+  @override
   Stream<Map<String, String>> get connections => _connectionsController.stream;
 
-  /// Поток входящих сообщений
+  @override
   Stream<Message> get messages => _messagesController.stream;
 
-  /// Получить список активных соединений
+  @override
   Map<String, String> get connectionsList => Map.unmodifiable(_connections);
 
-  /// Проверить, есть ли активные соединения
+  @override
   bool get hasConnections => _connections.isNotEmpty;
 
-  /// Инициализация сервиса
+  @override
   Future<void> initialize() async {
     if (_isInitialized) return;
-
-    try {
-      // В реальном приложении здесь будет инициализация Nearby Connections
-      print('Nearby Connections сервис инициализирован');
-      _isInitialized = true;
-    } catch (e) {
-      throw Exception('Ошибка инициализации Nearby Connections: $e');
-    }
+    _isInitialized = true;
   }
 
-  /// Начать поиск устройств
+  @override
   Future<void> startDiscovery() async {
-    if (!_isInitialized) throw Exception('Сервис не инициализирован');
-
-    try {
-      print('Начинаем поиск устройств...');
-      // В реальном приложении здесь будет вызов Nearby().startDiscovery()
-
-      // Имитируем поиск для демонстрации
-      await Future.delayed(const Duration(seconds: 2));
-      print('Поиск устройств завершен');
-    } catch (e) {
-      throw Exception('Ошибка начала поиска: $e');
-    }
+    _ensureInited();
+    await Nearby().startDiscovery(
+      _serviceId,
+      _strategy,
+      onEndpointFound: (id, name, serviceId) {
+        _connections[id] = name;
+        _connectionsController.add(connectionsList);
+      },
+      onEndpointLost: (id) {
+        _connections.remove(id);
+        _connectionsController.add(connectionsList);
+      },
+    );
   }
 
-  /// Остановить поиск устройств
+  @override
   Future<void> stopDiscovery() async {
-    try {
-      print('Останавливаем поиск устройств...');
-      // В реальном приложении здесь будет вызов Nearby().stopDiscovery()
-    } catch (e) {
-      print('Ошибка остановки поиска: $e');
-    }
+    await Nearby().stopDiscovery();
   }
 
-  /// Начать рекламу (быть видимым для других устройств)
+  @override
   Future<void> startAdvertising() async {
-    if (!_isInitialized) throw Exception('Сервис не инициализирован');
-
-    try {
-      print('Начинаем рекламу...');
-      // В реальном приложении здесь будет вызов Nearby().startAdvertising()
-
-      // Имитируем успешную рекламу
-      await Future.delayed(const Duration(seconds: 1));
-      print('Реклама запущена');
-    } catch (e) {
-      throw Exception('Ошибка начала рекламы: $e');
-    }
+    _ensureInited();
+    await Nearby().startAdvertising(
+      'Player',
+      _strategy,
+      onConnectionInitiated: _onConnectionInit,
+      onConnectionResult: (id, status) {
+        if (status == Status.CONNECTED) {
+          _connectionsController.add(connectionsList);
+        }
+      },
+      onDisconnected: (id) {
+        _connections.remove(id);
+        _connectionsController.add(connectionsList);
+      },
+    );
   }
 
-  /// Остановить рекламу
+  @override
   Future<void> stopAdvertising() async {
-    try {
-      print('Останавливаем рекламу...');
-      // В реальном приложении здесь будет вызов Nearby().stopAdvertising()
-    } catch (e) {
-      print('Ошибка остановки рекламы: $e');
-    }
+    await Nearby().stopAdvertising();
   }
 
-  /// Подключиться к устройству
+  void _onConnectionInit(String id, ConnectionInfo info) {
+    // автоматически принимаем
+    Nearby().acceptConnection(
+      id,
+      onPayLoadRecieved: (endid, payload) {
+        if (payload.type == PayloadType.BYTES) {
+          final jsonStr = String.fromCharCodes(payload.bytes!);
+          final msg = MessageDto.fromJson(jsonDecode(jsonStr)).toDomain();
+          _messagesController.add(msg);
+        }
+      },
+      onPayloadTransferUpdate: (_, __) {},
+    );
+  }
+
+  @override
   Future<void> connectToDevice(String endpointId) async {
-    try {
-      print('Подключаемся к устройству: $endpointId');
-      // В реальном приложении здесь будет вызов Nearby().requestConnection()
-
-      // Имитируем успешное подключение
-      await Future.delayed(const Duration(seconds: 2));
-      _connections[endpointId] = 'Устройство $endpointId';
-      _connectionsController.add(_connections);
-      print('Подключились к: $endpointId');
-    } catch (e) {
-      throw Exception('Ошибка подключения: $e');
-    }
+    await Nearby().requestConnection(
+      'Player',
+      endpointId,
+      onConnectionInitiated: _onConnectionInit,
+      onConnectionResult: (id, status) {
+        if (status == Status.CONNECTED) {
+          _connectionsController.add(connectionsList);
+        }
+      },
+      onDisconnected: (id) {
+        _connections.remove(id);
+        _connectionsController.add(connectionsList);
+      },
+    );
   }
 
-  /// Отправить сообщение
+  @override
   Future<void> sendMessage(String endpointId, Message message) async {
-    try {
-      final jsonMessage = jsonEncode(message.toJson());
-      print('Отправляем сообщение: $jsonMessage');
-      // В реальном приложении здесь будет вызов Nearby().sendBytes()
-    } catch (e) {
-      throw Exception('Ошибка отправки сообщения: $e');
-    }
+    final json = jsonEncode(MessageDto.fromDomain(message).toJson());
+    final bytes = Uint8List.fromList(json.codeUnits);
+    await Nearby().sendBytesPayload(endpointId, bytes);
   }
 
-  /// Отключиться от устройства
+  @override
   Future<void> disconnect(String endpointId) async {
-    try {
-      print('Отключаемся от: $endpointId');
-      // В реальном приложении здесь будет вызов Nearby().disconnectFromEndpoint()
-
-      _connections.remove(endpointId);
-      _connectionsController.add(_connections);
-    } catch (e) {
-      print('Ошибка отключения: $e');
-    }
+    await Nearby().disconnectFromEndpoint(endpointId);
+    _connections.remove(endpointId);
+    _connectionsController.add(connectionsList);
   }
 
-  /// Отключиться от всех устройств
+  @override
   Future<void> disconnectAll() async {
-    for (final endpointId in _connections.keys.toList()) {
-      await disconnect(endpointId);
+    for (final id in _connections.keys.toList()) {
+      await disconnect(id);
     }
   }
 
-  /// Освободить ресурсы
+  @override
   void dispose() {
     _connectionsController.close();
     _messagesController.close();
     disconnectAll();
   }
-}
 
-/// Простая модель сообщения для демонстрации
-class Message {
-  final String type;
-  final Map<String, dynamic> data;
-
-  const Message({required this.type, required this.data});
-
-  Map<String, dynamic> toJson() => {'type': type, 'data': data};
-
-  factory Message.fromJson(Map<String, dynamic> json) => Message(
-    type: json['type'] as String,
-    data: json['data'] as Map<String, dynamic>,
-  );
+  void _ensureInited() {
+    if (!_isInitialized) throw Exception('Сервис не инициализирован');
+  }
 }

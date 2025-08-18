@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data/data_providers/i_cached_data_provider.dart';
 import '../data/data_providers/cached_data_provider.dart';
+import '../domain/services/i_nearby_connections_service.dart';
 import '../repositories/i_user_repository.dart';
 import '../repositories/i_nearby_connections_repository.dart';
 import '../repositories/user_repository.dart';
@@ -29,8 +30,8 @@ class Environment extends DepGenEnvironment {
     registry<IUserRepository>(playerRepository);
 
     // Сервис Nearby Connections
-    final NearbyConnectionsService nearbyService = NearbyConnectionsService();
-    registry<NearbyConnectionsService>(nearbyService);
+    final INearbyConnectionsService nearbyService = NearbyConnectionsService();
+    registry<INearbyConnectionsService>(nearbyService);
 
     // Репозиторий Nearby Connections
     final INearbyConnectionsRepository nearbyRepository =
