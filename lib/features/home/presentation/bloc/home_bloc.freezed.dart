@@ -55,11 +55,16 @@ extension HomeEventPatterns on HomeEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( HomeEventOnInitializationRequested value)?  onInitializationRequested,TResult Function( HomeEventOnRefreshRequested value)?  onRefreshRequested,TResult Function( HomeEventOnDeviceSelected value)?  onDeviceSelected,TResult Function( HomeEventOnInvite value)?  onInvite,TResult Function( HomeEventOnCancelInvitation value)?  onCancelInvitation,TResult Function( HomeEventOnAcceptInvitation value)?  onAcceptInvitation,TResult Function( HomeEventOnRejectInvitation value)?  onRejectInvitation,TResult Function( HomeEventOnNicknameSaved value)?  onNicknameSaved,TResult Function( HomeEventOnViewStateChanged value)?  onViewStateChanged,TResult Function( HomeEventOnInvitationReceived value)?  onInvitationReceived,TResult Function( HomeEventOnInvitationRejected value)?  onInvitationRejected,TResult Function( HomeEventOnGameStarted value)?  onGameStarted,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( HomeEventOnInitializationRequested value)?  onInitializationRequested,TResult Function( HomeEventOnStartAwaitingConnection value)?  onStartAwaitingConnection,TResult Function( HomeEventOnStartSearchingDevices value)?  onStartSearchingDevices,TResult Function( HomeEventOnCancelAwaiting value)?  onCancelAwaiting,TResult Function( HomeEventOnCancelSearching value)?  onCancelSearching,TResult Function( HomeEventOnConnectToDevice value)?  onConnectToDevice,TResult Function( HomeEventOnRefreshRequested value)?  onRefreshRequested,TResult Function( HomeEventOnDeviceSelected value)?  onDeviceSelected,TResult Function( HomeEventOnInvite value)?  onInvite,TResult Function( HomeEventOnCancelInvitation value)?  onCancelInvitation,TResult Function( HomeEventOnAcceptInvitation value)?  onAcceptInvitation,TResult Function( HomeEventOnRejectInvitation value)?  onRejectInvitation,TResult Function( HomeEventOnNicknameSaved value)?  onNicknameSaved,TResult Function( HomeEventOnViewStateChanged value)?  onViewStateChanged,TResult Function( HomeEventOnInvitationReceived value)?  onInvitationReceived,TResult Function( HomeEventOnInvitationRejected value)?  onInvitationRejected,TResult Function( HomeEventOnGameStarted value)?  onGameStarted,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested() when onInitializationRequested != null:
-return onInitializationRequested(_that);case HomeEventOnRefreshRequested() when onRefreshRequested != null:
+return onInitializationRequested(_that);case HomeEventOnStartAwaitingConnection() when onStartAwaitingConnection != null:
+return onStartAwaitingConnection(_that);case HomeEventOnStartSearchingDevices() when onStartSearchingDevices != null:
+return onStartSearchingDevices(_that);case HomeEventOnCancelAwaiting() when onCancelAwaiting != null:
+return onCancelAwaiting(_that);case HomeEventOnCancelSearching() when onCancelSearching != null:
+return onCancelSearching(_that);case HomeEventOnConnectToDevice() when onConnectToDevice != null:
+return onConnectToDevice(_that);case HomeEventOnRefreshRequested() when onRefreshRequested != null:
 return onRefreshRequested(_that);case HomeEventOnDeviceSelected() when onDeviceSelected != null:
 return onDeviceSelected(_that);case HomeEventOnInvite() when onInvite != null:
 return onInvite(_that);case HomeEventOnCancelInvitation() when onCancelInvitation != null:
@@ -88,11 +93,16 @@ return onGameStarted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( HomeEventOnInitializationRequested value)  onInitializationRequested,required TResult Function( HomeEventOnRefreshRequested value)  onRefreshRequested,required TResult Function( HomeEventOnDeviceSelected value)  onDeviceSelected,required TResult Function( HomeEventOnInvite value)  onInvite,required TResult Function( HomeEventOnCancelInvitation value)  onCancelInvitation,required TResult Function( HomeEventOnAcceptInvitation value)  onAcceptInvitation,required TResult Function( HomeEventOnRejectInvitation value)  onRejectInvitation,required TResult Function( HomeEventOnNicknameSaved value)  onNicknameSaved,required TResult Function( HomeEventOnViewStateChanged value)  onViewStateChanged,required TResult Function( HomeEventOnInvitationReceived value)  onInvitationReceived,required TResult Function( HomeEventOnInvitationRejected value)  onInvitationRejected,required TResult Function( HomeEventOnGameStarted value)  onGameStarted,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( HomeEventOnInitializationRequested value)  onInitializationRequested,required TResult Function( HomeEventOnStartAwaitingConnection value)  onStartAwaitingConnection,required TResult Function( HomeEventOnStartSearchingDevices value)  onStartSearchingDevices,required TResult Function( HomeEventOnCancelAwaiting value)  onCancelAwaiting,required TResult Function( HomeEventOnCancelSearching value)  onCancelSearching,required TResult Function( HomeEventOnConnectToDevice value)  onConnectToDevice,required TResult Function( HomeEventOnRefreshRequested value)  onRefreshRequested,required TResult Function( HomeEventOnDeviceSelected value)  onDeviceSelected,required TResult Function( HomeEventOnInvite value)  onInvite,required TResult Function( HomeEventOnCancelInvitation value)  onCancelInvitation,required TResult Function( HomeEventOnAcceptInvitation value)  onAcceptInvitation,required TResult Function( HomeEventOnRejectInvitation value)  onRejectInvitation,required TResult Function( HomeEventOnNicknameSaved value)  onNicknameSaved,required TResult Function( HomeEventOnViewStateChanged value)  onViewStateChanged,required TResult Function( HomeEventOnInvitationReceived value)  onInvitationReceived,required TResult Function( HomeEventOnInvitationRejected value)  onInvitationRejected,required TResult Function( HomeEventOnGameStarted value)  onGameStarted,}){
 final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested():
-return onInitializationRequested(_that);case HomeEventOnRefreshRequested():
+return onInitializationRequested(_that);case HomeEventOnStartAwaitingConnection():
+return onStartAwaitingConnection(_that);case HomeEventOnStartSearchingDevices():
+return onStartSearchingDevices(_that);case HomeEventOnCancelAwaiting():
+return onCancelAwaiting(_that);case HomeEventOnCancelSearching():
+return onCancelSearching(_that);case HomeEventOnConnectToDevice():
+return onConnectToDevice(_that);case HomeEventOnRefreshRequested():
 return onRefreshRequested(_that);case HomeEventOnDeviceSelected():
 return onDeviceSelected(_that);case HomeEventOnInvite():
 return onInvite(_that);case HomeEventOnCancelInvitation():
@@ -120,11 +130,16 @@ return onGameStarted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( HomeEventOnInitializationRequested value)?  onInitializationRequested,TResult? Function( HomeEventOnRefreshRequested value)?  onRefreshRequested,TResult? Function( HomeEventOnDeviceSelected value)?  onDeviceSelected,TResult? Function( HomeEventOnInvite value)?  onInvite,TResult? Function( HomeEventOnCancelInvitation value)?  onCancelInvitation,TResult? Function( HomeEventOnAcceptInvitation value)?  onAcceptInvitation,TResult? Function( HomeEventOnRejectInvitation value)?  onRejectInvitation,TResult? Function( HomeEventOnNicknameSaved value)?  onNicknameSaved,TResult? Function( HomeEventOnViewStateChanged value)?  onViewStateChanged,TResult? Function( HomeEventOnInvitationReceived value)?  onInvitationReceived,TResult? Function( HomeEventOnInvitationRejected value)?  onInvitationRejected,TResult? Function( HomeEventOnGameStarted value)?  onGameStarted,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( HomeEventOnInitializationRequested value)?  onInitializationRequested,TResult? Function( HomeEventOnStartAwaitingConnection value)?  onStartAwaitingConnection,TResult? Function( HomeEventOnStartSearchingDevices value)?  onStartSearchingDevices,TResult? Function( HomeEventOnCancelAwaiting value)?  onCancelAwaiting,TResult? Function( HomeEventOnCancelSearching value)?  onCancelSearching,TResult? Function( HomeEventOnConnectToDevice value)?  onConnectToDevice,TResult? Function( HomeEventOnRefreshRequested value)?  onRefreshRequested,TResult? Function( HomeEventOnDeviceSelected value)?  onDeviceSelected,TResult? Function( HomeEventOnInvite value)?  onInvite,TResult? Function( HomeEventOnCancelInvitation value)?  onCancelInvitation,TResult? Function( HomeEventOnAcceptInvitation value)?  onAcceptInvitation,TResult? Function( HomeEventOnRejectInvitation value)?  onRejectInvitation,TResult? Function( HomeEventOnNicknameSaved value)?  onNicknameSaved,TResult? Function( HomeEventOnViewStateChanged value)?  onViewStateChanged,TResult? Function( HomeEventOnInvitationReceived value)?  onInvitationReceived,TResult? Function( HomeEventOnInvitationRejected value)?  onInvitationRejected,TResult? Function( HomeEventOnGameStarted value)?  onGameStarted,}){
 final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested() when onInitializationRequested != null:
-return onInitializationRequested(_that);case HomeEventOnRefreshRequested() when onRefreshRequested != null:
+return onInitializationRequested(_that);case HomeEventOnStartAwaitingConnection() when onStartAwaitingConnection != null:
+return onStartAwaitingConnection(_that);case HomeEventOnStartSearchingDevices() when onStartSearchingDevices != null:
+return onStartSearchingDevices(_that);case HomeEventOnCancelAwaiting() when onCancelAwaiting != null:
+return onCancelAwaiting(_that);case HomeEventOnCancelSearching() when onCancelSearching != null:
+return onCancelSearching(_that);case HomeEventOnConnectToDevice() when onConnectToDevice != null:
+return onConnectToDevice(_that);case HomeEventOnRefreshRequested() when onRefreshRequested != null:
 return onRefreshRequested(_that);case HomeEventOnDeviceSelected() when onDeviceSelected != null:
 return onDeviceSelected(_that);case HomeEventOnInvite() when onInvite != null:
 return onInvite(_that);case HomeEventOnCancelInvitation() when onCancelInvitation != null:
@@ -152,10 +167,15 @@ return onGameStarted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  onInitializationRequested,TResult Function()?  onRefreshRequested,TResult Function( Device device)?  onDeviceSelected,TResult Function()?  onInvite,TResult Function()?  onCancelInvitation,TResult Function()?  onAcceptInvitation,TResult Function()?  onRejectInvitation,TResult Function( String nickname)?  onNicknameSaved,TResult Function()?  onViewStateChanged,TResult Function( User invitingUser)?  onInvitationReceived,TResult Function( User rejectedUser)?  onInvitationRejected,TResult Function( User opponent)?  onGameStarted,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  onInitializationRequested,TResult Function()?  onStartAwaitingConnection,TResult Function()?  onStartSearchingDevices,TResult Function()?  onCancelAwaiting,TResult Function()?  onCancelSearching,TResult Function()?  onConnectToDevice,TResult Function()?  onRefreshRequested,TResult Function( Device device)?  onDeviceSelected,TResult Function()?  onInvite,TResult Function()?  onCancelInvitation,TResult Function()?  onAcceptInvitation,TResult Function()?  onRejectInvitation,TResult Function( String nickname)?  onNicknameSaved,TResult Function()?  onViewStateChanged,TResult Function( User invitingUser)?  onInvitationReceived,TResult Function( User rejectedUser)?  onInvitationRejected,TResult Function( User opponent)?  onGameStarted,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested() when onInitializationRequested != null:
-return onInitializationRequested();case HomeEventOnRefreshRequested() when onRefreshRequested != null:
+return onInitializationRequested();case HomeEventOnStartAwaitingConnection() when onStartAwaitingConnection != null:
+return onStartAwaitingConnection();case HomeEventOnStartSearchingDevices() when onStartSearchingDevices != null:
+return onStartSearchingDevices();case HomeEventOnCancelAwaiting() when onCancelAwaiting != null:
+return onCancelAwaiting();case HomeEventOnCancelSearching() when onCancelSearching != null:
+return onCancelSearching();case HomeEventOnConnectToDevice() when onConnectToDevice != null:
+return onConnectToDevice();case HomeEventOnRefreshRequested() when onRefreshRequested != null:
 return onRefreshRequested();case HomeEventOnDeviceSelected() when onDeviceSelected != null:
 return onDeviceSelected(_that.device);case HomeEventOnInvite() when onInvite != null:
 return onInvite();case HomeEventOnCancelInvitation() when onCancelInvitation != null:
@@ -184,10 +204,15 @@ return onGameStarted(_that.opponent);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  onInitializationRequested,required TResult Function()  onRefreshRequested,required TResult Function( Device device)  onDeviceSelected,required TResult Function()  onInvite,required TResult Function()  onCancelInvitation,required TResult Function()  onAcceptInvitation,required TResult Function()  onRejectInvitation,required TResult Function( String nickname)  onNicknameSaved,required TResult Function()  onViewStateChanged,required TResult Function( User invitingUser)  onInvitationReceived,required TResult Function( User rejectedUser)  onInvitationRejected,required TResult Function( User opponent)  onGameStarted,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  onInitializationRequested,required TResult Function()  onStartAwaitingConnection,required TResult Function()  onStartSearchingDevices,required TResult Function()  onCancelAwaiting,required TResult Function()  onCancelSearching,required TResult Function()  onConnectToDevice,required TResult Function()  onRefreshRequested,required TResult Function( Device device)  onDeviceSelected,required TResult Function()  onInvite,required TResult Function()  onCancelInvitation,required TResult Function()  onAcceptInvitation,required TResult Function()  onRejectInvitation,required TResult Function( String nickname)  onNicknameSaved,required TResult Function()  onViewStateChanged,required TResult Function( User invitingUser)  onInvitationReceived,required TResult Function( User rejectedUser)  onInvitationRejected,required TResult Function( User opponent)  onGameStarted,}) {final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested():
-return onInitializationRequested();case HomeEventOnRefreshRequested():
+return onInitializationRequested();case HomeEventOnStartAwaitingConnection():
+return onStartAwaitingConnection();case HomeEventOnStartSearchingDevices():
+return onStartSearchingDevices();case HomeEventOnCancelAwaiting():
+return onCancelAwaiting();case HomeEventOnCancelSearching():
+return onCancelSearching();case HomeEventOnConnectToDevice():
+return onConnectToDevice();case HomeEventOnRefreshRequested():
 return onRefreshRequested();case HomeEventOnDeviceSelected():
 return onDeviceSelected(_that.device);case HomeEventOnInvite():
 return onInvite();case HomeEventOnCancelInvitation():
@@ -215,10 +240,15 @@ return onGameStarted(_that.opponent);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  onInitializationRequested,TResult? Function()?  onRefreshRequested,TResult? Function( Device device)?  onDeviceSelected,TResult? Function()?  onInvite,TResult? Function()?  onCancelInvitation,TResult? Function()?  onAcceptInvitation,TResult? Function()?  onRejectInvitation,TResult? Function( String nickname)?  onNicknameSaved,TResult? Function()?  onViewStateChanged,TResult? Function( User invitingUser)?  onInvitationReceived,TResult? Function( User rejectedUser)?  onInvitationRejected,TResult? Function( User opponent)?  onGameStarted,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  onInitializationRequested,TResult? Function()?  onStartAwaitingConnection,TResult? Function()?  onStartSearchingDevices,TResult? Function()?  onCancelAwaiting,TResult? Function()?  onCancelSearching,TResult? Function()?  onConnectToDevice,TResult? Function()?  onRefreshRequested,TResult? Function( Device device)?  onDeviceSelected,TResult? Function()?  onInvite,TResult? Function()?  onCancelInvitation,TResult? Function()?  onAcceptInvitation,TResult? Function()?  onRejectInvitation,TResult? Function( String nickname)?  onNicknameSaved,TResult? Function()?  onViewStateChanged,TResult? Function( User invitingUser)?  onInvitationReceived,TResult? Function( User rejectedUser)?  onInvitationRejected,TResult? Function( User opponent)?  onGameStarted,}) {final _that = this;
 switch (_that) {
 case HomeEventOnInitializationRequested() when onInitializationRequested != null:
-return onInitializationRequested();case HomeEventOnRefreshRequested() when onRefreshRequested != null:
+return onInitializationRequested();case HomeEventOnStartAwaitingConnection() when onStartAwaitingConnection != null:
+return onStartAwaitingConnection();case HomeEventOnStartSearchingDevices() when onStartSearchingDevices != null:
+return onStartSearchingDevices();case HomeEventOnCancelAwaiting() when onCancelAwaiting != null:
+return onCancelAwaiting();case HomeEventOnCancelSearching() when onCancelSearching != null:
+return onCancelSearching();case HomeEventOnConnectToDevice() when onConnectToDevice != null:
+return onConnectToDevice();case HomeEventOnRefreshRequested() when onRefreshRequested != null:
 return onRefreshRequested();case HomeEventOnDeviceSelected() when onDeviceSelected != null:
 return onDeviceSelected(_that.device);case HomeEventOnInvite() when onInvite != null:
 return onInvite();case HomeEventOnCancelInvitation() when onCancelInvitation != null:
@@ -261,6 +291,166 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'HomeEvent.onInitializationRequested()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeEventOnStartAwaitingConnection implements HomeEvent {
+  const HomeEventOnStartAwaitingConnection();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnStartAwaitingConnection);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeEvent.onStartAwaitingConnection()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeEventOnStartSearchingDevices implements HomeEvent {
+  const HomeEventOnStartSearchingDevices();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnStartSearchingDevices);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeEvent.onStartSearchingDevices()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeEventOnCancelAwaiting implements HomeEvent {
+  const HomeEventOnCancelAwaiting();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnCancelAwaiting);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeEvent.onCancelAwaiting()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeEventOnCancelSearching implements HomeEvent {
+  const HomeEventOnCancelSearching();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnCancelSearching);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeEvent.onCancelSearching()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeEventOnConnectToDevice implements HomeEvent {
+  const HomeEventOnConnectToDevice();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeEventOnConnectToDevice);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeEvent.onConnectToDevice()';
 }
 
 
@@ -835,13 +1025,15 @@ extension HomeStatePatterns on HomeState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( HomeStateInitializationPending value)?  initializationPending,TResult Function( HomeStateInitializationError value)?  initializationError,TResult Function( HomeStateView value)?  view,TResult Function( HomeStateInvitationPending value)?  invitationPending,TResult Function( HomeStateInvitationReceived value)?  invitationReceived,TResult Function( HomeStateInvitationRejected value)?  invitationRejected,TResult Function( HomeStateGameStarted value)?  gameStarted,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( HomeStateInitializationPending value)?  initializationPending,TResult Function( HomeStateInitializationError value)?  initializationError,TResult Function( HomeStateView value)?  view,TResult Function( HomeStateAwaitingConnection value)?  awaitingConnection,TResult Function( HomeStateSearchingDevices value)?  searchingDevices,TResult Function( HomeStateInvitationPending value)?  invitationPending,TResult Function( HomeStateInvitationReceived value)?  invitationReceived,TResult Function( HomeStateInvitationRejected value)?  invitationRejected,TResult Function( HomeStateGameStarted value)?  gameStarted,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case HomeStateInitializationPending() when initializationPending != null:
 return initializationPending(_that);case HomeStateInitializationError() when initializationError != null:
 return initializationError(_that);case HomeStateView() when view != null:
-return view(_that);case HomeStateInvitationPending() when invitationPending != null:
+return view(_that);case HomeStateAwaitingConnection() when awaitingConnection != null:
+return awaitingConnection(_that);case HomeStateSearchingDevices() when searchingDevices != null:
+return searchingDevices(_that);case HomeStateInvitationPending() when invitationPending != null:
 return invitationPending(_that);case HomeStateInvitationReceived() when invitationReceived != null:
 return invitationReceived(_that);case HomeStateInvitationRejected() when invitationRejected != null:
 return invitationRejected(_that);case HomeStateGameStarted() when gameStarted != null:
@@ -863,13 +1055,15 @@ return gameStarted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( HomeStateInitializationPending value)  initializationPending,required TResult Function( HomeStateInitializationError value)  initializationError,required TResult Function( HomeStateView value)  view,required TResult Function( HomeStateInvitationPending value)  invitationPending,required TResult Function( HomeStateInvitationReceived value)  invitationReceived,required TResult Function( HomeStateInvitationRejected value)  invitationRejected,required TResult Function( HomeStateGameStarted value)  gameStarted,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( HomeStateInitializationPending value)  initializationPending,required TResult Function( HomeStateInitializationError value)  initializationError,required TResult Function( HomeStateView value)  view,required TResult Function( HomeStateAwaitingConnection value)  awaitingConnection,required TResult Function( HomeStateSearchingDevices value)  searchingDevices,required TResult Function( HomeStateInvitationPending value)  invitationPending,required TResult Function( HomeStateInvitationReceived value)  invitationReceived,required TResult Function( HomeStateInvitationRejected value)  invitationRejected,required TResult Function( HomeStateGameStarted value)  gameStarted,}){
 final _that = this;
 switch (_that) {
 case HomeStateInitializationPending():
 return initializationPending(_that);case HomeStateInitializationError():
 return initializationError(_that);case HomeStateView():
-return view(_that);case HomeStateInvitationPending():
+return view(_that);case HomeStateAwaitingConnection():
+return awaitingConnection(_that);case HomeStateSearchingDevices():
+return searchingDevices(_that);case HomeStateInvitationPending():
 return invitationPending(_that);case HomeStateInvitationReceived():
 return invitationReceived(_that);case HomeStateInvitationRejected():
 return invitationRejected(_that);case HomeStateGameStarted():
@@ -890,13 +1084,15 @@ return gameStarted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( HomeStateInitializationPending value)?  initializationPending,TResult? Function( HomeStateInitializationError value)?  initializationError,TResult? Function( HomeStateView value)?  view,TResult? Function( HomeStateInvitationPending value)?  invitationPending,TResult? Function( HomeStateInvitationReceived value)?  invitationReceived,TResult? Function( HomeStateInvitationRejected value)?  invitationRejected,TResult? Function( HomeStateGameStarted value)?  gameStarted,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( HomeStateInitializationPending value)?  initializationPending,TResult? Function( HomeStateInitializationError value)?  initializationError,TResult? Function( HomeStateView value)?  view,TResult? Function( HomeStateAwaitingConnection value)?  awaitingConnection,TResult? Function( HomeStateSearchingDevices value)?  searchingDevices,TResult? Function( HomeStateInvitationPending value)?  invitationPending,TResult? Function( HomeStateInvitationReceived value)?  invitationReceived,TResult? Function( HomeStateInvitationRejected value)?  invitationRejected,TResult? Function( HomeStateGameStarted value)?  gameStarted,}){
 final _that = this;
 switch (_that) {
 case HomeStateInitializationPending() when initializationPending != null:
 return initializationPending(_that);case HomeStateInitializationError() when initializationError != null:
 return initializationError(_that);case HomeStateView() when view != null:
-return view(_that);case HomeStateInvitationPending() when invitationPending != null:
+return view(_that);case HomeStateAwaitingConnection() when awaitingConnection != null:
+return awaitingConnection(_that);case HomeStateSearchingDevices() when searchingDevices != null:
+return searchingDevices(_that);case HomeStateInvitationPending() when invitationPending != null:
 return invitationPending(_that);case HomeStateInvitationReceived() when invitationReceived != null:
 return invitationReceived(_that);case HomeStateInvitationRejected() when invitationRejected != null:
 return invitationRejected(_that);case HomeStateGameStarted() when gameStarted != null:
@@ -917,12 +1113,14 @@ return gameStarted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initializationPending,TResult Function( String message)?  initializationError,TResult Function( List<Device> devices,  Device? selectedDevice,  bool isFirstLaunch)?  view,TResult Function( Device invitedDevice)?  invitationPending,TResult Function( User invitingUser)?  invitationReceived,TResult Function( User rejectedUser)?  invitationRejected,TResult Function( User opponent,  PlayerType myPlayerType)?  gameStarted,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initializationPending,TResult Function( String message)?  initializationError,TResult Function()?  view,TResult Function()?  awaitingConnection,TResult Function( List<Device> devices,  Device? selectedDevice)?  searchingDevices,TResult Function( Device invitedDevice)?  invitationPending,TResult Function( User invitingUser)?  invitationReceived,TResult Function( User rejectedUser)?  invitationRejected,TResult Function( User opponent,  PlayerType myPlayerType)?  gameStarted,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case HomeStateInitializationPending() when initializationPending != null:
 return initializationPending();case HomeStateInitializationError() when initializationError != null:
 return initializationError(_that.message);case HomeStateView() when view != null:
-return view(_that.devices,_that.selectedDevice,_that.isFirstLaunch);case HomeStateInvitationPending() when invitationPending != null:
+return view();case HomeStateAwaitingConnection() when awaitingConnection != null:
+return awaitingConnection();case HomeStateSearchingDevices() when searchingDevices != null:
+return searchingDevices(_that.devices,_that.selectedDevice);case HomeStateInvitationPending() when invitationPending != null:
 return invitationPending(_that.invitedDevice);case HomeStateInvitationReceived() when invitationReceived != null:
 return invitationReceived(_that.invitingUser);case HomeStateInvitationRejected() when invitationRejected != null:
 return invitationRejected(_that.rejectedUser);case HomeStateGameStarted() when gameStarted != null:
@@ -944,12 +1142,14 @@ return gameStarted(_that.opponent,_that.myPlayerType);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initializationPending,required TResult Function( String message)  initializationError,required TResult Function( List<Device> devices,  Device? selectedDevice,  bool isFirstLaunch)  view,required TResult Function( Device invitedDevice)  invitationPending,required TResult Function( User invitingUser)  invitationReceived,required TResult Function( User rejectedUser)  invitationRejected,required TResult Function( User opponent,  PlayerType myPlayerType)  gameStarted,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initializationPending,required TResult Function( String message)  initializationError,required TResult Function()  view,required TResult Function()  awaitingConnection,required TResult Function( List<Device> devices,  Device? selectedDevice)  searchingDevices,required TResult Function( Device invitedDevice)  invitationPending,required TResult Function( User invitingUser)  invitationReceived,required TResult Function( User rejectedUser)  invitationRejected,required TResult Function( User opponent,  PlayerType myPlayerType)  gameStarted,}) {final _that = this;
 switch (_that) {
 case HomeStateInitializationPending():
 return initializationPending();case HomeStateInitializationError():
 return initializationError(_that.message);case HomeStateView():
-return view(_that.devices,_that.selectedDevice,_that.isFirstLaunch);case HomeStateInvitationPending():
+return view();case HomeStateAwaitingConnection():
+return awaitingConnection();case HomeStateSearchingDevices():
+return searchingDevices(_that.devices,_that.selectedDevice);case HomeStateInvitationPending():
 return invitationPending(_that.invitedDevice);case HomeStateInvitationReceived():
 return invitationReceived(_that.invitingUser);case HomeStateInvitationRejected():
 return invitationRejected(_that.rejectedUser);case HomeStateGameStarted():
@@ -970,12 +1170,14 @@ return gameStarted(_that.opponent,_that.myPlayerType);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initializationPending,TResult? Function( String message)?  initializationError,TResult? Function( List<Device> devices,  Device? selectedDevice,  bool isFirstLaunch)?  view,TResult? Function( Device invitedDevice)?  invitationPending,TResult? Function( User invitingUser)?  invitationReceived,TResult? Function( User rejectedUser)?  invitationRejected,TResult? Function( User opponent,  PlayerType myPlayerType)?  gameStarted,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initializationPending,TResult? Function( String message)?  initializationError,TResult? Function()?  view,TResult? Function()?  awaitingConnection,TResult? Function( List<Device> devices,  Device? selectedDevice)?  searchingDevices,TResult? Function( Device invitedDevice)?  invitationPending,TResult? Function( User invitingUser)?  invitationReceived,TResult? Function( User rejectedUser)?  invitationRejected,TResult? Function( User opponent,  PlayerType myPlayerType)?  gameStarted,}) {final _that = this;
 switch (_that) {
 case HomeStateInitializationPending() when initializationPending != null:
 return initializationPending();case HomeStateInitializationError() when initializationError != null:
 return initializationError(_that.message);case HomeStateView() when view != null:
-return view(_that.devices,_that.selectedDevice,_that.isFirstLaunch);case HomeStateInvitationPending() when invitationPending != null:
+return view();case HomeStateAwaitingConnection() when awaitingConnection != null:
+return awaitingConnection();case HomeStateSearchingDevices() when searchingDevices != null:
+return searchingDevices(_that.devices,_that.selectedDevice);case HomeStateInvitationPending() when invitationPending != null:
 return invitationPending(_that.invitedDevice);case HomeStateInvitationReceived() when invitationReceived != null:
 return invitationReceived(_that.invitingUser);case HomeStateInvitationRejected() when invitationRejected != null:
 return invitationRejected(_that.rejectedUser);case HomeStateGameStarted() when gameStarted != null:
@@ -1089,7 +1291,71 @@ as String,
 
 
 class HomeStateView implements HomeState {
-  const HomeStateView({required final  List<Device> devices, this.selectedDevice, required this.isFirstLaunch}): _devices = devices;
+  const HomeStateView();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeStateView);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeState.view()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeStateAwaitingConnection implements HomeState {
+  const HomeStateAwaitingConnection();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeStateAwaitingConnection);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeState.awaitingConnection()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeStateSearchingDevices implements HomeState {
+  const HomeStateSearchingDevices({required final  List<Device> devices, this.selectedDevice}): _devices = devices;
   
 
  final  List<Device> _devices;
@@ -1100,39 +1366,38 @@ class HomeStateView implements HomeState {
 }
 
  final  Device? selectedDevice;
- final  bool isFirstLaunch;
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$HomeStateViewCopyWith<HomeStateView> get copyWith => _$HomeStateViewCopyWithImpl<HomeStateView>(this, _$identity);
+$HomeStateSearchingDevicesCopyWith<HomeStateSearchingDevices> get copyWith => _$HomeStateSearchingDevicesCopyWithImpl<HomeStateSearchingDevices>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeStateView&&const DeepCollectionEquality().equals(other._devices, _devices)&&(identical(other.selectedDevice, selectedDevice) || other.selectedDevice == selectedDevice)&&(identical(other.isFirstLaunch, isFirstLaunch) || other.isFirstLaunch == isFirstLaunch));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeStateSearchingDevices&&const DeepCollectionEquality().equals(other._devices, _devices)&&(identical(other.selectedDevice, selectedDevice) || other.selectedDevice == selectedDevice));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_devices),selectedDevice,isFirstLaunch);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_devices),selectedDevice);
 
 @override
 String toString() {
-  return 'HomeState.view(devices: $devices, selectedDevice: $selectedDevice, isFirstLaunch: $isFirstLaunch)';
+  return 'HomeState.searchingDevices(devices: $devices, selectedDevice: $selectedDevice)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $HomeStateViewCopyWith<$Res> implements $HomeStateCopyWith<$Res> {
-  factory $HomeStateViewCopyWith(HomeStateView value, $Res Function(HomeStateView) _then) = _$HomeStateViewCopyWithImpl;
+abstract mixin class $HomeStateSearchingDevicesCopyWith<$Res> implements $HomeStateCopyWith<$Res> {
+  factory $HomeStateSearchingDevicesCopyWith(HomeStateSearchingDevices value, $Res Function(HomeStateSearchingDevices) _then) = _$HomeStateSearchingDevicesCopyWithImpl;
 @useResult
 $Res call({
- List<Device> devices, Device? selectedDevice, bool isFirstLaunch
+ List<Device> devices, Device? selectedDevice
 });
 
 
@@ -1140,21 +1405,20 @@ $Res call({
 
 }
 /// @nodoc
-class _$HomeStateViewCopyWithImpl<$Res>
-    implements $HomeStateViewCopyWith<$Res> {
-  _$HomeStateViewCopyWithImpl(this._self, this._then);
+class _$HomeStateSearchingDevicesCopyWithImpl<$Res>
+    implements $HomeStateSearchingDevicesCopyWith<$Res> {
+  _$HomeStateSearchingDevicesCopyWithImpl(this._self, this._then);
 
-  final HomeStateView _self;
-  final $Res Function(HomeStateView) _then;
+  final HomeStateSearchingDevices _self;
+  final $Res Function(HomeStateSearchingDevices) _then;
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? devices = null,Object? selectedDevice = freezed,Object? isFirstLaunch = null,}) {
-  return _then(HomeStateView(
+@pragma('vm:prefer-inline') $Res call({Object? devices = null,Object? selectedDevice = freezed,}) {
+  return _then(HomeStateSearchingDevices(
 devices: null == devices ? _self._devices : devices // ignore: cast_nullable_to_non_nullable
 as List<Device>,selectedDevice: freezed == selectedDevice ? _self.selectedDevice : selectedDevice // ignore: cast_nullable_to_non_nullable
-as Device?,isFirstLaunch: null == isFirstLaunch ? _self.isFirstLaunch : isFirstLaunch // ignore: cast_nullable_to_non_nullable
-as bool,
+as Device?,
   ));
 }
 

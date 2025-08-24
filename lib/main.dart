@@ -6,7 +6,8 @@ import 'core/themes/app_theme.dart';
 import 'core/di/environment.dart';
 import 'features/splash/presentation/splash_screen.dart';
 import 'features/home/presentation/home_screen.dart';
-import 'features/game/presentation/game_screen.dart';
+import 'features/games_list/presentation/games_list_screen.dart';
+import 'features/tictactoe/presentation/game_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +45,8 @@ class BluetoothToeApp extends StatelessWidget {
       routes: {
         '/': (context) => const SplashScreen(),
         '/home': (context) => const HomeScreen(),
-        '/game': (context) => const GameScreen(),
+        '/games_list': (context) => const GamesListScreen(),
+        '/tictactoe': (context) => const GameScreen(),
       },
       debugShowCheckedModeBanner: false,
     );

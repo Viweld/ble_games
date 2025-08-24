@@ -12,11 +12,16 @@ class HomeState with _$HomeState {
       HomeStateInitializationError;
 
   /// Основное состояние
-  const factory HomeState.view({
+  const factory HomeState.view() = HomeStateView;
+
+  /// Режим ожидания подключения (реклама)
+  const factory HomeState.awaitingConnection() = HomeStateAwaitingConnection;
+
+  /// Режим поиска устройств
+  const factory HomeState.searchingDevices({
     required List<Device> devices,
     Device? selectedDevice,
-    required bool isFirstLaunch,
-  }) = HomeStateView;
+  }) = HomeStateSearchingDevices;
 
   /// Ожидание ответа на приглашение
   const factory HomeState.invitationPending({required Device invitedDevice}) =

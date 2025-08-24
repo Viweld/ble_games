@@ -1,7 +1,7 @@
 import 'package:bluetooth_toe/core/domain/models/user.dart';
 import 'package:flutter/foundation.dart';
-import '../../../features/game/domain/models/game_move.dart';
-import '../../../features/game/domain/models/enums/player_type.dart';
+import '../../../features/tictactoe/domain/models/game_move.dart';
+import '../../../features/tictactoe/domain/models/enums/player_type.dart';
 import 'device.dart';
 
 @immutable

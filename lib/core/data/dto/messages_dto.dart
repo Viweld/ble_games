@@ -1,4 +1,4 @@
-import 'package:bluetooth_toe/features/game/data/models/game_move_dto.dart';
+import 'package:bluetooth_toe/features/tictactoe/data/models/game_move_dto.dart';
 import 'package:bluetooth_toe/core/data/dto/user_dto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -6,7 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'abstracts/base_dto.dart';
 import '../../domain/models/messages.dart';
 import 'device_dto.dart';
-import '../../../features/game/domain/models/enums/player_type.dart';
+import '../../../features/tictactoe/domain/models/enums/player_type.dart';
 
 part 'messages_dto.g.dart';
 

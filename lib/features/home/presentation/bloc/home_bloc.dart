@@ -9,7 +9,7 @@ import '../../../../core/domain/models/messages.dart';
 import '../../../../core/domain/models/user.dart';
 import '../../../../core/repositories/i_user_repository.dart';
 import '../../../../core/repositories/i_bluetooth_repository.dart';
-import '../../../game/domain/models/enums/player_type.dart';
+import '../../../tictactoe/domain/models/enums/player_type.dart';
 
 part 'events.dart';
 
@@ -31,14 +31,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         HomeEventOnInitializationRequested() => _onInitializationRequested(
           emitter,
         ),
-        HomeEventOnRefreshRequested() => _onRefreshRequested(emitter),
+        HomeEventOnStartAwaitingConnection() => _onStartAwaitingConnection(
+          emitter,
+        ),
+        HomeEventOnStartSearchingDevices() => _onStartSearchingDevices(emitter),
+        HomeEventOnCancelAwaiting() => _onCancelAwaiting(emitter),
+        HomeEventOnCancelSearching() => _onCancelSearching(emitter),
+        HomeEventOnConnectToDevice() => _onConnectToDevice(emitter),
         HomeEventOnDeviceSelected() => _onDeviceSelected(event, emitter),
-        HomeEventOnInvite() => _onInvite(emitter),
-        HomeEventOnCancelInvitation() => _onCancelInvitation(emitter),
-        HomeEventOnAcceptInvitation() => _onAcceptInvitation(emitter),
-        HomeEventOnRejectInvitation() => _onRejectInvitation(emitter),
-        HomeEventOnNicknameSaved() => _onNicknameSaved(event, emitter),
         HomeEventOnViewStateChanged() => _onViewStateChanged(emitter),
+        HomeEventOnNicknameSaved() => _onNicknameSaved(event, emitter),
         HomeEventOnInvitationReceived() => _onInvitationReceived(
           event,
           emitter,
@@ -73,7 +75,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   List<Device> _devices = [];
   Device? _selectedDevice;
   User? _currentUser;
-  HomeStateView? _viewState;
 
   @override
   Future<void> close() {
@@ -89,44 +90,132 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       // Получаем текущего игрока
       _currentUser = await _playerRepository.getCurrentUser();
 
-      // Проверяем, является ли это первым запуском
-      final isFirstLaunch = await _playerRepository.isFirstLaunch();
+      // Инициализируем Bluetooth
+      await _bluetoothRepository.initialize();
 
-      // Запускаем рекламу и поиск устройств
-      await _bluetoothRepository.startAdvertising();
-      await _bluetoothRepository.startDiscovery();
-
-      _viewState = HomeStateView(
-        devices: _devices,
-        selectedDevice: _selectedDevice,
-        isFirstLaunch: isFirstLaunch,
-      );
-      emitter(_viewState!);
+      // Переходим к основному состоянию
+      emitter(const HomeState.view());
     } catch (e) {
       emitter(HomeState.initializationError(message: e.toString()));
+    }
+  }
+
+  /// Обработчик начала ожидания подключения
+  Future<void> _onStartAwaitingConnection(Emitter<HomeState> emitter) async {
+    try {
+      // Запускаем рекламу устройства
+      await _bluetoothRepository.startAdvertising();
+
+      // Переходим в режим ожидания
+      emitter(const HomeState.awaitingConnection());
+    } catch (e) {
+      emitter(
+        HomeState.initializationError(
+          message: 'Ошибка запуска режима ожидания: $e',
+        ),
+      );
+    }
+  }
+
+  /// Обработчик начала поиска устройств
+  Future<void> _onStartSearchingDevices(Emitter<HomeState> emitter) async {
+    try {
+      // Очищаем список устройств и запускаем поиск
+      _devices = [];
+      _selectedDevice = null;
+      await _bluetoothRepository.startDiscovery();
+
+      // Переходим в режим поиска
+      emitter(
+        HomeState.searchingDevices(
+          devices: _devices,
+          selectedDevice: _selectedDevice,
+        ),
+      );
+    } catch (e) {
+      emitter(
+        HomeState.initializationError(message: 'Ошибка запуска поиска: $e'),
+      );
+    }
+  }
+
+  /// Обработчик отмены ожидания
+  Future<void> _onCancelAwaiting(Emitter<HomeState> emitter) async {
+    try {
+      // Останавливаем рекламу
+      await _bluetoothRepository.stopAdvertising();
+
+      // Возвращаемся к основному состоянию
+      emitter(const HomeState.view());
+    } catch (e) {
+      emitter(
+        HomeState.initializationError(message: 'Ошибка отмены ожидания: $e'),
+      );
+    }
+  }
+
+  /// Обработчик отмены поиска устройств
+  Future<void> _onCancelSearching(Emitter<HomeState> emitter) async {
+    try {
+      // Останавливаем поиск
+      await _bluetoothRepository.stopDiscovery();
+
+      // Возвращаемся к основному состоянию
+      emitter(const HomeState.view());
+    } catch (e) {
+      emitter(
+        HomeState.initializationError(message: 'Ошибка отмены поиска: $e'),
+      );
+    }
+  }
+
+  /// Обработчик подключения к устройству
+  Future<void> _onConnectToDevice(Emitter<HomeState> emitter) async {
+    try {
+      if (_selectedDevice == null) {
+        emitter(
+          const HomeState.initializationError(
+            message: 'Не выбрано устройство для подключения',
+          ),
+        );
+        return;
+      }
+
+      // Подключаемся к устройству
+      await _bluetoothRepository.connectToDevice(_selectedDevice!);
+
+      // Переходим к списку игр
+      // TODO: Заменить на переход к games_list
+      emitter(
+        HomeState.gameStarted(
+          opponent: User(id: _selectedDevice!.id, name: _selectedDevice!.name),
+          myPlayerType: PlayerType.x,
+        ),
+      );
+    } catch (e) {
+      emitter(HomeState.initializationError(message: 'Ошибка подключения: $e'));
     }
   }
 
   /// Обработчик ручного обновления
   Future<void> _onRefreshRequested(Emitter<HomeState> emitter) async {
     try {
-      await _bluetoothRepository.stopDiscovery();
-      await _bluetoothRepository.startDiscovery();
+      await _bluetoothRepository.refreshDiscovery();
     } catch (e) {
       emitter(HomeState.initializationError(message: 'Ошибка обновления: $e'));
     }
   }
 
-  /// Обработчик выбора игрока
+  /// Обработчик выбора устройства
   Future<void> _onDeviceSelected(
     HomeEventOnDeviceSelected event,
     Emitter<HomeState> emitter,
   ) async {
     _selectedDevice = event.device;
 
-    if (_viewState != null) {
-      _viewState = _viewState!.copyWith(selectedDevice: _selectedDevice);
-      emitter(_viewState!);
+    final currentState = state;
+    if (currentState is HomeStateSearchingDevices) {
+      emitter(currentState.copyWith(selectedDevice: _selectedDevice));
     }
   }
 
@@ -175,9 +264,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         TerminationMessage(device: device, user: _currentUser!),
       );
 
-      if (_viewState != null) {
-        emitter(_viewState!);
-      }
+      // Возвращаемся к основному экрану
+      emitter(const HomeState.view());
     } catch (e) {
       emitter(
         HomeState.initializationError(message: 'Ошибка отмены приглашения: $e'),
@@ -264,11 +352,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       // Устанавливаем флаг первого запуска
       await _playerRepository.setFirstLaunch(false);
 
-      // Обновляем состояние
-      if (_viewState != null) {
-        _viewState = _viewState!.copyWith(isFirstLaunch: false);
-        emitter(_viewState!);
-      }
+      // Переходим к основному экрану
+      emitter(const HomeState.view());
     } catch (e) {
       emitter(
         HomeState.initializationError(
@@ -280,7 +365,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   /// Обработчик изменения состояния представления
   void _onViewStateChanged(Emitter<HomeState> emitter) {
-    emitter(_viewState!);
+    final currentState = state;
+    if (currentState is HomeStateSearchingDevices) {
+      emitter(
+        currentState.copyWith(
+          devices: _devices,
+          selectedDevice: _selectedDevice,
+        ),
+      );
+    }
   }
 
   /// Обработчик получения приглашения
@@ -318,9 +411,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (isClosed) return;
     _devices = devices;
 
-    if (_viewState == null) return;
-    _viewState = _viewState!.copyWith(devices: _devices);
-    add(const HomeEvent.onViewStateChanged());
+    final currentState = state;
+    if (currentState is HomeStateSearchingDevices) {
+      // Обновляем состояние поиска с новым списком устройств
+      add(const HomeEvent.onViewStateChanged());
+    }
   }
 
   /// Обработка входящих данных
@@ -341,11 +436,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           add(HomeEvent.onInvitationRejected(rejectedUser: user));
         }
       case TerminationMessage():
-        if (_viewState == null) return;
-        add(const HomeEvent.onViewStateChanged());
+        final currentState = state;
+        if (currentState is HomeStateAwaitingConnection ||
+            currentState is HomeStateSearchingDevices) {
+          add(const HomeEvent.onViewStateChanged());
+        }
       case OpponentLeftMessage():
-        if (_viewState == null) return;
-        add(const HomeEvent.onViewStateChanged());
+        final currentState = state;
+        if (currentState is HomeStateAwaitingConnection ||
+            currentState is HomeStateSearchingDevices) {
+          add(const HomeEvent.onViewStateChanged());
+        }
       case RoleAssignmentMessage():
         // Пробрасывается в GameBloc через аргументы route (см. game_screen)
         // Здесь можно сохранить в локальный стейт при надобности

@@ -12,6 +12,9 @@ abstract class IBluetoothRepository {
   /// Остановить поиск устройств
   Future<void> stopDiscovery();
 
+  /// Обновить поиск устройств (перезапустить сканирование)
+  Future<void> refreshDiscovery();
+
   /// Включить рекламу присутствия приложения (BLE Advertise)
   Future<void> startAdvertising();
 

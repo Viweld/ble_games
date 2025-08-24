@@ -7,6 +7,23 @@ class HomeEvent with _$HomeEvent {
   const factory HomeEvent.onInitializationRequested() =
       HomeEventOnInitializationRequested;
 
+  /// Начать ожидание присоединения
+  const factory HomeEvent.onStartAwaitingConnection() =
+      HomeEventOnStartAwaitingConnection;
+
+  /// Начать поиск устройств
+  const factory HomeEvent.onStartSearchingDevices() =
+      HomeEventOnStartSearchingDevices;
+
+  /// Отмена ожидания
+  const factory HomeEvent.onCancelAwaiting() = HomeEventOnCancelAwaiting;
+
+  /// Отмена поиска устройств
+  const factory HomeEvent.onCancelSearching() = HomeEventOnCancelSearching;
+
+  /// Подключиться к выбранному устройству
+  const factory HomeEvent.onConnectToDevice() = HomeEventOnConnectToDevice;
+
   /// Ручной рефреш списка устройств
   const factory HomeEvent.onRefreshRequested() = HomeEventOnRefreshRequested;
 

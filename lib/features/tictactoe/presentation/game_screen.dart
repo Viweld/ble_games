@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/build_context_extension.dart';
-import '../../game/domain/models/enums/game_winner.dart';
-import '../../game/domain/models/enums/player_type.dart';
+import '../../tictactoe/domain/models/enums/game_winner.dart';
+import '../../tictactoe/domain/models/enums/player_type.dart';
 import 'bloc/game_bloc.dart';
 import 'widgets/game_board.dart';
 
