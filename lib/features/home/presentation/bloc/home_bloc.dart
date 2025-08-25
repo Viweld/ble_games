@@ -120,9 +120,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   /// Обработчик начала поиска устройств
   Future<void> _onStartSearchingDevices(Emitter<HomeState> emitter) async {
     try {
-      // Очищаем список устройств и запускаем поиск
+      print('\n🔍 Начало поиска устройств...');
+
+      // Очищаем список устройств
       _devices = [];
       _selectedDevice = null;
+
+      // Убеждаемся, что Bluetooth инициализирован
+      await _bluetoothRepository.initialize();
+
+      // Запускаем поиск
       await _bluetoothRepository.startDiscovery();
 
       // Переходим в режим поиска
@@ -132,7 +139,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           selectedDevice: _selectedDevice,
         ),
       );
+      print('✅ Поиск устройств запущен');
     } catch (e) {
+      print('❌ Ошибка запуска поиска: $e');
       emitter(
         HomeState.initializationError(message: 'Ошибка запуска поиска: $e'),
       );

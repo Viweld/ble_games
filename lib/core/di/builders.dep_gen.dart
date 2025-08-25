@@ -20,8 +20,8 @@ import 'package:bluetooth_toe/features/tictactoe/data/models/game_move_dto.dart'
 import 'package:bluetooth_toe/core/domain/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:dep_gen/dep_gen.dart';
+import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

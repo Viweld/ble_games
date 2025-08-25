@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../constants/app_constants.dart';
@@ -11,11 +12,12 @@ import '../domain/models/device.dart';
 import '../domain/models/messages.dart';
 import 'i_bluetooth_repository.dart';
 
-/// Реализация репозитория Bluetooth на основе flutter_blue_plus
+/// Реализация репозитория Bluetooth на основе bluetooth_low_energy с выделением устройств приложения
 class BluetoothRepository implements IBluetoothRepository {
   BluetoothRepository() {
     _discoveredDevicesController = StreamController<List<Device>>.broadcast();
     _incomingMessagesController = StreamController<Message>.broadcast();
+    _initializeDeviceName();
   }
 
   late final StreamController<List<Device>> _discoveredDevicesController;
@@ -23,43 +25,101 @@ class BluetoothRepository implements IBluetoothRepository {
 
   final List<Device> _foundDevices = [];
 
-  BluetoothDevice? _connectedDevice;
-  BluetoothCharacteristic? _writeCharacteristic;
-  StreamSubscription<List<ScanResult>>? _scanSubscription;
-  StreamSubscription<List<int>>? _dataSubscription;
+  late final CentralManager _centralManager;
+  late final PeripheralManager _peripheralManager;
+
+  Peripheral? _connectedPeripheral;
+  GATTCharacteristic? _writeCharacteristic;
+  StreamSubscription<DiscoveredEventArgs>? _scanSubscription;
+  StreamSubscription<GATTCharacteristicNotifiedEventArgs>? _dataSubscription;
+  StreamSubscription<GATTCharacteristicWriteRequestedEventArgs>?
+  _writeRequestSubscription;
+
   bool _isInitialized = false;
+  bool _isAdvertising = false;
   Timer? _scanTimer;
 
-  final String _serviceUuid = '0000a7c0-0000-1000-8000-00805f9b34fb';
+  // Наши UUID-ы
+  final UUID _serviceUuid = UUID.fromString(
+    '0000a7c0-0000-1000-8000-00805f9b34fb',
+  );
+  final UUID _characteristicUuid = UUID.fromString(
+    '0000a7c1-0000-1000-8000-00805f9b34fb',
+  );
+
+  // Уникальное имя приложения для идентификации
+  static const String _appName = '🎮 BT-Games';
+  late String _deviceName;
+
+  /// Инициализация имени устройства
+  Future<void> _initializeDeviceName() async {
+    try {
+      final deviceInfo = DeviceInfoPlugin();
+      final androidInfo = await deviceInfo.androidInfo;
+      _deviceName = '$_appName-${androidInfo.model}';
+    } catch (e) {
+      _deviceName = '$_appName-Device';
+    }
+  }
 
   @override
   Future<void> initialize() async {
-    if (_isInitialized) return;
+    print('\n🔵 Bluetooth инициализация начата...');
+    if (_isInitialized) {
+      print('✅ Bluetooth уже инициализирован');
+      return;
+    }
 
     try {
-      // Проверяем поддержку Bluetooth
-      final isSupported = await FlutterBluePlus.isSupported;
-      if (!isSupported) {
-        throw Exception('Bluetooth не поддерживается на этом устройстве');
-      }
-
-      // Проверяем состояние Bluetooth
-      final adapterState = await FlutterBluePlus.adapterState.first;
-      if (adapterState != BluetoothAdapterState.on) {
-        throw Exception('Bluetooth отключён. Пожалуйста, включите Bluetooth');
-      }
-
       // Запрашиваем разрешения
-      await [
+      print('Запрос разрешений Bluetooth...');
+      final permissions = await [
         Permission.bluetooth,
         Permission.bluetoothScan,
         Permission.bluetoothConnect,
         Permission.bluetoothAdvertise,
         Permission.locationWhenInUse,
       ].request();
+      print('Разрешения: $permissions');
+
+      // Инициализируем менеджеры
+      _centralManager = CentralManager();
+      _peripheralManager = PeripheralManager();
+
+      // Ожидаем готовности Bluetooth адаптера для центрального режима
+      print('Проверка состояния Bluetooth адаптера...');
+      if (_centralManager.state != BluetoothLowEnergyState.poweredOn) {
+        await for (final state in _centralManager.stateChanged) {
+          print('Состояние Central Bluetooth: $state');
+          if (state.state == BluetoothLowEnergyState.poweredOn) {
+            break;
+          } else if (state.state == BluetoothLowEnergyState.poweredOff) {
+            throw Exception(
+              'Bluetooth отключён. Пожалуйста, включите Bluetooth',
+            );
+          }
+        }
+      }
+
+      // Ожидаем готовности Bluetooth адаптера для периферийного режима
+      if (_peripheralManager.state != BluetoothLowEnergyState.poweredOn) {
+        await for (final state in _peripheralManager.stateChanged) {
+          print('Состояние Peripheral Bluetooth: $state');
+          if (state.state == BluetoothLowEnergyState.poweredOn) {
+            break;
+          } else if (state.state == BluetoothLowEnergyState.poweredOff) {
+            throw Exception(
+              'Bluetooth отключён. Пожалуйста, включите Bluetooth',
+            );
+          }
+        }
+      }
 
       _isInitialized = true;
+      print('✅ Bluetooth успешно инициализирован');
+      print('📱 Имя устройства: $_deviceName\n');
     } catch (e) {
+      print('❌ Ошибка инициализации Bluetooth: $e');
       throw Exception('Ошибка инициализации Bluetooth: $e');
     }
   }
@@ -67,7 +127,7 @@ class BluetoothRepository implements IBluetoothRepository {
   @override
   Future<void> startDiscovery() async {
     if (!_isInitialized) {
-      throw Exception('Bluetooth не инициализирован');
+      await initialize();
     }
 
     try {
@@ -75,55 +135,78 @@ class BluetoothRepository implements IBluetoothRepository {
       await stopDiscovery();
 
       _foundDevices.clear();
+      print('\n🔍 Запуск поиска Bluetooth устройств...');
 
       // Подписываемся на результаты сканирования
-      _scanSubscription = FlutterBluePlus.scanResults.listen((results) {
-        for (final result in results) {
-          // Проверяем, есть ли наш сервис в рекламе
-          final hasOurService = result.advertisementData.serviceUuids.any(
-            (guid) => guid.str.toLowerCase() == _serviceUuid.toLowerCase(),
-          );
+      _scanSubscription = _centralManager.discovered.listen((event) {
+        final peripheral = event.peripheral;
+        final advertisement = event.advertisement;
 
-          if (hasOurService) {
-            _processDiscoveredDevice(result.device);
-          }
+        final deviceName = advertisement.name ?? peripheral.uuid.toString();
+        print('Найдено устройство: $deviceName (${peripheral.uuid})');
+        print('  RSSI: ${event.rssi}');
+        print('  Сервисы: ${advertisement.serviceUUIDs}');
+
+        if (advertisement.manufacturerSpecificData.isNotEmpty) {
+          print(
+            '  Данные производителя: ${advertisement.manufacturerSpecificData.first.id}',
+          );
         }
+
+        // Проверяем, является ли устройство нашим приложением
+        final isOurApp = _isOurApplication(advertisement);
+
+        if (isOurApp) {
+          print('  🎮 ЭТО НАШЕ ПРИЛОЖЕНИЕ! Выделяем в списке');
+        }
+
+        _processDiscoveredDevice(peripheral, advertisement, isOurApp);
       });
 
-      // Начинаем сканирование с автоматической остановкой через 30 секунд
-      await FlutterBluePlus.startScan(
-        withServices: [Guid(_serviceUuid)],
-        timeout: const Duration(seconds: 30),
+      // Начинаем сканирование
+      // Ищем устройства с нашим сервисом, но также добавим все устройства для полноты
+      await _centralManager.startDiscovery(
+        serviceUUIDs: [], // Пустой список = поиск всех устройств
       );
 
-      // Таймер для принудительной остановки сканирования
+      print('✅ Сканирование запущено, ожидание устройств...');
+
+      // Таймер для автоматической остановки
       _scanTimer?.cancel();
       _scanTimer = Timer(const Duration(seconds: 30), () async {
         try {
           await stopDiscovery();
-          print('Сканирование автоматически остановлено через 30 секунд');
+          print('🕐 Сканирование автоматически остановлено через 30 секунд');
         } catch (e) {
-          print('Ошибка автоматической остановки сканирования: $e');
+          print('❌ Ошибка автоматической остановки сканирования: $e');
         }
       });
     } catch (e) {
+      print('❌ Ошибка запуска сканирования: $e');
       throw Exception('Ошибка поиска устройств: $e');
     }
   }
 
   @override
   Future<void> stopDiscovery() async {
-    await FlutterBluePlus.stopScan();
-    await _scanSubscription?.cancel();
-    _scanSubscription = null;
-    _scanTimer?.cancel();
-    _scanTimer = null;
+    print('🛑 Остановка сканирования...');
+    try {
+      await _centralManager.stopDiscovery();
+      await _scanSubscription?.cancel();
+      _scanSubscription = null;
+      _scanTimer?.cancel();
+      _scanTimer = null;
+      print('✅ Сканирование остановлено');
+    } catch (e) {
+      print('⚠️ Ошибка остановки сканирования: $e');
+    }
   }
 
   /// Обновить поиск устройств (перезапустить сканирование)
+  @override
   Future<void> refreshDiscovery() async {
     if (!_isInitialized) {
-      throw Exception('Bluetooth не инициализирован');
+      await initialize();
     }
 
     try {
@@ -137,20 +220,109 @@ class BluetoothRepository implements IBluetoothRepository {
 
   @override
   Future<void> startAdvertising() async {
-    // Реклама через flutter_blue_plus требует сложной настройки
-    // Временно используем заглушку
-    print('Ожидание подключения реализовано через открытие для обнаружения');
+    print('\n📡 Запуск рекламы Bluetooth сервиса...');
 
-    // Можно реализовать:
-    // 1. Периодическое сканирование для поиска других устройств
-    // 2. Создание GATT сервера (реклама автоматическая)
-    // 3. Обратное сканирование - другие устройства найдут нас
+    try {
+      if (!_isInitialized) {
+        await initialize();
+      }
+
+      // Останавливаем предыдущую рекламу
+      await stopAdvertising();
+
+      // Создаем сервис с характеристикой
+      final service = GATTService(
+        uuid: _serviceUuid,
+        isPrimary: true,
+        includedServices: [],
+        characteristics: [
+          GATTCharacteristic.mutable(
+            uuid: _characteristicUuid,
+            properties: [
+              GATTCharacteristicProperty.read,
+              GATTCharacteristicProperty.write,
+              GATTCharacteristicProperty.notify,
+            ],
+            permissions: [
+              GATTCharacteristicPermission.read,
+              GATTCharacteristicPermission.write,
+            ],
+            descriptors: [],
+          ),
+        ],
+      );
+
+      // Добавляем сервис
+      await _peripheralManager.addService(service);
+      print('✅ Сервис добавлен');
+
+      // Настраиваем обработку записи в характеристику
+      _writeRequestSubscription = _peripheralManager
+          .characteristicWriteRequested
+          .listen((event) {
+            print('📥 Получен запрос записи от ${event.central.uuid}');
+            try {
+              final message = utf8.decode(event.request.value);
+              final jsonData = jsonDecode(message) as Map<String, dynamic>;
+              _incomingMessagesController.add(
+                MessageDto.fromJson(jsonData).toDomain(),
+              );
+              // Подтверждаем успешную запись
+              _peripheralManager.respondWriteRequest(event.request);
+            } catch (e) {
+              print('❌ Ошибка обработки входящих данных: $e');
+              _peripheralManager.respondWriteRequestWithError(
+                event.request,
+                error: GATTError.invalidAttributeValueLength,
+              );
+            }
+          });
+
+      // Начинаем рекламу с нашим именем и специальными данными
+      await _peripheralManager.startAdvertising(
+        Advertisement(
+          name: _deviceName, // Уникальное имя с моделью устройства
+          serviceUUIDs: [_serviceUuid],
+          manufacturerSpecificData: [
+            ManufacturerSpecificData(
+              id: 0x0499, // Ruuvi Innovations Ltd. ID
+              data: Uint8List.fromList([
+                0x01,
+                0x02,
+                0x03,
+              ]), // Маркер нашего приложения
+            ),
+          ],
+        ),
+      );
+
+      _isAdvertising = true;
+      print('✅ Реклама Bluetooth сервиса запущена');
+      print('📱 Устройство видимо как: "$_deviceName"');
+      print('🎯 Сервис: $_serviceUuid');
+      print('📝 Ожидание подключения от другого устройства...\n');
+    } catch (e) {
+      print('❌ Ошибка запуска рекламы: $e');
+      _isAdvertising = false;
+      throw Exception('Ошибка запуска рекламы: $e');
+    }
   }
 
   @override
   Future<void> stopAdvertising() async {
-    // Заглушка для остановки рекламы
-    print('Остановка ожидания подключения');
+    if (!_isAdvertising) return;
+
+    print('🛑 Остановка рекламы Bluetooth сервиса...');
+
+    try {
+      await _peripheralManager.stopAdvertising();
+      await _writeRequestSubscription?.cancel();
+      _writeRequestSubscription = null;
+      _isAdvertising = false;
+      print('✅ Реклама остановлена');
+    } catch (e) {
+      print('⚠️ Ошибка остановки рекламы: $e');
+    }
   }
 
   @override
@@ -159,70 +331,136 @@ class BluetoothRepository implements IBluetoothRepository {
 
   @override
   Future<void> connectToDevice(Device device) async {
+    print(
+      '\n🔗 Попытка подключения к устройству: ${device.name} (${device.id})',
+    );
+
     try {
-      // Находим устройство по ID
-      final btDevice = BluetoothDevice.fromId(device.id);
-      _connectedDevice = btDevice;
+      final peripheral = Peripheral(uuid: UUID.fromString(device.id));
+      _connectedPeripheral = peripheral;
 
-      // Подключаемся
-      await btDevice.connect(autoConnect: false);
+      print('🔌 Начинаем подключение...');
+      await _centralManager.connect(peripheral);
 
-      // Открываем сервисы
-      final services = await btDevice.discoverServices();
+      print('🔍 Подключение установлено, поиск сервисов...');
+      final services = await _centralManager.discoverGATT(peripheral);
+      print('Найдено сервисов: ${services.length}');
 
+      bool serviceFound = false;
       for (final service in services) {
-        if (service.uuid.str.toLowerCase() == _serviceUuid.toLowerCase()) {
+        print('Проверяем сервис: ${service.uuid}');
+        if (service.uuid == _serviceUuid) {
+          print('✅ Найден наш сервис!');
+          serviceFound = true;
+
           for (final characteristic in service.characteristics) {
-            // Настраиваем уведомления
-            if (characteristic.properties.notify) {
-              await characteristic.setNotifyValue(true);
+            print('Найдена характеристика: ${characteristic.uuid}');
 
-              _dataSubscription = characteristic.lastValueStream.listen((data) {
-                try {
-                  final message = utf8.decode(data);
-                  final jsonData = jsonDecode(message) as Map<String, dynamic>;
-                  _incomingMessagesController.add(
-                    MessageDto.fromJson(jsonData).toDomain(),
-                  );
-                } catch (e) {
-                  print('Ошибка обработки входящих данных: $e');
-                }
-              });
-            }
+            if (characteristic.uuid == _characteristicUuid) {
+              // Настраиваем уведомления
+              if (characteristic.properties.contains(
+                GATTCharacteristicProperty.notify,
+              )) {
+                await _centralManager.setCharacteristicNotifyState(
+                  peripheral,
+                  characteristic,
+                  state: true,
+                );
+                print('✅ Настроены уведомления');
 
-            // Настраиваем запись
-            if (characteristic.properties.write) {
-              _writeCharacteristic = characteristic;
+                _dataSubscription = _centralManager.characteristicNotified
+                    .where(
+                      (args) => args.characteristic.uuid == _characteristicUuid,
+                    )
+                    .listen((event) {
+                      try {
+                        final message = utf8.decode(event.value);
+                        final jsonData =
+                            jsonDecode(message) as Map<String, dynamic>;
+                        _incomingMessagesController.add(
+                          MessageDto.fromJson(jsonData).toDomain(),
+                        );
+                      } catch (e) {
+                        print('❌ Ошибка обработки входящих данных: $e');
+                      }
+                    });
+              }
+
+              // Сохраняем характеристику для записи
+              if (characteristic.properties.contains(
+                GATTCharacteristicProperty.write,
+              )) {
+                _writeCharacteristic = characteristic;
+                print('✅ Настроена запись');
+              }
             }
           }
           break;
         }
       }
+
+      if (!serviceFound) {
+        throw Exception('На устройстве не найден наш сервис $_serviceUuid');
+      }
+
+      print('✅ Подключение успешно завершено!');
     } catch (e) {
-      throw Exception('Ошибка подключения к устройству: $e');
+      print('❌ Ошибка подключения: $e');
+
+      // Очищаем состояние при ошибке
+      _connectedPeripheral = null;
+      _writeCharacteristic = null;
+
+      // Определяем тип ошибки и даём понятное объяснение
+      if (e.toString().contains('timeout')) {
+        throw Exception(
+          'Превышено время ожидания подключения. Проверьте расстояние между устройствами.',
+        );
+      } else {
+        throw Exception(
+          'Устройство недоступно для подключения. Убедитесь, что другое устройство в режиме ожидания. Детали: $e',
+        );
+      }
     }
   }
 
   @override
   Future<void> disconnect() async {
-    await _dataSubscription?.cancel();
-    _dataSubscription = null;
-    await _connectedDevice?.disconnect();
-    _connectedDevice = null;
-    _writeCharacteristic = null;
+    print('🔌 Отключение от устройства...');
+    try {
+      await _dataSubscription?.cancel();
+      _dataSubscription = null;
+
+      if (_connectedPeripheral != null) {
+        await _centralManager.disconnect(_connectedPeripheral!);
+      }
+
+      _connectedPeripheral = null;
+      _writeCharacteristic = null;
+      print('✅ Отключение завершено');
+    } catch (e) {
+      print('⚠️ Ошибка отключения: $e');
+    }
   }
 
   @override
   Future<void> sendMessage(Message message) async {
-    if (_connectedDevice == null || _writeCharacteristic == null) {
+    if (_connectedPeripheral == null || _writeCharacteristic == null) {
       throw Exception('Нет активного соединения или характеристики для записи');
     }
 
     try {
       final jsonMessage = jsonEncode(MessageDto.fromDomain(message).toJson());
-      final bytesMessage = utf8.encode(jsonMessage);
+      final bytesMessage = Uint8List.fromList(utf8.encode(jsonMessage));
 
-      await _writeCharacteristic!.write(bytesMessage, withoutResponse: false);
+      await _centralManager.writeCharacteristic(
+        _connectedPeripheral!,
+        _writeCharacteristic!,
+        value: bytesMessage,
+        type: GATTCharacteristicWriteType.withResponse,
+      );
+
+      print('📤 Сообщение отправлено: $jsonMessage');
     } catch (e) {
       throw Exception('Ошибка отправки данных: $e');
     }
@@ -232,38 +470,95 @@ class BluetoothRepository implements IBluetoothRepository {
   Stream<Message> get incomingMessages => _incomingMessagesController.stream;
 
   @override
-  bool get isConnected => _connectedDevice?.isConnected == true;
+  bool get isConnected => _connectedPeripheral != null;
 
   @override
-  Device? get connectedDevice => _connectedDevice != null
+  Device? get connectedDevice => _connectedPeripheral != null
       ? Device(
-          id: _connectedDevice!.remoteId.str,
-          name: _connectedDevice!.platformName,
+          id: _connectedPeripheral!.uuid.toString(),
+          name: _connectedPeripheral!.uuid
+              .toString(), // TODO: получить реальное имя
         )
       : null;
 
-  void _processDiscoveredDevice(BluetoothDevice device) {
+  /// Проверяет, является ли устройство нашим приложением
+  bool _isOurApplication(Advertisement advertisement) {
+    // Проверяем по имени устройства
+    if (advertisement.name != null && advertisement.name!.contains(_appName)) {
+      return true;
+    }
+
+    // Проверяем по сервису
+    if (advertisement.serviceUUIDs.contains(_serviceUuid)) {
+      return true;
+    }
+
+    // Проверяем по manufacturer data
+    final manufacturerDataList = advertisement.manufacturerSpecificData;
+    if (manufacturerDataList.isNotEmpty) {
+      // Ищем наш маркер в любом из manufacturer data
+      for (final data in manufacturerDataList) {
+        if (data.id == 0x0499 &&
+            data.data.length >= 3 &&
+            data.data[0] == 0x01 &&
+            data.data[1] == 0x02 &&
+            data.data[2] == 0x03) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /// Обрабатывает найденное устройство
+  void _processDiscoveredDevice(
+    Peripheral peripheral,
+    Advertisement advertisement,
+    bool isOurApp,
+  ) {
+    final deviceName = advertisement.name ?? peripheral.uuid.toString();
+
+    // Если это наше приложение, добавляем специальную пометку
+    final displayName = isOurApp ? '🎮 $deviceName' : deviceName;
+
     final discovered = Device(
-      id: device.remoteId.str,
-      name: device.platformName.replaceFirst(
-        AppConstants.bluetoothDevicePrefix,
-        '',
-      ),
+      id: peripheral.uuid.toString(),
+      name: displayName.replaceFirst(AppConstants.bluetoothDevicePrefix, ''),
     );
 
+    print('🔍 Обработка найденного устройства: $displayName');
+
     if (_foundDevices.every((p) => p.id != discovered.id)) {
-      _foundDevices.add(discovered);
+      print('➕ Добавляем новое устройство: ${discovered.name}');
+
+      // Если это наше приложение, ставим его в начало списка
+      if (isOurApp) {
+        _foundDevices.insert(0, discovered);
+        print('⭐ Устройство с нашим приложением поставлено в начало списка');
+      } else {
+        _foundDevices.add(discovered);
+      }
+
       _discoveredDevicesController.add(List.unmodifiable(_foundDevices));
+      print('📋 Текущий список устройств: ${_foundDevices.length}');
+    } else {
+      print('ℹ️ Устройство уже в списке: ${discovered.name}');
     }
   }
 
   @override
   void dispose() {
+    print('🧹 Очистка BluetoothRepository...');
     _discoveredDevicesController.close();
     _incomingMessagesController.close();
     _scanSubscription?.cancel();
     _scanTimer?.cancel();
     _dataSubscription?.cancel();
-    _connectedDevice?.disconnect();
+    _writeRequestSubscription?.cancel();
+    stopAdvertising();
+    stopDiscovery();
+    disconnect();
+    print('✅ BluetoothRepository очищен');
   }
 }
