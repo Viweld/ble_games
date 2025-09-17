@@ -18,8 +18,8 @@ class AppConstants {
   static const int bluetoothTimeoutMs = 10000;
 
   /// Идентификатор приложения для Bluetooth
-  static const String appBluetoothId = 'bluetooth_toe_app';
+  static const String appBluetoothId = 'batuga_app';
 
   /// Префикс для Bluetooth устройств
-  static const String bluetoothDevicePrefix = 'BT_TOE_';
+  static const String bluetoothDevicePrefix = 'BATUGA_';
 }

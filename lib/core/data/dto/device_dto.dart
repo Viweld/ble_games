@@ -1,4 +1,4 @@
-import 'package:bluetooth_toe/core/data/dto/user_dto.dart';
+import 'package:batuga/core/data/dto/user_dto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -12,7 +12,11 @@ part 'device_dto.g.dart';
 @JsonSerializable(explicitToJson: true)
 class DeviceDto extends BaseDto<Device> {
   /// Конструктор DTO устройства
-  const DeviceDto({required this.id, required this.name});
+  const DeviceDto({
+    required this.id,
+    required this.name,
+    this.isOurApp = false,
+  });
 
   /// Уникальный идентификатор устройства.
   /// Пример: `"device_456"`
@@ -24,14 +28,18 @@ class DeviceDto extends BaseDto<Device> {
   @JsonKey(name: 'name')
   final String name;
 
+  /// Является ли устройство нашим приложением
+  @JsonKey(name: 'isOurApp')
+  final bool isOurApp;
+
   factory DeviceDto.fromJson(Map<String, dynamic> json) =>
       _$DeviceDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$DeviceDtoToJson(this);
 
   @override
-  Device toDomain() => Device(id: id, name: name);
+  Device toDomain() => Device(id: id, name: name, isOurApp: isOurApp);
 
   static DeviceDto fromDomain(Device device) =>
-      DeviceDto(id: device.id, name: device.name);
+      DeviceDto(id: device.id, name: device.name, isOurApp: device.isOurApp);
 }

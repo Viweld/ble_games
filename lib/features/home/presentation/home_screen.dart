@@ -369,26 +369,49 @@ class _SearchingDevicesView extends StatelessWidget {
                     return Card(
                       margin: const EdgeInsets.only(bottom: 8),
                       color: isSelected
-                          ? Theme.of(context).primaryColor.withOpacity(0.1)
+                          ? Theme.of(context).primaryColor.withOpacity(0.3)
                           : null,
                       child: ListTile(
-                        leading: Icon(
-                          Icons.bluetooth,
-                          color: isSelected
-                              ? Theme.of(context).primaryColor
-                              : null,
-                        ),
+                        leading: device.isOurApp
+                            ? const Icon(
+                                Icons.games,
+                                color: Colors.green,
+                                size: 28,
+                              )
+                            : Icon(
+                                Icons.bluetooth,
+                                color: isSelected
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.grey,
+                              ),
                         title: Text(
-                          device.name,
+                          device.name.isEmpty
+                              ? 'Неизвестное устройство'
+                              : device.name,
                           style: TextStyle(
                             fontWeight: isSelected ? FontWeight.bold : null,
+                            color: device.isOurApp ? Colors.green : null,
                           ),
                         ),
-                        subtitle: Text(device.id),
+                        subtitle: device.isOurApp
+                            ? const Text(
+                                '🎮 Приложение BaTuGa',
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontSize: 12,
+                                ),
+                              )
+                            : null,
                         trailing: isSelected
                             ? Icon(
                                 Icons.check_circle,
                                 color: Theme.of(context).primaryColor,
+                              )
+                            : device.isOurApp
+                            ? const Icon(
+                                Icons.star,
+                                color: Colors.green,
+                                size: 20,
                               )
                             : null,
                         onTap: () => onDeviceSelected(device),

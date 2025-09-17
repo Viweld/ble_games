@@ -1,4 +1,4 @@
-package com.example.bluetooth_toe
+package com.example.batuga
 
 import io.flutter.embedding.android.FlutterActivity
 

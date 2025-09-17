@@ -1,5 +1,5 @@
-import 'package:bluetooth_toe/features/tictactoe/data/models/game_move_dto.dart';
-import 'package:bluetooth_toe/core/data/dto/user_dto.dart';
+import 'package:batuga/features/tictactoe/data/models/game_move_dto.dart';
+import 'package:batuga/core/data/dto/user_dto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 

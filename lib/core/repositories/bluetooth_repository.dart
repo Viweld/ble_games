@@ -24,6 +24,7 @@ class BluetoothRepository implements IBluetoothRepository {
   late final StreamController<Message> _incomingMessagesController;
 
   final List<Device> _foundDevices = [];
+  final Map<String, Peripheral> _discoveredPeripherals = {};
 
   late final CentralManager _centralManager;
   late final PeripheralManager _peripheralManager;
@@ -48,7 +49,7 @@ class BluetoothRepository implements IBluetoothRepository {
   );
 
   // Уникальное имя приложения для идентификации
-  static const String _appName = '🎮 BT-Games';
+  static const String _appName = '🎮BaTuGa';
   late String _deviceName;
 
   /// Инициализация имени устройства
@@ -135,6 +136,7 @@ class BluetoothRepository implements IBluetoothRepository {
       await stopDiscovery();
 
       _foundDevices.clear();
+      _discoveredPeripherals.clear();
       print('\n🔍 Запуск поиска Bluetooth устройств...');
 
       // Подписываемся на результаты сканирования
@@ -336,7 +338,12 @@ class BluetoothRepository implements IBluetoothRepository {
     );
 
     try {
-      final peripheral = Peripheral(uuid: UUID.fromString(device.id));
+      // Получаем сохраненный объект Peripheral
+      final peripheral = _discoveredPeripherals[device.id];
+      if (peripheral == null) {
+        throw Exception('Устройство не найдено в списке обнаруженных');
+      }
+
       _connectedPeripheral = peripheral;
 
       print('🔌 Начинаем подключение...');
@@ -478,6 +485,7 @@ class BluetoothRepository implements IBluetoothRepository {
           id: _connectedPeripheral!.uuid.toString(),
           name: _connectedPeripheral!.uuid
               .toString(), // TODO: получить реальное имя
+          isOurApp: false, // По умолчанию false для подключенного устройства
         )
       : null;
 
@@ -518,16 +526,36 @@ class BluetoothRepository implements IBluetoothRepository {
     bool isOurApp,
   ) {
     final deviceName = advertisement.name ?? peripheral.uuid.toString();
+    final deviceId = peripheral.uuid.toString();
 
-    // Если это наше приложение, добавляем специальную пометку
-    final displayName = isOurApp ? '🎮 $deviceName' : deviceName;
+    // Сохраняем объект Peripheral для дальнейшего подключения
+    _discoveredPeripherals[deviceId] = peripheral;
+
+    // Формируем чистое имя устройства
+    String cleanName = deviceName;
+
+    // Убираем эмодзи и название приложения из имени
+    if (cleanName.contains(_appName)) {
+      cleanName = cleanName
+          .replaceAll(_appName, '')
+          .replaceAll('🎮', '')
+          .trim();
+      // Убираем лишние дефисы в начале
+      if (cleanName.startsWith('-')) {
+        cleanName = cleanName.substring(1);
+      }
+    }
 
     final discovered = Device(
-      id: peripheral.uuid.toString(),
-      name: displayName.replaceFirst(AppConstants.bluetoothDevicePrefix, ''),
+      id: deviceId,
+      name: cleanName.replaceFirst(AppConstants.bluetoothDevicePrefix, ''),
+      // Добавляем флаг того, что это наше приложение
+      isOurApp: isOurApp,
     );
 
-    print('🔍 Обработка найденного устройства: $displayName');
+    print(
+      '🔍 Обработка найденного устройства: ${discovered.name}${isOurApp ? ' (🎮 наше приложение)' : ''}',
+    );
 
     if (_foundDevices.every((p) => p.id != discovered.id)) {
       print('➕ Добавляем новое устройство: ${discovered.name}');

@@ -16,7 +16,7 @@
     <uses-feature android:name="android.hardware.location" android:required="false" />
 
     <application
-            android:label="bluetooth_toe"
+            android:label="BaTuGa"
             android:name="${applicationName}"
             android:icon="@mipmap/ic_launcher">
 

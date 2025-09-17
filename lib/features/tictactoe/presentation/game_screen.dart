@@ -1,4 +1,4 @@
-import 'package:bluetooth_toe/core/di/builders.dep_gen.dart';
+import 'package:batuga/core/di/builders.dep_gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
