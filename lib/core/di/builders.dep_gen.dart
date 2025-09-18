@@ -128,14 +128,11 @@ class DepProvider extends InheritedWidget {
   );
 
   // ---------------------------------------------------------------------------
-  NicknameBloc buildNicknameBloc() =>
-      NicknameBloc(playerRepository: _env.g<IUserRepository>());
+  NicknameBloc buildNicknameBloc() => NicknameBloc();
 
   // ---------------------------------------------------------------------------
-  SplashBloc buildSplashBloc() => SplashBloc(
-    playerRepository: _env.g<IUserRepository>(),
-    bluetoothRepository: _env.g<IBluetoothRepository>(),
-  );
+  SplashBloc buildSplashBloc() =>
+      SplashBloc(bluetoothRepository: _env.g<IBluetoothRepository>());
 
   // ---------------------------------------------------------------------------
   GameBloc buildGameBloc() => GameBloc(

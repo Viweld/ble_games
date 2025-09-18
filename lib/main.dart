@@ -6,6 +6,7 @@ import 'core/themes/app_theme.dart';
 import 'core/di/environment.dart';
 import 'features/splash/presentation/splash_screen.dart';
 import 'features/home/presentation/home_screen.dart';
+import 'features/home/presentation/bluetooth_test_main_screen.dart';
 import 'features/games_list/presentation/games_list_screen.dart';
 import 'features/tictactoe/presentation/game_screen.dart';
 
@@ -45,6 +46,7 @@ class BluetoothToeApp extends StatelessWidget {
       routes: {
         '/': (context) => const SplashScreen(),
         '/home': (context) => const HomeScreen(),
+        '/bluetooth_test': (context) => const BluetoothTestMainScreen(),
         '/games_list': (context) => const GamesListScreen(),
         '/tictactoe': (context) => const GameScreen(),
       },

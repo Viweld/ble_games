@@ -13,9 +13,7 @@ part 'nickname_bloc.freezed.dart';
 /// BLoC для диалога псевдонима
 @DepGen()
 class NicknameBloc extends Bloc<NicknameEvent, NicknameState> {
-  NicknameBloc({@DepArg() required IUserRepository playerRepository})
-    : _playerRepository = playerRepository,
-      super(const NicknameState.initial()) {
+  NicknameBloc() : super(const NicknameState.initial()) {
     on<NicknameEvent>(
       (event, emit) => switch (event) {
         NicknameEventOnNicknameChanged() => _onNicknameChanged(event, emit),
@@ -24,8 +22,6 @@ class NicknameBloc extends Bloc<NicknameEvent, NicknameState> {
       },
     );
   }
-
-  final IUserRepository _playerRepository;
 
   /// Обработчик изменения псевдонима
   Future<void> _onNicknameChanged(

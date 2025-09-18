@@ -35,6 +35,7 @@ class DeviceDto extends BaseDto<Device> {
   factory DeviceDto.fromJson(Map<String, dynamic> json) =>
       _$DeviceDtoFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$DeviceDtoToJson(this);
 
   @override

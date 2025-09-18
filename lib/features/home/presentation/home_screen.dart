@@ -84,6 +84,7 @@ class _HomeView extends StatelessWidget {
               onAwaitConnectionPressed: () =>
                   _onAwaitConnectionPressed(context),
               onSearchDevicesPressed: () => _onSearchDevicesPressed(context),
+              onBluetoothTestPressed: () => _onBluetoothTestPressed(context),
             ),
             HomeStateAwaitingConnection() => _AwaitingConnectionView(
               onCancel: () => _onCancelAwaiting(context),
@@ -104,31 +105,6 @@ class _HomeView extends StatelessWidget {
     );
   }
 
-  /// Показать диалог ожидания
-  void _showWaitingDialog(BuildContext context, Device invitedDevice) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Ожидание'),
-        content: Text(
-          'Ожидайте когда устройство ${invitedDevice.name} ответит',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              context.read<HomeBloc>().add(
-                const HomeEvent.onCancelInvitation(),
-              );
-            },
-            child: const Text('Отмена'),
-          ),
-        ],
-      ),
-    );
-  }
-
   /// Обработчик нажатия кнопки 'Ожидать присоединения'
   void _onAwaitConnectionPressed(BuildContext context) {
     context.read<HomeBloc>().add(const HomeEvent.onStartAwaitingConnection());
@@ -137,6 +113,11 @@ class _HomeView extends StatelessWidget {
   /// Обработчик нажатия кнопки 'Найти и подключиться'
   void _onSearchDevicesPressed(BuildContext context) {
     context.read<HomeBloc>().add(const HomeEvent.onStartSearchingDevices());
+  }
+
+  /// Обработчик нажатия кнопки 'Тест Bluetooth'
+  void _onBluetoothTestPressed(BuildContext context) {
+    Navigator.of(context).pushNamed('/bluetooth_test');
   }
 
   /// Обработчик отмены ожидания
@@ -209,11 +190,12 @@ class _HomeView extends StatelessWidget {
   }
 }
 
-/// Основной вид с двумя кнопками
+/// Основной вид с тремя кнопками
 class _MainView extends StatelessWidget {
   const _MainView({
     required this.onAwaitConnectionPressed,
     required this.onSearchDevicesPressed,
+    required this.onBluetoothTestPressed,
   });
 
   /// Коллбэк нажатия 'Ожидать присоединения'
@@ -221,6 +203,9 @@ class _MainView extends StatelessWidget {
 
   /// Коллбэк нажатия 'Найти и подключиться'
   final VoidCallback onSearchDevicesPressed;
+
+  /// Коллбэк нажатия 'Тест Bluetooth'
+  final VoidCallback onBluetoothTestPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -263,6 +248,18 @@ class _MainView extends StatelessWidget {
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.all(16),
                 ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            /// Кнопка 'Тест Bluetooth'
+            SizedBox(
+              width: double.infinity,
+              child: TextButton.icon(
+                onPressed: onBluetoothTestPressed,
+                icon: const Icon(Icons.science),
+                label: const Text('Тест Bluetooth-соединения'),
+                style: TextButton.styleFrom(padding: const EdgeInsets.all(16)),
               ),
             ),
           ],
@@ -369,7 +366,9 @@ class _SearchingDevicesView extends StatelessWidget {
                     return Card(
                       margin: const EdgeInsets.only(bottom: 8),
                       color: isSelected
-                          ? Theme.of(context).primaryColor.withOpacity(0.3)
+                          ? Theme.of(
+                              context,
+                            ).primaryColor.withValues(alpha: 0.3)
                           : null,
                       child: ListTile(
                         leading: device.isOurApp

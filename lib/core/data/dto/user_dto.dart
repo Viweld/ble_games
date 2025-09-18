@@ -26,6 +26,7 @@ class UserDto extends BaseDto<User> {
   factory UserDto.fromJson(Map<String, dynamic> json) =>
       _$UserDtoFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$UserDtoToJson(this);
 
   @override

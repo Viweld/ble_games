@@ -1,18 +1,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Разрешения -->
+    <!-- Разрешения для Android до 12 -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
-    <!-- Для Android < 12, сканирование BLE требует локацию -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="30" />
+    
+    <!-- Разрешения для Android 12+ -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
-
-    <!-- Особенности устройства (нельзя внутри <application>) -->
+    
+    <!-- Для некоторых устройств требуется GPS как индикатор присутствия железа -->
     <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
-    <!-- Для некоторых устройств требуется GPS как индикатор присутствия железа -->
     <uses-feature android:name="android.hardware.location" android:required="false" />
 
     <application
@@ -43,8 +43,6 @@
         <meta-data
                 android:name="flutterEmbedding"
                 android:value="2" />
-
-        <!-- Разрешения на время выполнения (для Android 12+) будут запрашиваться в коде -->
 
     </application>
 

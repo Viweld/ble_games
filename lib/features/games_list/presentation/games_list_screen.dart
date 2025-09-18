@@ -219,7 +219,7 @@ class _GameListItem extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       color: isSelected
-          ? Theme.of(context).primaryColor.withOpacity(0.1)
+          ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
           : null,
       child: ListTile(
         leading: const Icon(Icons.games),

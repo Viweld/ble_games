@@ -13,12 +13,9 @@ part 'splash_bloc.freezed.dart';
 /// BLoC для сплэш-скрина
 @DepGen()
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
-  SplashBloc({
-    @DepArg() required IUserRepository playerRepository,
-    @DepArg() required IBluetoothRepository bluetoothRepository,
-  }) : _playerRepository = playerRepository,
-       _bluetoothRepository = bluetoothRepository,
-       super(const SplashState.initializationPending()) {
+  SplashBloc({@DepArg() required IBluetoothRepository bluetoothRepository})
+    : _bluetoothRepository = bluetoothRepository,
+      super(const SplashState.initializationPending()) {
     on<SplashEvent>(
       (event, emit) => switch (event) {
         SplashEventOnInitializationRequested() => _onInitializationRequested(
@@ -31,7 +28,6 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     add(const SplashEvent.onInitializationRequested());
   }
 
-  final IUserRepository _playerRepository;
   final IBluetoothRepository _bluetoothRepository;
 
   /// Обработчик запроса инициализации

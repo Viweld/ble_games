@@ -41,6 +41,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         _ => throw UnimplementedError('Unhandled event: $event'),
       },
     );
+    _gameBoard = List.generate(3, (_) => List.filled(3, null));
 
     // Подписка на входящие сообщения доменного уровня
     _incomingDataSubscription = _bluetoothRepository.incomingMessages.listen((
@@ -72,11 +73,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   final IUserRepository _userRepository;
 
   late final StreamSubscription<Message> _incomingDataSubscription;
-
-  List<List<PlayerType?>> _gameBoard = List.generate(
-    3,
-    (_) => List.filled(3, null),
-  );
+  late final List<List<PlayerType?>> _gameBoard;
   PlayerType _currentPlayer = PlayerType.x;
   PlayerType _playerType = PlayerType.x;
   GameWinner _gameWinner = GameWinner.none;

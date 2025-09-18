@@ -2,7 +2,7 @@ part of 'home_bloc.dart';
 
 /// События главного экрана
 @freezed
-class HomeEvent with _$HomeEvent {
+abstract class HomeEvent with _$HomeEvent {
   /// Запрос инициализации
   const factory HomeEvent.onInitializationRequested() =
       HomeEventOnInitializationRequested;
@@ -61,4 +61,20 @@ class HomeEvent with _$HomeEvent {
   /// Игра началась
   const factory HomeEvent.onGameStarted({required User opponent}) =
       HomeEventOnGameStarted;
+
+  /// Отправить сообщение
+  const factory HomeEvent.onSendMessage({required String content}) =
+      HomeEventOnSendMessage;
+
+  /// Перейти к тестированию сообщений
+  const factory HomeEvent.onNavigateToMessageTest() =
+      HomeEventOnNavigateToMessageTest;
+
+  /// Вернуться к тестированию соединения
+  const factory HomeEvent.onNavigateToConnectionTest() =
+      HomeEventOnNavigateToConnectionTest;
+
+  /// Получено сообщение
+  const factory HomeEvent.onMessageReceived({required Message message}) =
+      HomeEventOnMessageReceived;
 }

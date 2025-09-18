@@ -1,6 +1,6 @@
 part of 'home_bloc.dart';
 
-/// Состояния главного экрана
+/// Состояние BLoC главного экрана
 @freezed
 class HomeState with _$HomeState {
   /// Состояние инициализации
@@ -40,4 +40,18 @@ class HomeState with _$HomeState {
     required User opponent,
     required PlayerType myPlayerType,
   }) = HomeStateGameStarted;
+
+  /// Состояние тестирования сообщений
+  const factory HomeState.messageTestView() = HomeStateMessageTestView;
+
+  /// Состояние получения сообщения
+  const factory HomeState.messageReceived({required Message message}) =
+      HomeStateMessageReceived;
+
+  /// Состояние отправки сообщения
+  const factory HomeState.messageSent() = HomeStateMessageSent;
+
+  /// Состояние ошибки соединения
+  const factory HomeState.connectionError({required String message}) =
+      HomeStateConnectionError;
 }
