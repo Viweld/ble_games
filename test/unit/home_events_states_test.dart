@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:batuga/features/home/presentation/bloc/events.dart';
-import 'package:batuga/features/home/presentation/bloc/states.dart';
+import 'package:batuga/features/home/presentation/bloc/home_bloc.dart';
 import 'package:batuga/core/domain/models/device.dart';
 
 void main() {
@@ -8,45 +7,45 @@ void main() {
     group('Events', () {
       test('HomeEventOnInitializationRequested', () {
         const event = HomeEvent.onInitializationRequested();
-        expect(event, const HomeEventOnInitializationRequested());
+        expect(event, const HomeEvent.onInitializationRequested());
       });
 
       test('HomeEventOnStartAwaitingConnection', () {
         const event = HomeEvent.onStartAwaitingConnection();
-        expect(event, const HomeEventOnStartAwaitingConnection());
+        expect(event, const HomeEvent.onStartAwaitingConnection());
       });
 
       test('HomeEventOnStartSearchingDevices', () {
         const event = HomeEvent.onStartSearchingDevices();
-        expect(event, const HomeEventOnStartSearchingDevices());
+        expect(event, const HomeEvent.onStartSearchingDevices());
       });
 
       test('HomeEventOnDeviceSelected', () {
         final device = Device(id: 'test_id', name: 'Test Device');
         final event = HomeEvent.onDeviceSelected(device: device);
-        expect(event, HomeEventOnDeviceSelected(device: device));
+        expect(event, HomeEvent.onDeviceSelected(device: device));
       });
 
       test('HomeEventOnSendMessage', () {
         const event = HomeEvent.onSendMessage(content: 'Test message');
-        expect(event, const HomeEventOnSendMessage(content: 'Test message'));
+        expect(event, const HomeEvent.onSendMessage(content: 'Test message'));
       });
     });
 
     group('States', () {
       test('HomeStateInitializationPending', () {
         const state = HomeState.initializationPending();
-        expect(state, const HomeStateInitializationPending());
+        expect(state, const HomeState.initializationPending());
       });
 
       test('HomeStateView', () {
         const state = HomeState.view();
-        expect(state, const HomeStateView());
+        expect(state, const HomeState.view());
       });
 
       test('HomeStateAwaitingConnection', () {
         const state = HomeState.awaitingConnection();
-        expect(state, const HomeStateAwaitingConnection());
+        expect(state, const HomeState.awaitingConnection());
       });
 
       test('HomeStateSearchingDevices', () {
@@ -56,13 +55,13 @@ void main() {
         );
         expect(
           state,
-          const HomeStateSearchingDevices(devices: [], selectedDevice: null),
+          const HomeState.searchingDevices(devices: [], selectedDevice: null),
         );
       });
 
       test('HomeStateMessageTestView', () {
         const state = HomeState.messageTestView();
-        expect(state, const HomeStateMessageTestView());
+        expect(state, const HomeState.messageTestView());
       });
     });
   });

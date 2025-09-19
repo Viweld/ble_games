@@ -1,8 +1,10 @@
-import 'package:batuga/features/tictactoe/data/models/game_move_dto.dart';
+import 'package:batuga/features/tictactoe/data/models/game_move_dto.dart'
+    as game_move_dto;
 import 'package:batuga/core/data/dto/user_dto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../../features/tictactoe/data/models/game_move_dto.dart';
 import 'abstracts/base_dto.dart';
 import '../../domain/models/messages.dart';
 import 'device_dto.dart';
@@ -208,7 +210,7 @@ class MoveMessageDto extends MessageDto<MoveMessage> {
   /// Ход в игре, связанный с сообщением
   /// Пример: `{ "position": { "row": 0, "column": 2 }, "player_type": "X" }`
   @JsonKey(name: moveKey)
-  final GameMoveDto move;
+  final game_move_dto.GameMoveDto move;
 
   factory MoveMessageDto.fromJson(Map<String, dynamic> json) =>
       _$MoveMessageDtoFromJson(json);
@@ -227,7 +229,7 @@ class MoveMessageDto extends MessageDto<MoveMessage> {
     type: typeValue,
     device: DeviceDto.fromDomain(message.device),
     user: UserDto.fromDomain(message.user),
-    move: GameMoveDto.fromDomain(message.move),
+    move: game_move_dto.GameMoveDto.fromDomain(message.move),
   );
 }
 

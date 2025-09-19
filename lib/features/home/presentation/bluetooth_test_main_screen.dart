@@ -24,18 +24,36 @@ class _BluetoothTestMainView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('[DEBUG] _BluetoothTestMainView.build() вызван');
+
     return BlocConsumer<HomeBloc, HomeState>(
-      listenWhen: (previous, state) => false, // Не обрабатываем события здесь
-      buildWhen: (previous, state) => true, // Строим для всех состояний
-      listener: (context, state) {},
+      listenWhen: (previous, state) {
+        print(
+          '[DEBUG] listenWhen: previous=${previous.runtimeType}, state=${state.runtimeType}',
+        );
+        return false; // Не обрабатываем события здесь
+      },
+      buildWhen: (previous, state) {
+        print(
+          '[DEBUG] buildWhen: previous=${previous.runtimeType}, state=${state.runtimeType}',
+        );
+        return true; // Строим для всех состояний
+      },
+      listener: (context, state) {
+        print('[DEBUG] listener: state=${state.runtimeType}');
+      },
       builder: (context, state) {
+        print('[DEBUG] builder: state=${state.runtimeType}');
+
         // Определяем, какой экран показывать в зависимости от состояния
         if (state is HomeStateMessageTestView ||
             state is HomeStateMessageReceived ||
             state is HomeStateMessageSent ||
             state is HomeStateConnectionError) {
+          print('[DEBUG] Отображение MessageTestScreen');
           return const MessageTestScreen();
         } else {
+          print('[DEBUG] Отображение BluetoothTestScreen');
           return const BluetoothTestScreen();
         }
       },

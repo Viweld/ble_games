@@ -13,35 +13,58 @@ class BluetoothTestScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('[DEBUG] BluetoothTestScreen.build() вызван');
+
     return BlocConsumer<HomeBloc, HomeState>(
-      listenWhen: (previous, state) => switch (state) {
-        HomeStateInitializationError() => true,
-        HomeStateInvitationReceived() => true,
-        HomeStateInvitationRejected() => true,
-        HomeStateGameStarted() => true,
-        _ => false,
+      listenWhen: (previous, state) {
+        final shouldListen = switch (state) {
+          HomeStateInitializationError() => true,
+          HomeStateInvitationReceived() => true,
+          HomeStateInvitationRejected() => true,
+          HomeStateGameStarted() => true,
+          _ => false,
+        };
+        print(
+          '[DEBUG] BluetoothTestScreen.listenWhen: previous=${previous.runtimeType}, state=${state.runtimeType}, result=$shouldListen',
+        );
+        return shouldListen;
       },
-      buildWhen: (previous, state) => switch (state) {
-        HomeStateInitializationPending() => true,
-        HomeStateInitializationError() => true,
-        HomeStateView() => true,
-        HomeStateAwaitingConnection() => true,
-        HomeStateSearchingDevices() => true,
-        _ => false,
+      buildWhen: (previous, state) {
+        final shouldBuild = switch (state) {
+          HomeStateInitializationPending() => true,
+          HomeStateInitializationError() => true,
+          HomeStateView() => true,
+          HomeStateAwaitingConnection() => true,
+          HomeStateSearchingDevices() => true,
+          _ => false,
+        };
+        print(
+          '[DEBUG] BluetoothTestScreen.buildWhen: previous=${previous.runtimeType}, state=${state.runtimeType}, result=$shouldBuild',
+        );
+        return shouldBuild;
       },
-      listener: (context, state) => switch (state) {
-        HomeStateInitializationError(:final message) => _showErrorDialog(
-          context,
-          'Ошибка инициализации: $message',
-        ),
-        HomeStateInvitationReceived(:final invitingUser) =>
-          _showInvitationDialog(context, invitingUser),
-        HomeStateInvitationRejected(:final rejectedUser) =>
-          _showRejectionDialog(context, rejectedUser),
-        HomeStateGameStarted() => _showConnectionSuccessDialog(context),
-        _ => null,
+      listener: (context, state) {
+        print(
+          '[DEBUG] BluetoothTestScreen.listener: state=${state.runtimeType}',
+        );
+        return switch (state) {
+          HomeStateInitializationError(:final message) => _showErrorDialog(
+            context,
+            'Ошибка инициализации: $message',
+          ),
+          HomeStateInvitationReceived(:final invitingUser) =>
+            _showInvitationDialog(context, invitingUser),
+          HomeStateInvitationRejected(:final rejectedUser) =>
+            _showRejectionDialog(context, rejectedUser),
+          HomeStateGameStarted() => _showConnectionSuccessDialog(context),
+          _ => null,
+        };
       },
       builder: (context, state) {
+        print(
+          '[DEBUG] BluetoothTestScreen.builder: state=${state.runtimeType}',
+        );
+
         return switch (state) {
           HomeStateInitializationPending() => const Center(
             child: CircularProgressIndicator(),

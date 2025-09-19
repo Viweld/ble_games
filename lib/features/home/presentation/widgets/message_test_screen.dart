@@ -27,6 +27,8 @@ class _MessageTestScreenState extends State<MessageTestScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('[DEBUG] MessageTestScreen.build() вызван');
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Тест обмена сообщениями'),
@@ -37,26 +39,49 @@ class _MessageTestScreenState extends State<MessageTestScreen> {
         ),
       ),
       body: BlocConsumer<HomeBloc, HomeState>(
-        listenWhen: (previous, state) => switch (state) {
-          HomeStateMessageReceived() => true,
-          HomeStateMessageSent() => true,
-          HomeStateConnectionError() => true,
-          _ => false,
+        listenWhen: (previous, state) {
+          final shouldListen = switch (state) {
+            HomeStateMessageReceived() => true,
+            HomeStateMessageSent() => true,
+            HomeStateConnectionError() => true,
+            _ => false,
+          };
+          print(
+            '[DEBUG] MessageTestScreen.listenWhen: previous=${previous.runtimeType}, state=${state.runtimeType}, result=$shouldListen',
+          );
+          return shouldListen;
         },
-        buildWhen: (previous, state) => switch (state) {
-          HomeStateMessageTestView() => true,
-          HomeStateConnectionError() => true,
-          _ => false,
+        buildWhen: (previous, state) {
+          final shouldBuild = switch (state) {
+            HomeStateMessageTestView() => true,
+            HomeStateConnectionError() => true,
+            _ => false,
+          };
+          print(
+            '[DEBUG] MessageTestScreen.buildWhen: previous=${previous.runtimeType}, state=${state.runtimeType}, result=$shouldBuild',
+          );
+          return shouldBuild;
         },
-        listener: (context, state) => switch (state) {
-          HomeStateMessageReceived(:final message) => _onMessageReceived(
-            message,
-          ),
-          HomeStateMessageSent() => _onMessageSent(),
-          HomeStateConnectionError(:final message) => _showErrorDialog(message),
-          _ => null,
+        listener: (context, state) {
+          print(
+            '[DEBUG] MessageTestScreen.listener: state=${state.runtimeType}',
+          );
+          return switch (state) {
+            HomeStateMessageReceived(:final message) => _onMessageReceived(
+              message,
+            ),
+            HomeStateMessageSent() => _onMessageSent(),
+            HomeStateConnectionError(:final message) => _showErrorDialog(
+              message,
+            ),
+            _ => null,
+          };
         },
         builder: (context, state) {
+          print(
+            '[DEBUG] MessageTestScreen.builder: state=${state.runtimeType}',
+          );
+
           return switch (state) {
             HomeStateMessageTestView() => _MessageTestView(
               messages: _messages,
@@ -119,10 +144,15 @@ class _MessageTestScreenState extends State<MessageTestScreen> {
 
   /// Отправить сообщение
   void _sendMessage() {
+    print('[DEBUG] Отправка сообщения: ${_messageController.text.trim()}');
+
     if (_messageController.text.trim().isNotEmpty) {
       // Отправляем тестовое сообщение
       final message = _messageController.text.trim();
+      print('[DEBUG] Добавление события onSendMessage в HomeBloc');
       context.read<HomeBloc>().add(HomeEvent.onSendMessage(content: message));
+    } else {
+      print('[DEBUG] Пустое сообщение, отправка отменена');
     }
   }
 
@@ -305,6 +335,20 @@ class _ErrorView extends StatelessWidget {
             Text(message, textAlign: TextAlign.center),
             const SizedBox(height: 24),
             ElevatedButton(onPressed: onRetry, child: const Text('Назад')),
+            const SizedBox(height: 12),
+            TextButton(
+              onPressed: () {
+                // Отключаемся и возвращаемся к начальному экрану
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              },
+              child: const Text('Переподключиться'),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'При ошибке статуса 133 необходимо полностью отключиться и заново подключиться к устройству.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+            ),
           ],
         ),
       ),

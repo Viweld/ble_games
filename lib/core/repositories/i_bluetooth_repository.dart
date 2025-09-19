@@ -36,6 +36,9 @@ abstract class IBluetoothRepository {
   /// Получить поток входящих сообщений
   Stream<Message> get incomingMessages;
 
+  /// Получить поток подключений клиентов
+  Stream<String> get clientConnections;
+
   /// Проверить, подключены ли к устройству
   bool get isConnected;
 

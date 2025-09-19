@@ -35,11 +35,17 @@ class BluetoothRepository implements IBluetoothRepository {
   BluetoothRepository() {
     _discoveredDevicesController = StreamController<List<Device>>.broadcast();
     _incomingMessagesController = StreamController<Message>.broadcast();
+    _clientConnectionController = StreamController<String>.broadcast();
     _initializeDeviceName();
   }
 
   late final StreamController<List<Device>> _discoveredDevicesController;
   late final StreamController<Message> _incomingMessagesController;
+  late final StreamController<String>
+  _clientConnectionController; // Новый контроллер для отслеживания подключений клиентов
+
+  // Добавляем поле для отслеживания подключенных клиентов
+  final Set<String> _connectedClients = {};
 
   final List<Device> _foundDevices = [];
   final Map<String, Peripheral> _discoveredPeripherals = {};
@@ -145,35 +151,6 @@ class BluetoothRepository implements IBluetoothRepository {
       // Инициализируем менеджеры
       _centralManager = CentralManager();
       _peripheralManager = PeripheralManager();
-
-      // Ожидаем готовности Bluetooth адаптера для центрального режима
-      _BluetoothLogger.debug('Проверка состояния Bluetooth адаптера...');
-      if (_centralManager.state != BluetoothLowEnergyState.poweredOn) {
-        await for (final state in _centralManager.stateChanged) {
-          _BluetoothLogger.debug('Состояние Central Bluetooth: $state');
-          if (state.state == BluetoothLowEnergyState.poweredOn) {
-            break;
-          } else if (state.state == BluetoothLowEnergyState.poweredOff) {
-            throw Exception(
-              'Bluetooth отключён. Пожалуйста, включите Bluetooth',
-            );
-          }
-        }
-      }
-
-      // Ожидаем готовности Bluetooth адаптера для периферийного режима
-      if (_peripheralManager.state != BluetoothLowEnergyState.poweredOn) {
-        await for (final state in _peripheralManager.stateChanged) {
-          _BluetoothLogger.debug('Состояние Peripheral Bluetooth: $state');
-          if (state.state == BluetoothLowEnergyState.poweredOn) {
-            break;
-          } else if (state.state == BluetoothLowEnergyState.poweredOff) {
-            throw Exception(
-              'Bluetooth отключён. Пожалуйста, включите Bluetooth',
-            );
-          }
-        }
-      }
 
       _isInitialized = true;
       _BluetoothLogger.debug('✅ Bluetooth успешно инициализирован');
@@ -290,6 +267,7 @@ class BluetoothRepository implements IBluetoothRepository {
     }
   }
 
+  /// Начать рекламу присутствия приложения (BLE Advertise)
   @override
   Future<void> startAdvertising() async {
     _BluetoothLogger.debug('\n📡 Запуск рекламы Bluetooth сервиса...');
@@ -335,13 +313,23 @@ class BluetoothRepository implements IBluetoothRepository {
             _BluetoothLogger.debug(
               '📥 Получен запрос записи от ${event.central.uuid}',
             );
+
+            // Проверяем, является ли клиент новым
+            final clientId = event.central.uuid.toString();
+            if (!_connectedClients.contains(clientId)) {
+              _BluetoothLogger.debug('🆕 Новое подключение клиента: $clientId');
+              _connectedClients.add(clientId);
+              // Отправляем событие подключения клиента
+              _clientConnectionController.add(clientId);
+            }
+
             try {
               final message = utf8.decode(event.request.value);
               _BluetoothLogger.debug('📥 Входящее сообщение: $message');
               final jsonData = jsonDecode(message) as Map<String, dynamic>;
-              _incomingMessagesController.add(
-                MessageDto.fromJson(jsonData).toDomain(),
-              );
+              final domainMessage = MessageDto.fromJson(jsonData).toDomain();
+              _incomingMessagesController.add(domainMessage);
+
               // Подтверждаем успешную запись
               _peripheralManager.respondWriteRequest(event.request);
             } catch (e) {
@@ -395,6 +383,8 @@ class BluetoothRepository implements IBluetoothRepository {
       await _peripheralManager.stopAdvertising();
       await _writeRequestSubscription?.cancel();
       _writeRequestSubscription = null;
+      // Очищаем список подключенных клиентов при остановке рекламы
+      _connectedClients.clear();
       _isAdvertising = false;
       _BluetoothLogger.debug('✅ Реклама остановлена');
     } catch (e) {
@@ -416,6 +406,7 @@ class BluetoothRepository implements IBluetoothRepository {
       // Получаем сохраненный объект Peripheral
       final peripheral = _discoveredPeripherals[device.id];
       if (peripheral == null) {
+        _BluetoothLogger.error('Устройство не найдено в списке обнаруженных');
         throw Exception('Устройство не найдено в списке обнаруженных');
       }
 
@@ -423,8 +414,9 @@ class BluetoothRepository implements IBluetoothRepository {
 
       _BluetoothLogger.debug('🔌 Начинаем подключение...');
       await _centralManager.connect(peripheral);
+      _BluetoothLogger.debug('✅ Подключение установлено');
 
-      _BluetoothLogger.debug('🔍 Подключение установлено, поиск сервисов...');
+      _BluetoothLogger.debug('🔍 Поиск сервисов...');
       final services = await _centralManager.discoverGATT(peripheral);
       _BluetoothLogger.debug('Найдено сервисов: ${services.length}');
 
@@ -445,6 +437,7 @@ class BluetoothRepository implements IBluetoothRepository {
               if (characteristic.properties.contains(
                 GATTCharacteristicProperty.notify,
               )) {
+                _BluetoothLogger.debug('Настройка уведомлений...');
                 await _centralManager.setCharacteristicNotifyState(
                   peripheral,
                   characteristic,
@@ -476,11 +469,21 @@ class BluetoothRepository implements IBluetoothRepository {
               }
 
               // Сохраняем характеристику для записи
+              // Проверяем, поддерживает ли характеристика запись с подтверждением или без
               if (characteristic.properties.contains(
-                GATTCharacteristicProperty.write,
-              )) {
+                    GATTCharacteristicProperty.write,
+                  ) ||
+                  characteristic.properties.contains(
+                    GATTCharacteristicProperty.writeWithoutResponse,
+                  )) {
                 _writeCharacteristic = characteristic;
                 _BluetoothLogger.debug('✅ Настроена запись');
+
+                // Логируем поддерживаемые свойства характеристики
+                final props = characteristic.properties;
+                _BluetoothLogger.debug(
+                  '📝 Свойства характеристики: ${props.join(", ")}',
+                );
               }
             }
           }
@@ -489,8 +492,23 @@ class BluetoothRepository implements IBluetoothRepository {
       }
 
       if (!serviceFound) {
+        _BluetoothLogger.error(
+          'На устройстве не найден наш сервис $_serviceUuid',
+        );
         throw Exception('На устройстве не найден наш сервис $_serviceUuid');
       }
+
+      // Запрашиваем увеличенный MTU для поддержки больших сообщений
+      try {
+        await _centralManager.requestMTU(peripheral, mtu: 512);
+        _BluetoothLogger.debug('✅ MTU установлен на 512 байт');
+      } catch (e) {
+        _BluetoothLogger.error('⚠️ Не удалось установить MTU: $e');
+        // Продолжаем работу с MTU по умолчанию
+      }
+
+      // Небольшая задержка для стабилизации соединения
+      await Future.delayed(const Duration(milliseconds: 300));
 
       _BluetoothLogger.debug('✅ Подключение успешно завершено!');
     } catch (e) {
@@ -538,7 +556,12 @@ class BluetoothRepository implements IBluetoothRepository {
 
   @override
   Future<void> sendMessage(Message message) async {
+    _BluetoothLogger.debug('📤 Попытка отправки сообщения...');
+
     if (_connectedPeripheral == null || _writeCharacteristic == null) {
+      _BluetoothLogger.error(
+        'Нет активного соединения или характеристики для записи',
+      );
       throw Exception('Нет активного соединения или характеристики для записи');
     }
 
@@ -547,17 +570,42 @@ class BluetoothRepository implements IBluetoothRepository {
       final bytesMessage = Uint8List.fromList(utf8.encode(jsonMessage));
 
       _BluetoothLogger.debug('📤 Отправка сообщения: $jsonMessage');
+      _BluetoothLogger.debug(
+        '📏 Размер сообщения: ${bytesMessage.length} байт',
+      );
+
+      // Проверяем размер сообщения относительно MTU
+      // MTU по умолчанию 23 байта, полезная нагрузка 20 байт
+      if (bytesMessage.length > 20) {
+        _BluetoothLogger.debug(
+          '⚠️ Сообщение превышает MTU, может потребоваться фрагментация',
+        );
+      }
 
       await _centralManager.writeCharacteristic(
         _connectedPeripheral!,
         _writeCharacteristic!,
         value: bytesMessage,
-        type: GATTCharacteristicWriteType.withResponse,
+        type: GATTCharacteristicWriteType
+            .withoutResponse, // Попробуем без подтверждения
       );
 
       _BluetoothLogger.debug('✅ Сообщение успешно отправлено');
-    } catch (e) {
+    } on Exception catch (e) {
       _BluetoothLogger.error('❌ Ошибка отправки данных: $e');
+
+      // Проверяем, является ли это ошибкой статуса 133
+      if (_isGattError133(e)) {
+        _BluetoothLogger.error(
+          'Обнаружена ошибка статуса 133. Попытка автоматического переподключения...',
+        );
+        // Для исправления этой ошибки требуется переподключение
+        await resetConnection();
+        throw Exception(
+          'Ошибка соединения Bluetooth (статус 133). Соединение было сброшено. Пожалуйста, подключитесь заново к устройству.',
+        );
+      }
+
       throw Exception('Ошибка отправки данных: $e');
     }
   }
@@ -576,6 +624,9 @@ class BluetoothRepository implements IBluetoothRepository {
           isOurApp: false,
         )
       : null;
+
+  /// Получить поток подключений клиентов
+  Stream<String> get clientConnections => _clientConnectionController.stream;
 
   /// Проверяет, является ли устройство нашим приложением
   bool _isOurApplication(Advertisement advertisement) {
@@ -674,6 +725,7 @@ class BluetoothRepository implements IBluetoothRepository {
     _BluetoothLogger.debug('🧹 Очистка BluetoothRepository...');
     _discoveredDevicesController.close();
     _incomingMessagesController.close();
+    _clientConnectionController.close(); // Закрываем новый контроллер
     _scanSubscription?.cancel();
     _scanTimer?.cancel();
     _dataSubscription?.cancel();
@@ -682,5 +734,32 @@ class BluetoothRepository implements IBluetoothRepository {
     stopDiscovery();
     disconnect();
     _BluetoothLogger.debug('✅ BluetoothRepository очищен');
+  }
+
+  /// Проверяет, является ли ошибка ошибкой статуса 133
+  bool _isGattError133(Exception e) {
+    return e.toString().contains('status: 133') ||
+        e.toString().contains('GATT_ERROR') ||
+        e.toString().contains('IllegalStateException');
+  }
+
+  /// Метод для сброса соединения и попытки переподключения
+  Future<void> resetConnection() async {
+    _BluetoothLogger.debug('🔄 Сброс соединения...');
+    try {
+      // Отключаемся
+      await disconnect();
+
+      // Очищаем сохраненные ссылки
+      _connectedPeripheral = null;
+      _writeCharacteristic = null;
+
+      // Небольшая задержка для очистки состояния
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      _BluetoothLogger.debug('✅ Соединение сброшено');
+    } catch (e) {
+      _BluetoothLogger.error('❌ Ошибка сброса соединения: $e');
+    }
   }
 }
