@@ -2,7 +2,7 @@ part of 'games_list_bloc.dart';
 
 /// Состояния экрана списка игр
 @freezed
-class GamesListState with _$GamesListState {
+abstract class GamesListState with _$GamesListState {
   /// Состояние инициализации
   const factory GamesListState.initializationPending() =
       GamesListStateInitializationPending;

@@ -2,7 +2,7 @@ part of 'nickname_bloc.dart';
 
 /// Состояния диалога псевдонима
 @freezed
-class NicknameState with _$NicknameState {
+abstract class NicknameState with _$NicknameState {
   /// Начальное состояние
   const factory NicknameState.initial() = NicknameStateInitial;
 

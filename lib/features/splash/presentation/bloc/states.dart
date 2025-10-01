@@ -2,7 +2,7 @@ part of 'splash_bloc.dart';
 
 /// Состояния сплэш-скрина
 @freezed
-class SplashState with _$SplashState {
+abstract class SplashState with _$SplashState {
   /// Состояние инициализации
   const factory SplashState.initializationPending() =
       SplashStateInitializationPending;

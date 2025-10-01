@@ -41,8 +41,7 @@ class BluetoothRepository implements IBluetoothRepository {
 
   late final StreamController<List<Device>> _discoveredDevicesController;
   late final StreamController<Message> _incomingMessagesController;
-  late final StreamController<String>
-  _clientConnectionController; // Новый контроллер для отслеживания подключений клиентов
+  late final StreamController<String> _clientConnectionController;
 
   // Добавляем поле для отслеживания подключенных клиентов
   final Set<String> _connectedClients = {};

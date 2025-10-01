@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/domain/models/device.dart';
-import '../../../../../core/domain/models/messages.dart';
 import '../../../../../core/domain/models/user.dart';
-import '../../../tictactoe/domain/models/enums/player_type.dart';
 import '../bloc/home_bloc.dart';
 
 /// Экран для тестирования Bluetooth-соединения

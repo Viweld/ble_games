@@ -2,7 +2,7 @@ part of 'home_bloc.dart';
 
 /// Состояние BLoC главного экрана
 @freezed
-class HomeState with _$HomeState {
+abstract class HomeState with _$HomeState {
   /// Состояние инициализации
   const factory HomeState.initializationPending() =
       HomeStateInitializationPending;

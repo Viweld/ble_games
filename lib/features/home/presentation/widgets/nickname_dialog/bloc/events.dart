@@ -2,7 +2,7 @@ part of 'nickname_bloc.dart';
 
 /// События диалога псевдонима
 @freezed
-class NicknameEvent with _$NicknameEvent {
+abstract class NicknameEvent with _$NicknameEvent {
   /// Изменение псевдонима
   const factory NicknameEvent.onNicknameChanged({required String nick}) =
       NicknameEventOnNicknameChanged;

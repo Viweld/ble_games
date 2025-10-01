@@ -11,22 +11,6 @@ import 'package:flutter/widgets.dart';
 // DepGen code generator
 // **************************************************************************
 
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:batuga/core/data/dto/user_dto.dart';
-import 'package:flutter/foundation.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:batuga/features/tictactoe/data/models/game_move_dto.dart';
-import 'package:batuga/core/domain/models/user.dart';
-import 'package:flutter/material.dart';
-import 'package:dep_gen/dep_gen.dart';
-import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:bloc/bloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:batuga/core/di/builders.dep_gen.dart';
-import 'package:flutter/services.dart';
 import 'package:batuga/core/repositories/i_bluetooth_repository.dart';
 import 'package:batuga/core/repositories/i_user_repository.dart';
 import 'package:batuga/features/games_list/presentation/bloc/games_list_bloc.dart';

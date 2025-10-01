@@ -2,7 +2,7 @@ part of 'game_bloc.dart';
 
 /// Состояния игры
 @freezed
-class GameState with _$GameState {
+abstract class GameState with _$GameState {
   /// Состояние инициализации
   const factory GameState.initializationPending() =
       GameStateInitializationPending;

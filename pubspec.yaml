@@ -13,19 +13,19 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # BLoC для управления состоянием
-  flutter_bloc: ^8.1.6
-  bloc: ^8.1.3
+  flutter_bloc: ^9.1.1
+  bloc: ^9.0.1
 
   # Freezed для генерации кода
   freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
 
   # Dependency Injection
-  dep_gen: ^1.0.0
+  dep_gen: ^1.1.11
 
   # Bluetooth
   bluetooth_low_energy: ^6.1.0
-  permission_handler: ^11.3.1
+  permission_handler: ^12.0.1
 
   # иконка приложения
   flutter_launcher_icons: ^0.14.4
@@ -40,7 +40,7 @@ dependencies:
   intl: ^0.20.2
 
   # Утилиты
-  device_info_plus: ^10.1.0
+  device_info_plus: ^12.1.0
   shared_preferences: ^2.2.3
 
 dev_dependencies:
@@ -49,9 +49,9 @@ dev_dependencies:
 
   # Mocking library
   mockito: ^5.4.4
-  bloc_test: ^9.1.7
+  bloc_test: ^10.0.0
 
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
   # Генераторы кода
   build_runner: ^2.4.10

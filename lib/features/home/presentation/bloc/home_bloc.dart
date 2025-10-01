@@ -622,10 +622,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           // Для тестирования сообщений
           add(HomeEvent.onMessageReceived(message: message));
         }
-      default:
-        print('[DEBUG] Получено неизвестное сообщение: ${message.runtimeType}');
-        // Для тестирования сообщений
-        add(HomeEvent.onMessageReceived(message: message));
     }
   }
 

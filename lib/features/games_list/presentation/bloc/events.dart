@@ -2,7 +2,7 @@ part of 'games_list_bloc.dart';
 
 /// События экрана списка игр
 @freezed
-class GamesListEvent with _$GamesListEvent {
+abstract class GamesListEvent with _$GamesListEvent {
   /// Запрос инициализации
   const factory GamesListEvent.onInitializationRequested() =
       GamesListEventOnInitializationRequested;

@@ -2,8 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../../../core/repositories/i_user_repository.dart';
-
 part 'events.dart';
 
 part 'states.dart';

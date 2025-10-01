@@ -2,7 +2,7 @@ part of 'game_bloc.dart';
 
 /// События игры
 @freezed
-class GameEvent with _$GameEvent {
+abstract class GameEvent with _$GameEvent {
   /// Запрос инициализации
   const factory GameEvent.onInitializationRequested() =
       GameEventOnInitializationRequested;
