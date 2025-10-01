@@ -1,13 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:batuga/core/repositories/bluetooth_repository.dart';
-import 'package:batuga/core/repositories/i_bluetooth_repository.dart';
+import 'package:batuga/core/services/bluetooth_service.dart';
+import 'package:batuga/core/domain/services/i_bluetooth_service.dart';
 
 void main() {
   group('Bluetooth Repository Test', () {
-    late IBluetoothRepository bluetoothRepository;
+    late IBluetoothService bluetoothRepository;
 
     setUp(() {
-      bluetoothRepository = BluetoothRepository();
+      bluetoothRepository = BluetoothService();
     });
 
     tearDown(() {
@@ -16,7 +16,7 @@ void main() {
 
     test('Создание Bluetooth репозитория', () {
       expect(bluetoothRepository, isNotNull);
-      expect(bluetoothRepository, isA<BluetoothRepository>());
+      expect(bluetoothRepository, isA<BluetoothService>());
     });
 
     test('Проверка начального состояния', () {

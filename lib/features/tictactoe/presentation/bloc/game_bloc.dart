@@ -6,8 +6,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/domain/models/messages.dart';
 import '../../../../core/domain/models/user.dart';
-import '../../../../core/repositories/i_bluetooth_repository.dart';
-import '../../../../core/repositories/i_user_repository.dart';
+import '../../../../core/domain/services/i_bluetooth_service.dart';
+import '../../../../core/domain/repositories/i_user_repository.dart';
 import '../../domain/models/enums/game_winner.dart';
 import '../../domain/models/enums/player_type.dart';
 import '../../domain/models/game_move.dart';
@@ -24,7 +24,7 @@ part 'game_bloc.freezed.dart';
 @DepGen()
 class GameBloc extends Bloc<GameEvent, GameState> {
   GameBloc({
-    @DepArg() required IBluetoothRepository bluetoothRepository,
+    @DepArg() required IBluetoothService bluetoothRepository,
     @DepArg() required IUserRepository userRepository,
   }) : _bluetoothRepository = bluetoothRepository,
        _userRepository = userRepository,
@@ -69,7 +69,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     add(const GameEvent.onInitializationRequested());
   }
 
-  final IBluetoothRepository _bluetoothRepository;
+  final IBluetoothService _bluetoothRepository;
   final IUserRepository _userRepository;
 
   late final StreamSubscription<Message> _incomingDataSubscription;

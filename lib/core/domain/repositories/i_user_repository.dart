@@ -1,4 +1,4 @@
-import '../domain/models/user.dart';
+import '../models/user.dart';
 
 /// Интерфейс репозитория пользователей
 abstract class IUserRepository {

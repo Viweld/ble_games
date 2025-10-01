@@ -4,15 +4,15 @@ import 'package:mockito/annotations.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'home_bloc_test.mocks.dart';
 
-import 'package:batuga/core/repositories/i_bluetooth_repository.dart';
-import 'package:batuga/core/repositories/i_user_repository.dart';
+import 'package:batuga/core/domain/services/i_bluetooth_service.dart';
+import 'package:batuga/core/domain/repositories/i_user_repository.dart';
 import 'package:batuga/core/domain/models/user.dart';
 import 'package:batuga/core/domain/models/device.dart';
 import 'package:batuga/features/home/presentation/bloc/home_bloc.dart';
 import 'package:batuga/core/domain/models/messages.dart';
 
 // Генерация моков
-@GenerateMocks([IBluetoothRepository, IUserRepository])
+@GenerateMocks([IBluetoothService, IUserRepository])
 void main() {
   group('HomeBloc', () {
     late MockIBluetoothRepository mockBluetoothRepository;

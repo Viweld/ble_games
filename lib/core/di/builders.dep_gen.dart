@@ -11,8 +11,7 @@ import 'package:flutter/widgets.dart';
 // DepGen code generator
 // **************************************************************************
 
-import 'package:batuga/core/repositories/i_bluetooth_repository.dart';
-import 'package:batuga/core/repositories/i_user_repository.dart';
+import 'package:batuga/core/domain/repositories/i_user_repository.dart';
 import 'package:batuga/features/games_list/presentation/bloc/games_list_bloc.dart';
 import 'package:batuga/features/home/presentation/bloc/home_bloc.dart';
 import 'package:batuga/features/home/presentation/widgets/nickname_dialog/bloc/nickname_bloc.dart';
@@ -109,20 +108,17 @@ class DepProvider extends InheritedWidget {
   HomeBloc buildHomeBloc() => HomeBloc(
     playerRepository: _env.g<IUserRepository>(),
     bluetoothRepository: _env.g<IBluetoothRepository>(),
-  );
-
-  // ---------------------------------------------------------------------------
+  )IBluetoothService---------------------------------------------------------------
   NicknameBloc buildNicknameBloc() => NicknameBloc();
 
   // ---------------------------------------------------------------------------
   SplashBloc buildSplashBloc() =>
       SplashBloc(bluetoothRepository: _env.g<IBluetoothRepository>());
 
-  // ---------------------------------------------------------------------------
+  // ------------IBluetoothService-------------------------------------------
   GameBloc buildGameBloc() => GameBloc(
     bluetoothRepository: _env.g<IBluetoothRepository>(),
-    userRepository: _env.g<IUserRepository>(),
-  );
+    userRepository: _env.g<IUseIBluetoothService
 }
 
 // coverage:ignore-end

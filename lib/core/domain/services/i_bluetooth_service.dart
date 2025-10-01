@@ -1,8 +1,27 @@
-import '../domain/models/device.dart';
-import '../domain/models/messages.dart';
+import '../models/device.dart';
+import '../models/messages.dart';
 
 /// Интерфейс репозитория Bluetooth
-abstract class IBluetoothRepository {
+abstract class IBluetoothService {
+  /// Проверить, подключены ли к устройству
+  bool get isConnected;
+
+  /// Получить текущее подключенное устройство
+  Device? get connectedDevice;
+
+  // СТРИМЫ:
+  // ---------------------------------------------------------------------------
+  /// Получить поток входящих сообщений
+  Stream<Message> get incomingMessages;
+
+  /// Получить поток подключений клиентов
+  Stream<String> get clientConnections;
+
+  /// Получить список найденных устройств
+  Stream<List<Device>> get discoveredDevices;
+
+  // МЕТОДЫ:
+  // ---------------------------------------------------------------------------
   /// Инициализировать Bluetooth
   Future<void> initialize();
 
@@ -21,9 +40,6 @@ abstract class IBluetoothRepository {
   /// Отключить рекламу присутствия приложения (BLE Advertise)
   Future<void> stopAdvertising();
 
-  /// Получить список найденных устройств
-  Stream<List<Device>> get discoveredDevices;
-
   /// Подключиться к устройству
   Future<void> connectToDevice(Device device);
 
@@ -32,18 +48,6 @@ abstract class IBluetoothRepository {
 
   /// Отправить сообщение на устройство
   Future<void> sendMessage(Message message);
-
-  /// Получить поток входящих сообщений
-  Stream<Message> get incomingMessages;
-
-  /// Получить поток подключений клиентов
-  Stream<String> get clientConnections;
-
-  /// Проверить, подключены ли к устройству
-  bool get isConnected;
-
-  /// Получить текущее подключенное устройство
-  Device? get connectedDevice;
 
   /// Закрыть все соединения и освободить ресурсы
   void dispose();

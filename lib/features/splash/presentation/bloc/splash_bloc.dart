@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/repositories/i_bluetooth_repository.dart';
+import '../../../../core/domain/services/i_bluetooth_service.dart';
 import '../../../../core/constants/app_constants.dart';
 
 part 'events.dart';
@@ -12,7 +12,7 @@ part 'splash_bloc.freezed.dart';
 /// BLoC для сплэш-скрина
 @DepGen()
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
-  SplashBloc({@DepArg() required IBluetoothRepository bluetoothRepository})
+  SplashBloc({@DepArg() required IBluetoothService bluetoothRepository})
     : _bluetoothRepository = bluetoothRepository,
       super(const SplashState.initializationPending()) {
     on<SplashEvent>(
@@ -27,7 +27,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     add(const SplashEvent.onInitializationRequested());
   }
 
-  final IBluetoothRepository _bluetoothRepository;
+  final IBluetoothService _bluetoothRepository;
 
   /// Обработчик запроса инициализации
   Future<void> _onInitializationRequested(Emitter<SplashState> emitter) async {

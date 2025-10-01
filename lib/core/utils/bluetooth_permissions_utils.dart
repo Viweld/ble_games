@@ -1,129 +1,78 @@
-import 'package:permission_handler/permission_handler.dart';
-import 'package:device_info_plus/device_info_plus.dart';
+import 'dart:io';
 
-/// Утилита для проверки и запроса Bluetooth разрешений
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 class BluetoothPermissionsUtils {
-  /// Проверяет, предоставлены ли все необходимые Bluetooth разрешения
-  static Future<bool> areBluetoothPermissionsGranted() async {
-    try {
+  static Future<bool> checkPermissions() async {
+    // Определяем платформу
+    if (Platform.isAndroid) {
       final deviceInfo = DeviceInfoPlugin();
       final androidInfo = await deviceInfo.androidInfo;
       final androidSdk = androidInfo.version.sdkInt;
 
       if (androidSdk >= 31) {
-        // Для Android 12+ проверяем новые разрешения
-        final bluetoothScanStatus = await Permission.bluetoothScan.status;
-        final bluetoothConnectStatus = await Permission.bluetoothConnect.status;
-        final bluetoothAdvertiseStatus =
-            await Permission.bluetoothAdvertise.status;
-
-        return bluetoothScanStatus.isGranted &&
-            bluetoothConnectStatus.isGranted &&
-            bluetoothAdvertiseStatus.isGranted;
+        final scan = await Permission.bluetoothScan.status;
+        final connect = await Permission.bluetoothConnect.status;
+        final advertise = await Permission.bluetoothAdvertise.status;
+        return scan.isGranted && connect.isGranted && advertise.isGranted;
       } else {
-        // Для Android до 12 проверяем старые разрешения
-        final bluetoothStatus = await Permission.bluetooth.status;
-        final locationStatus = await Permission.location.status;
-
-        return bluetoothStatus.isGranted && locationStatus.isGranted;
+        final bluetooth = await Permission.bluetooth.status;
+        final location = await Permission.location.status;
+        return bluetooth.isGranted && location.isGranted;
       }
-    } catch (e) {
-      // В случае ошибки считаем, что разрешения не предоставлены
-      return false;
+    } else if (Platform.isIOS) {
+      // На iOS Bluetooth разрешения завязаны на location + bluetooth
+      final bluetooth = await Permission.bluetooth.status;
+      final location = await Permission.locationWhenInUse.status;
+      return bluetooth.isGranted && location.isGranted;
     }
+    return false;
   }
 
-  /// Запрашивает все необходимые Bluetooth разрешения
-  static Future<PermissionStatus> requestBluetoothPermissions() async {
-    try {
+  static Future<PermissionStatus> requestPermissions() async {
+    if (Platform.isAndroid) {
       final deviceInfo = DeviceInfoPlugin();
       final androidInfo = await deviceInfo.androidInfo;
       final androidSdk = androidInfo.version.sdkInt;
 
       if (androidSdk >= 31) {
-        // Для Android 12+ запрашиваем новые разрешения
         final permissions = await [
           Permission.bluetoothScan,
           Permission.bluetoothConnect,
           Permission.bluetoothAdvertise,
         ].request();
-
-        // Проверяем статус всех разрешений
-        final allGranted =
-            permissions[Permission.bluetoothScan] == PermissionStatus.granted &&
-            permissions[Permission.bluetoothConnect] ==
-                PermissionStatus.granted &&
-            permissions[Permission.bluetoothAdvertise] ==
-                PermissionStatus.granted;
-
-        // Если все разрешения предоставлены, возвращаем granted
-        if (allGranted) {
-          return PermissionStatus.granted;
-        }
-
-        // Если хотя бы одно разрешение навсегда отклонено, возвращаем permanentlyDenied
-        final anyPermanentlyDenied = permissions.values.any(
-          (status) => status.isPermanentlyDenied,
-        );
-        if (anyPermanentlyDenied) {
-          return PermissionStatus.permanentlyDenied;
-        }
-
-        // Если хотя бы одно разрешение отклонено, возвращаем denied
-        final anyDenied = permissions.values.any((status) => status.isDenied);
-        if (anyDenied) {
-          return PermissionStatus.denied;
-        }
-
-        // В остальных случаях возвращаем ограниченный доступ
-        return PermissionStatus.limited;
+        return _aggregate(permissions);
       } else {
-        // Для Android до 12 запрашиваем старые разрешения
-        final permissionsToRequest = [
+        final permissions = await [
           Permission.bluetooth,
           Permission.location,
-        ];
-
-        final permissions = await permissionsToRequest.request();
-
-        // Проверяем статус всех разрешений
-        final allGranted =
-            permissions[Permission.bluetooth] == PermissionStatus.granted &&
-            permissions[Permission.location] == PermissionStatus.granted;
-
-        // Если все разрешения предоставлены, возвращаем granted
-        if (allGranted) {
-          return PermissionStatus.granted;
-        }
-
-        // Если хотя бы одно разрешение навсегда отклонено, возвращаем permanentlyDenied
-        final anyPermanentlyDenied = permissions.values.any(
-          (status) => status.isPermanentlyDenied,
-        );
-        if (anyPermanentlyDenied) {
-          return PermissionStatus.permanentlyDenied;
-        }
-
-        // Если хотя бы одно разрешение отклонено, возвращаем denied
-        final anyDenied = permissions.values.any((status) => status.isDenied);
-        if (anyDenied) {
-          return PermissionStatus.denied;
-        }
-
-        // В остальных случаях возвращаем ограниченный доступ
-        return PermissionStatus.limited;
+        ].request();
+        return _aggregate(permissions);
       }
-    } catch (e) {
-      // В случае ошибки возвращаем статус denied
-      return PermissionStatus.denied;
+    } else if (Platform.isIOS) {
+      final permissions = await [
+        Permission.bluetooth,
+        Permission.locationWhenInUse,
+      ].request();
+      return _aggregate(permissions);
     }
+    return PermissionStatus.denied;
   }
 
-  /// Открывает настройки приложения для предоставления разрешений вручную
-  static Future<bool> openAppSettingsForPermissions() async {
+  static PermissionStatus _aggregate(Map<Permission, PermissionStatus> map) {
+    if (map.values.every((s) => s.isGranted)) return PermissionStatus.granted;
+    if (map.values.any((s) => s.isPermanentlyDenied)) {
+      return PermissionStatus.permanentlyDenied;
+    }
+    if (map.values.any((s) => s.isDenied)) return PermissionStatus.denied;
+    return PermissionStatus.limited;
+  }
+
+  static Future<bool> openAppSettingsSafe() async {
     try {
       return await openAppSettings();
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }

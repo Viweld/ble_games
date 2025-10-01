@@ -8,8 +8,8 @@ import 'dart:async' as _i3;
 import 'package:batuga/core/domain/models/device.dart' as _i4;
 import 'package:batuga/core/domain/models/messages.dart' as _i5;
 import 'package:batuga/core/domain/models/user.dart' as _i7;
-import 'package:batuga/core/repositories/i_bluetooth_repository.dart' as _i2;
-import 'package:batuga/core/repositories/i_user_repository.dart' as _i6;
+import 'package:batuga/core/domain/services/i_bluetooth_service.dart' as _i2;
+import 'package:batuga/core/domain/repositories/i_user_repository.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -30,7 +30,7 @@ import 'package:mockito/mockito.dart' as _i1;
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockIBluetoothRepository extends _i1.Mock
-    implements _i2.IBluetoothRepository {
+    implements _i2.IBluetoothService {
   MockIBluetoothRepository() {
     _i1.throwOnMissingStub(this);
   }
