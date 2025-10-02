@@ -32,7 +32,7 @@ class _HomeView extends StatelessWidget {
           HomeStateInitializationError() => true,
           HomeStateInvitationReceived() => true,
           HomeStateInvitationRejected() => true,
-          HomeStateGameStarted() => true,
+          HomeStateConnected() => true,
           _ => false,
         },
         buildWhen: (previous, state) => switch (state) {
@@ -51,9 +51,7 @@ class _HomeView extends StatelessWidget {
             _showInvitationDialog(context, invitingUser),
           HomeStateInvitationRejected(:final rejectedUser) =>
             _showRejectionDialog(context, rejectedUser),
-          HomeStateGameStarted() => Navigator.of(
-            context,
-          ).pushNamed('/games_list'),
+          HomeStateConnected() => Navigator.pushNamed(context, '/games_list'),
           _ => null,
         },
         builder: (context, state) {

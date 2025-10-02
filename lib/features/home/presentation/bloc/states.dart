@@ -35,23 +35,13 @@ abstract class HomeState with _$HomeState {
   const factory HomeState.invitationRejected({required User rejectedUser}) =
       HomeStateInvitationRejected;
 
-  /// Игра началась
-  const factory HomeState.gameStarted({
-    required User opponent,
-    required PlayerType myPlayerType,
-  }) = HomeStateGameStarted;
-
-  /// Состояние тестирования сообщений
-  const factory HomeState.messageTestView() = HomeStateMessageTestView;
-
-  /// Состояние получения сообщения
-  const factory HomeState.messageReceived({required Message message}) =
-      HomeStateMessageReceived;
-
-  /// Состояние отправки сообщения
-  const factory HomeState.messageSent() = HomeStateMessageSent;
-
   /// Состояние ошибки соединения
   const factory HomeState.connectionError({required String message}) =
       HomeStateConnectionError;
+
+  /// Успешное соединение
+  const factory HomeState.connected({
+    required User opponent,
+    required PlayerType myPlayerType,
+  }) = HomeStateConnected;
 }

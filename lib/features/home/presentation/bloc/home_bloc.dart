@@ -49,14 +49,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           event,
           emitter,
         ),
-        HomeEventOnGameStarted() => _onGameStarted(event, emitter),
+        HomeEventOnConnected() => _onConnected(event, emitter),
         HomeEventOnAcceptInvitation() => _onAcceptInvitation(emitter),
         HomeEventOnRejectInvitation() => _onRejectInvitation(emitter),
-        HomeEventOnSendMessage() => _onSendMessage(event, emitter),
-        HomeEventOnNavigateToMessageTest() => _onNavigateToMessageTest(emitter),
-        HomeEventOnNavigateToConnectionTest() => _onNavigateToConnectionTest(
-          emitter,
-        ),
         _ => throw UnimplementedError('Unhandled event: $event'),
       },
     );
@@ -170,7 +165,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         return;
       }
       await _bluetoothRepository.connectToDevice(_selectedDevice!);
-      emitter(const HomeState.messageTestView());
+      // TODO(Vadim): Возможно, стоит здесь отправлять приглашение
+      // TODO(Vadim): Тут переход в список игр
     } catch (e) {
       emitter(HomeState.initializationError(message: 'Ошибка подключения: $e'));
     }
@@ -233,15 +229,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   /// Обработчик начала игры
-  void _onGameStarted(
-    HomeEventOnGameStarted event,
-    Emitter<HomeState> emitter,
-  ) {
+  void _onConnected(HomeEventOnConnected event, Emitter<HomeState> emitter) {
     emitter(
-      HomeState.gameStarted(
-        opponent: event.opponent,
-        myPlayerType: PlayerType.x,
-      ),
+      HomeState.connected(opponent: event.opponent, myPlayerType: PlayerType.x),
     );
   }
 
@@ -258,7 +248,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         );
         await _bluetoothRepository.sendMessage(acceptanceMessage);
       }
-      emitter(const HomeState.messageTestView());
+
+      // TODO(Vadim): Тут переход в список игр
     } catch (e) {
       emitter(HomeState.connectionError(message: 'Ошибка принятия: $e'));
     }
@@ -281,55 +272,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     } catch (e) {
       emitter(HomeState.connectionError(message: 'Ошибка отклонения: $e'));
     }
-  }
-
-  /// Обработчик отправки сообщения
-  Future<void> _onSendMessage(
-    HomeEventOnSendMessage event,
-    Emitter<HomeState> emitter,
-  ) async {
-    try {
-      final currentUser =
-          _currentUser ?? User(id: 'temp_user', name: 'Тестовый пользователь');
-
-      if (_bluetoothRepository.isConnected) {
-        final testMessage = InvitationMessage(
-          device: _bluetoothRepository.connectedDevice!,
-          user: currentUser,
-        );
-        await _bluetoothRepository.sendMessage(testMessage);
-        emitter(const HomeState.messageSent());
-      } else {
-        emitter(
-          const HomeState.connectionError(
-            message: 'Нет подключения к устройству',
-          ),
-        );
-      }
-    } on Exception catch (e) {
-      if (e.toString().contains('статус 133') ||
-          e.toString().contains('GATT_ERROR') ||
-          e.toString().contains('IllegalStateException')) {
-        emitter(
-          const HomeState.connectionError(
-            message:
-                'Ошибка соединения Bluetooth (статус 133). Соединение было сброшено. Пожалуйста, подключитесь заново к устройству.',
-          ),
-        );
-      } else {
-        emitter(HomeState.connectionError(message: 'Ошибка отправки: $e'));
-      }
-    }
-  }
-
-  /// Обработчик навигации к тестированию сообщений
-  void _onNavigateToMessageTest(Emitter<HomeState> emitter) {
-    emitter(const HomeState.messageTestView());
-  }
-
-  /// Обработчик возврата к тестированию соединения
-  void _onNavigateToConnectionTest(Emitter<HomeState> emitter) {
-    emitter(const HomeState.view());
   }
 
   /// Обновление списка найденных устройств
@@ -356,18 +298,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       case AcceptanceMessage(:final user):
         final currentState = state;
         if (currentState is HomeStateInvitationPending) {
-          add(HomeEvent.onGameStarted(opponent: user));
+          add(HomeEvent.onConnected(opponent: user));
         } else if (currentState is HomeStateAwaitingConnection) {
-          add(const HomeEvent.onNavigateToMessageTest());
-        } else {
-          add(HomeEvent.onMessageReceived(message: message));
+          // fixme
         }
       case RejectionMessage(:final user):
         final currentState = state;
         if (currentState is HomeStateInvitationPending) {
           add(HomeEvent.onInvitationRejected(rejectedUser: user));
         } else {
-          add(HomeEvent.onMessageReceived(message: message));
+          // fixme
         }
       case TerminationMessage():
         final currentState = state;
@@ -375,7 +315,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             currentState is HomeStateSearchingDevices) {
           add(const HomeEvent.onViewStateChanged());
         } else {
-          add(HomeEvent.onMessageReceived(message: message));
+          // fixme
         }
       case MoveMessage():
         break;
@@ -387,7 +327,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             currentState is HomeStateSearchingDevices) {
           add(const HomeEvent.onViewStateChanged());
         } else {
-          add(HomeEvent.onMessageReceived(message: message));
+          // fixme
         }
     }
   }
