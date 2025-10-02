@@ -1,50 +1,50 @@
+import 'package:batuga/core/domain/services/bluetooth_manager/i_bluetooth_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:batuga/core/services/bluetooth_service.dart';
-import 'package:batuga/core/domain/services/i_bluetooth_service.dart';
+import 'package:batuga/core/repositories/bluetooth_manager.dart';
 
 void main() {
   group('Bluetooth Connection Integration Test', () {
-    late IBluetoothService bluetoothRepository;
+    late IBluetoothManager bluetoothManager;
 
     setUp(() {
-      bluetoothRepository = BluetoothService();
+      bluetoothManager = BluetoothManager();
     });
 
     tearDown(() {
-      bluetoothRepository.dispose();
+      bluetoothManager.dispose();
     });
 
     test('Создание и инициализация Bluetooth-репозитория', () async {
       // Проверяем, что репозиторий создан
-      expect(bluetoothRepository, isNotNull);
+      expect(bluetoothManager, isNotNull);
 
       // Проверяем начальное состояние
-      expect(bluetoothRepository.isConnected, false);
+      expect(bluetoothManager.isConnected, false);
 
       // Проверяем, что потоки созданы
-      expect(bluetoothRepository.discoveredDevices, isNotNull);
-      expect(bluetoothRepository.incomingMessages, isNotNull);
+      expect(bluetoothManager.discoveredDevices, isNotNull);
+      expect(bluetoothManager.incomingMessages, isNotNull);
     });
 
     test('Проверка методов репозитория', () {
       // Проверяем, что все необходимые методы существуют
-      expect(bluetoothRepository.initialize, isNotNull);
-      expect(bluetoothRepository.startDiscovery, isNotNull);
-      expect(bluetoothRepository.stopDiscovery, isNotNull);
-      expect(bluetoothRepository.startAdvertising, isNotNull);
-      expect(bluetoothRepository.stopAdvertising, isNotNull);
-      expect(bluetoothRepository.connectToDevice, isNotNull);
-      expect(bluetoothRepository.disconnect, isNotNull);
-      expect(bluetoothRepository.sendMessage, isNotNull);
-      expect(bluetoothRepository.dispose, isNotNull);
+      expect(bluetoothManager.initialize, isNotNull);
+      expect(bluetoothManager.startDiscovery, isNotNull);
+      expect(bluetoothManager.stopDiscovery, isNotNull);
+      expect(bluetoothManager.startAdvertising, isNotNull);
+      expect(bluetoothManager.stopAdvertising, isNotNull);
+      expect(bluetoothManager.connectToDevice, isNotNull);
+      expect(bluetoothManager.disconnect, isNotNull);
+      expect(bluetoothManager.sendMessage, isNotNull);
+      expect(bluetoothManager.dispose, isNotNull);
     });
 
     test('Проверка геттеров', () {
       // Проверяем, что геттеры существуют и возвращают правильные типы
-      expect(bluetoothRepository.isConnected, isA<bool>());
-      expect(bluetoothRepository.connectedDevice, isNull);
-      expect(bluetoothRepository.discoveredDevices, isNotNull);
-      expect(bluetoothRepository.incomingMessages, isNotNull);
+      expect(bluetoothManager.isConnected, isA<bool>());
+      expect(bluetoothManager.connectedDevice, isNull);
+      expect(bluetoothManager.discoveredDevices, isNotNull);
+      expect(bluetoothManager.incomingMessages, isNotNull);
     });
   });
 }

@@ -1,5 +1,5 @@
 /// Интерфейс сервиса рекламы (peripheral mode)
-abstract interface class IBluetoothAdvertisingService {
+abstract interface class IBluetoothAdvertising {
   /// Поток подключений клиентов (central устройств)
   Stream<String> get clientConnections;
 

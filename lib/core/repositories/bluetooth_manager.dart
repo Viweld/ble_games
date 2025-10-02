@@ -9,7 +9,7 @@ import '../constants/app_constants.dart';
 import '../data/dto/messages_dto.dart';
 import '../domain/models/device.dart';
 import '../domain/models/messages.dart';
-import '../domain/services/i_bluetooth_service.dart';
+import '../domain/services/bluetooth_manager/i_bluetooth_manager.dart';
 
 /// Простой логгер для Bluetooth репозитория
 class _BluetoothLogger {
@@ -29,8 +29,8 @@ class _BluetoothLogger {
 }
 
 /// Реализация репозитория Bluetooth на основе bluetooth_low_energy с выделением устройств приложения
-class BluetoothService implements IBluetoothService {
-  BluetoothService() {
+class BluetoothManager implements IBluetoothManager {
+  BluetoothManager() {
     _discoveredDevicesController = StreamController<List<Device>>.broadcast();
     _incomingMessagesController = StreamController<Message>.broadcast();
     _clientConnectionController = StreamController<String>.broadcast();
@@ -513,7 +513,7 @@ class BluetoothService implements IBluetoothService {
   }
 
   @override
-  void dispose() {
+  Future<void> dispose() async {
     _BluetoothLogger.debug('🧹 Очистка BluetoothRepository...');
     _discoveredDevicesController.close();
     _incomingMessagesController.close();

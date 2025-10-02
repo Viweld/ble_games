@@ -1,8 +1,8 @@
-import '../models/device.dart';
-import '../models/messages.dart';
+import '../../models/device.dart';
+import '../../models/messages.dart';
 
 /// Интерфейс сервиса подключения к другим устройствам (central mode)
-abstract interface class IBluetoothConnectionService {
+abstract interface class IBluetoothConnection {
   /// Проверить, подключены ли к устройству
   bool get isConnected;
 

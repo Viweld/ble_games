@@ -5,11 +5,12 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
-import 'package:batuga/core/domain/models/device.dart' as _i4;
-import 'package:batuga/core/domain/models/messages.dart' as _i5;
+import 'package:batuga/core/domain/models/device.dart' as _i5;
+import 'package:batuga/core/domain/models/messages.dart' as _i4;
 import 'package:batuga/core/domain/models/user.dart' as _i7;
-import 'package:batuga/core/domain/services/i_bluetooth_service.dart' as _i2;
 import 'package:batuga/core/domain/repositories/i_user_repository.dart' as _i6;
+import 'package:batuga/core/domain/services/bluetooth_manager/i_bluetooth_manager.dart'
+    as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -26,30 +27,13 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-/// A class which mocks [IBluetoothRepository].
+/// A class which mocks [IBluetoothManager].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIBluetoothRepository extends _i1.Mock
-    implements _i2.IBluetoothService {
-  MockIBluetoothRepository() {
+class MockIBluetoothManager extends _i1.Mock implements _i2.IBluetoothManager {
+  MockIBluetoothManager() {
     _i1.throwOnMissingStub(this);
   }
-
-  @override
-  _i3.Stream<List<_i4.Device>> get discoveredDevices =>
-      (super.noSuchMethod(
-            Invocation.getter(#discoveredDevices),
-            returnValue: _i3.Stream<List<_i4.Device>>.empty(),
-          )
-          as _i3.Stream<List<_i4.Device>>);
-
-  @override
-  _i3.Stream<_i5.Message> get incomingMessages =>
-      (super.noSuchMethod(
-            Invocation.getter(#incomingMessages),
-            returnValue: _i3.Stream<_i5.Message>.empty(),
-          )
-          as _i3.Stream<_i5.Message>);
 
   @override
   _i3.Stream<String> get clientConnections =>
@@ -65,9 +49,61 @@ class MockIBluetoothRepository extends _i1.Mock
           as bool);
 
   @override
-  _i3.Future<void> initialize() =>
+  _i3.Stream<_i4.Message> get incomingMessages =>
       (super.noSuchMethod(
-            Invocation.method(#initialize, []),
+            Invocation.getter(#incomingMessages),
+            returnValue: _i3.Stream<_i4.Message>.empty(),
+          )
+          as _i3.Stream<_i4.Message>);
+
+  @override
+  _i3.Stream<List<_i5.Device>> get discoveredDevices =>
+      (super.noSuchMethod(
+            Invocation.getter(#discoveredDevices),
+            returnValue: _i3.Stream<List<_i5.Device>>.empty(),
+          )
+          as _i3.Stream<List<_i5.Device>>);
+
+  @override
+  _i3.Future<void> startAdvertising() =>
+      (super.noSuchMethod(
+            Invocation.method(#startAdvertising, []),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> stopAdvertising() =>
+      (super.noSuchMethod(
+            Invocation.method(#stopAdvertising, []),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> connectToDevice(_i5.Device? device) =>
+      (super.noSuchMethod(
+            Invocation.method(#connectToDevice, [device]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> disconnect() =>
+      (super.noSuchMethod(
+            Invocation.method(#disconnect, []),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> sendMessage(_i4.Message? message) =>
+      (super.noSuchMethod(
+            Invocation.method(#sendMessage, [message]),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
@@ -101,55 +137,22 @@ class MockIBluetoothRepository extends _i1.Mock
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> startAdvertising() =>
+  _i3.Future<void> initialize() =>
       (super.noSuchMethod(
-            Invocation.method(#startAdvertising, []),
+            Invocation.method(#initialize, []),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> stopAdvertising() =>
+  _i3.Future<void> dispose() =>
       (super.noSuchMethod(
-            Invocation.method(#stopAdvertising, []),
+            Invocation.method(#dispose, []),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
           as _i3.Future<void>);
-
-  @override
-  _i3.Future<void> connectToDevice(_i4.Device? device) =>
-      (super.noSuchMethod(
-            Invocation.method(#connectToDevice, [device]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
-          )
-          as _i3.Future<void>);
-
-  @override
-  _i3.Future<void> disconnect() =>
-      (super.noSuchMethod(
-            Invocation.method(#disconnect, []),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
-          )
-          as _i3.Future<void>);
-
-  @override
-  _i3.Future<void> sendMessage(_i5.Message? message) =>
-      (super.noSuchMethod(
-            Invocation.method(#sendMessage, [message]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
-          )
-          as _i3.Future<void>);
-
-  @override
-  void dispose() => super.noSuchMethod(
-    Invocation.method(#dispose, []),
-    returnValueForMissingStub: null,
-  );
 }
 
 /// A class which mocks [IUserRepository].

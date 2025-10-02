@@ -8,7 +8,7 @@ import '../../../../core/domain/models/device.dart';
 import '../../../../core/domain/models/messages.dart';
 import '../../../../core/domain/models/user.dart';
 import '../../../../core/domain/repositories/i_user_repository.dart';
-import '../../../../core/domain/services/i_bluetooth_service.dart';
+import '../../../../core/domain/services/bluetooth_manager/i_bluetooth_manager.dart';
 import '../../../tictactoe/domain/models/enums/player_type.dart';
 
 part 'events.dart';
@@ -22,7 +22,7 @@ part 'home_bloc.freezed.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc({
     @DepArg() required IUserRepository playerRepository,
-    @DepArg() required IBluetoothService bluetoothRepository,
+    @DepArg() required IBluetoothManager bluetoothRepository,
   }) : _playerRepository = playerRepository,
        _bluetoothRepository = bluetoothRepository,
        super(const HomeState.initializationPending()) {
@@ -72,7 +72,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   final IUserRepository _playerRepository;
-  final IBluetoothService _bluetoothRepository;
+  final IBluetoothManager _bluetoothRepository;
 
   late final StreamSubscription<List<Device>> _discoveredDevicesSubscription;
   late final StreamSubscription<Message> _incomingDataSubscription;

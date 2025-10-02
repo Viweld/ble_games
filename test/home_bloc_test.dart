@@ -1,25 +1,23 @@
+import 'package:batuga/core/domain/services/bluetooth_manager/i_bluetooth_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'home_bloc_test.mocks.dart';
 
-import 'package:batuga/core/domain/services/i_bluetooth_service.dart';
 import 'package:batuga/core/domain/repositories/i_user_repository.dart';
 import 'package:batuga/core/domain/models/user.dart';
-import 'package:batuga/core/domain/models/device.dart';
 import 'package:batuga/features/home/presentation/bloc/home_bloc.dart';
-import 'package:batuga/core/domain/models/messages.dart';
 
 // Генерация моков
-@GenerateMocks([IBluetoothService, IUserRepository])
+@GenerateMocks([IBluetoothManager, IUserRepository])
 void main() {
   group('HomeBloc', () {
-    late MockIBluetoothRepository mockBluetoothRepository;
+    late MockIBluetoothManager mockBluetoothManager;
     late MockIUserRepository mockUserRepository;
 
     setUp(() {
-      mockBluetoothRepository = MockIBluetoothRepository();
+      mockBluetoothManager = MockIBluetoothManager();
       mockUserRepository = MockIUserRepository();
 
       // Настройка моков
@@ -29,20 +27,20 @@ void main() {
 
       // Stub the streams to prevent automatic emissions
       when(
-        mockBluetoothRepository.discoveredDevices,
+        mockBluetoothManager.discoveredDevices,
       ).thenAnswer((_) => const Stream.empty());
       when(
-        mockBluetoothRepository.incomingMessages,
+        mockBluetoothManager.incomingMessages,
       ).thenAnswer((_) => const Stream.empty());
       when(
-        mockBluetoothRepository.clientConnections,
+        mockBluetoothManager.clientConnections,
       ).thenAnswer((_) => const Stream.empty());
     });
 
     test('начальное состояние', () {
       final homeBloc = HomeBloc(
         playerRepository: mockUserRepository,
-        bluetoothRepository: mockBluetoothRepository,
+        bluetoothRepository: mockBluetoothManager,
       );
 
       expect(homeBloc.state, const HomeState.initializationPending());
@@ -55,7 +53,7 @@ void main() {
       'успешная инициализация',
       build: () => HomeBloc(
         playerRepository: mockUserRepository,
-        bluetoothRepository: mockBluetoothRepository,
+        bluetoothRepository: mockBluetoothManager,
       ),
       act: (bloc) => bloc.add(const HomeEvent.onInitializationRequested()),
       // We expect the final state to be view, as initialization completes
@@ -75,7 +73,7 @@ void main() {
 
         return HomeBloc(
           playerRepository: mockUserRepository,
-          bluetoothRepository: mockBluetoothRepository,
+          bluetoothRepository: mockBluetoothManager,
         );
       },
       act: (bloc) => bloc.add(const HomeEvent.onInitializationRequested()),

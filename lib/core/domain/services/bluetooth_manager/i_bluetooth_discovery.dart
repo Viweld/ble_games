@@ -1,7 +1,7 @@
-import '../models/device.dart';
+import '../../models/device.dart';
 
 /// Интерфейс сервиса сканирования bluetooth-устройств
-abstract interface class IBluetoothDiscoveryService {
+abstract interface class IBluetoothDiscovery {
   /// Поток найденных устройств
   Stream<List<Device>> get discoveredDevices;
 
