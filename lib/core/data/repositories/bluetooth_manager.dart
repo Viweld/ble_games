@@ -5,11 +5,11 @@ import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 
-import '../constants/app_constants.dart';
-import '../data/dto/messages_dto.dart';
-import '../domain/models/device.dart';
-import '../domain/models/messages.dart';
-import '../domain/services/bluetooth_manager/i_bluetooth_manager.dart';
+import '../../constants/app_constants.dart';
+import '../../data/models/messages_dto.dart';
+import '../../domain/models/device.dart';
+import '../../domain/models/messages.dart';
+import '../../domain/services/bluetooth_manager/i_bluetooth_manager.dart';
 
 /// Простой логгер для Bluetooth репозитория
 class _BluetoothLogger {

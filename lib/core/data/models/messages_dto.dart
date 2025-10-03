@@ -1,6 +1,6 @@
 import 'package:batuga/features/tictactoe/data/models/game_move_dto.dart'
     as game_move_dto;
-import 'package:batuga/core/data/dto/user_dto.dart';
+import 'package:batuga/core/data/models/user_dto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 

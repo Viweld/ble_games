@@ -1,7 +1,8 @@
+import 'package:batuga/features/home/presentation/widgets/awaiting_connection_dialog/awaiting_connection_dialog.dart';
+import 'package:batuga/features/home/presentation/widgets/searching_devices_dialog/searching_devices_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/domain/models/device.dart';
 import '../../../../core/domain/models/user.dart';
 import '../../../../core/extensions/build_context_extension.dart';
 import '../../../core/di/builders.dep_gen.dart';
@@ -39,8 +40,6 @@ class _HomeView extends StatelessWidget {
           HomeStateInitializationPending() => true,
           HomeStateInitializationError() => true,
           HomeStateView() => true,
-          HomeStateAwaitingConnection() => true,
-          HomeStateSearchingDevices() => true,
           _ => false,
         },
         listener: (context, state) => switch (state) {
@@ -51,7 +50,7 @@ class _HomeView extends StatelessWidget {
             _showInvitationDialog(context, invitingUser),
           HomeStateInvitationRejected(:final rejectedUser) =>
             _showRejectionDialog(context, rejectedUser),
-          HomeStateConnected() => Navigator.pushNamed(context, '/games_list'),
+          HomeStateConnected() => _toGamesListScreen(context),
           _ => null,
         },
         builder: (context, state) {
@@ -82,20 +81,7 @@ class _HomeView extends StatelessWidget {
               onAwaitConnectionPressed: () =>
                   _onAwaitConnectionPressed(context),
               onSearchDevicesPressed: () => _onSearchDevicesPressed(context),
-              onBluetoothTestPressed: () => _onBluetoothTestPressed(context),
             ),
-            HomeStateAwaitingConnection() => _AwaitingConnectionView(
-              onCancel: () => _onCancelAwaiting(context),
-            ),
-            HomeStateSearchingDevices(:final devices, :final selectedDevice) =>
-              _SearchingDevicesView(
-                devices: devices,
-                selectedDevice: selectedDevice,
-                onDeviceSelected: (device) =>
-                    _onDeviceSelected(context, device),
-                onConnectPressed: () => _onConnectPressed(context),
-                onCancelPressed: () => _onCancelSearching(context),
-              ),
             _ => throw UnsupportedError('${state.runtimeType} нельзя строить'),
           };
         },
@@ -105,37 +91,17 @@ class _HomeView extends StatelessWidget {
 
   /// Обработчик нажатия кнопки 'Ожидать присоединения'
   void _onAwaitConnectionPressed(BuildContext context) {
-    context.read<HomeBloc>().add(const HomeEvent.onStartAwaitingConnection());
+    AwaitingConnectionDialog.show(context);
   }
 
   /// Обработчик нажатия кнопки 'Найти и подключиться'
   void _onSearchDevicesPressed(BuildContext context) {
-    context.read<HomeBloc>().add(const HomeEvent.onStartSearchingDevices());
+    SearchingDevicesDialog.show(context);
   }
 
-  /// Обработчик нажатия кнопки 'Тест Bluetooth'
-  void _onBluetoothTestPressed(BuildContext context) {
-    Navigator.of(context).pushNamed('/bluetooth_test');
-  }
-
-  /// Обработчик отмены ожидания
-  void _onCancelAwaiting(BuildContext context) {
-    context.read<HomeBloc>().add(const HomeEvent.onCancelAwaiting());
-  }
-
-  /// Обработчик отмены поиска
-  void _onCancelSearching(BuildContext context) {
-    context.read<HomeBloc>().add(const HomeEvent.onCancelSearching());
-  }
-
-  /// Обработчик выбора устройства
-  void _onDeviceSelected(BuildContext context, Device device) {
-    context.read<HomeBloc>().add(HomeEvent.onDeviceSelected(device: device));
-  }
-
-  /// Обработчик нажатия кнопки 'Подключиться'
-  void _onConnectPressed(BuildContext context) {
-    context.read<HomeBloc>().add(const HomeEvent.onConnectToDevice());
+  /// Обработчик перехода на экран списка игр
+  void _toGamesListScreen(BuildContext context) {
+    Navigator.pushNamed(context, '/games_list');
   }
 
   /// Показать диалог приглашения
@@ -188,12 +154,11 @@ class _HomeView extends StatelessWidget {
   }
 }
 
-/// Основной вид с тремя кнопками
+/// Основной вид
 class _MainView extends StatelessWidget {
   const _MainView({
     required this.onAwaitConnectionPressed,
     required this.onSearchDevicesPressed,
-    required this.onBluetoothTestPressed,
   });
 
   /// Коллбэк нажатия 'Ожидать присоединения'
@@ -201,9 +166,6 @@ class _MainView extends StatelessWidget {
 
   /// Коллбэк нажатия 'Найти и подключиться'
   final VoidCallback onSearchDevicesPressed;
-
-  /// Коллбэк нажатия 'Тест Bluetooth'
-  final VoidCallback onBluetoothTestPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -248,202 +210,9 @@ class _MainView extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-
-            /// Кнопка 'Тест Bluetooth'
-            SizedBox(
-              width: double.infinity,
-              child: TextButton.icon(
-                onPressed: onBluetoothTestPressed,
-                icon: const Icon(Icons.science),
-                label: const Text('Тест Bluetooth-соединения'),
-                style: TextButton.styleFrom(padding: const EdgeInsets.all(16)),
-              ),
-            ),
           ],
         ),
       ),
-    );
-  }
-}
-
-/// Вид ожидания подключения
-class _AwaitingConnectionView extends StatelessWidget {
-  const _AwaitingConnectionView({required this.onCancel});
-
-  /// Коллбэк отмены
-  final VoidCallback onCancel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const CircularProgressIndicator(),
-            const SizedBox(height: 32),
-            const Text(
-              'Ожидание подключения...',
-              style: TextStyle(fontSize: 18),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Ваше устройство видимо для других устройств',
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 48),
-            ElevatedButton(onPressed: onCancel, child: const Text('Отмена')),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Вид поиска устройств
-class _SearchingDevicesView extends StatelessWidget {
-  const _SearchingDevicesView({
-    required this.devices,
-    required this.selectedDevice,
-    required this.onDeviceSelected,
-    required this.onConnectPressed,
-    required this.onCancelPressed,
-  });
-
-  /// Список найденных устройств
-  final List<Device> devices;
-
-  /// Выбранное устройство
-  final Device? selectedDevice;
-
-  /// Коллбэк выбора устройства
-  final ValueChanged<Device> onDeviceSelected;
-
-  /// Коллбэк подключения
-  final VoidCallback onConnectPressed;
-
-  /// Коллбэк отмены
-  final VoidCallback onCancelPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        /// Заголовок
-        const Padding(
-          padding: EdgeInsets.all(16),
-          child: Text(
-            'Найденные устройства',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ),
-
-        /// Список устройств
-        Expanded(
-          child: devices.isEmpty
-              ? const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(),
-                      SizedBox(height: 16),
-                      Text('Поиск устройств...'),
-                    ],
-                  ),
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: devices.length,
-                  itemBuilder: (context, index) {
-                    final device = devices[index];
-                    final isSelected = selectedDevice?.id == device.id;
-
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      color: isSelected
-                          ? Theme.of(
-                              context,
-                            ).primaryColor.withValues(alpha: 0.3)
-                          : null,
-                      child: ListTile(
-                        leading: device.isOurApp
-                            ? const Icon(
-                                Icons.games,
-                                color: Colors.green,
-                                size: 28,
-                              )
-                            : Icon(
-                                Icons.bluetooth,
-                                color: isSelected
-                                    ? Theme.of(context).primaryColor
-                                    : Colors.grey,
-                              ),
-                        title: Text(
-                          device.name.isEmpty
-                              ? 'Неизвестное устройство'
-                              : device.name,
-                          style: TextStyle(
-                            fontWeight: isSelected ? FontWeight.bold : null,
-                            color: device.isOurApp ? Colors.green : null,
-                          ),
-                        ),
-                        subtitle: device.isOurApp
-                            ? const Text(
-                                '🎮 Приложение BaTuGa',
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 12,
-                                ),
-                              )
-                            : null,
-                        trailing: isSelected
-                            ? Icon(
-                                Icons.check_circle,
-                                color: Theme.of(context).primaryColor,
-                              )
-                            : device.isOurApp
-                            ? const Icon(
-                                Icons.star,
-                                color: Colors.green,
-                                size: 20,
-                              )
-                            : null,
-                        onTap: () => onDeviceSelected(device),
-                      ),
-                    );
-                  },
-                ),
-        ),
-
-        /// Кнопки управления
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              /// Кнопка отмены
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: onCancelPressed,
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                  child: const Text('Отмена'),
-                ),
-              ),
-              const SizedBox(width: 16),
-
-              /// Кнопка подключения
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: selectedDevice != null ? onConnectPressed : null,
-                  child: const Text('Подключиться'),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

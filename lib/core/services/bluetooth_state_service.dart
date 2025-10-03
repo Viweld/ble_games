@@ -5,13 +5,14 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../domain/services/i_bluetooth_state_service.dart';
+import '../utils/open_android_bluetooth_pannel_util.dart';
 
 class BluetoothStateService implements IBluetoothStateService {
   /// Проверить, включен ли Bluetooth
   @override
   Future<bool> isBluetoothEnabled() async {
     final state = FlutterBluePlus.adapterStateNow;
-    return state == BluetoothAdapterState.on;
+    return state != BluetoothAdapterState.off;
   }
 
   /// Запросить у пользователя включение Bluetooth
@@ -32,7 +33,7 @@ class BluetoothStateService implements IBluetoothStateService {
   /// Открыть настройки Bluetooth
   Future<void> _openBluetoothSettings() async {
     if (Platform.isAndroid) {
-      await launchUrl(Uri.parse("android.settings.BLUETOOTH_SETTINGS"));
+      BluetoothEnablePanelUtil.open();
     } else if (Platform.isIOS) {
       await launchUrl(Uri.parse("App-Prefs:root=Bluetooth"));
     }

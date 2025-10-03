@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../../domain/models/enums/player_type.dart';
 import '../../domain/models/game_move.dart';
-import '../../../../core/data/dto/abstracts/base_dto.dart';
+import '../../../../core/data/models/abstracts/base_dto.dart';
 import 'game_position_dto.dart';
 
 part 'game_move_dto.g.dart';

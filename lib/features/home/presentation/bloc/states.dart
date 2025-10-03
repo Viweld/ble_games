@@ -14,15 +14,6 @@ abstract class HomeState with _$HomeState {
   /// Основное состояние
   const factory HomeState.view() = HomeStateView;
 
-  /// Режим ожидания подключения (реклама)
-  const factory HomeState.awaitingConnection() = HomeStateAwaitingConnection;
-
-  /// Режим поиска устройств
-  const factory HomeState.searchingDevices({
-    required List<Device> devices,
-    Device? selectedDevice,
-  }) = HomeStateSearchingDevices;
-
   /// Ожидание ответа на приглашение
   const factory HomeState.invitationPending({required Device invitedDevice}) =
       HomeStateInvitationPending;

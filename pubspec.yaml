@@ -35,6 +35,9 @@ dependencies:
   # нативный сплеш
   flutter_native_splash: ^2.4.6
 
+  # анимации
+  lottie: ^3.3.2
+
 
   # Локализация
   flutter_localizations:
@@ -67,6 +70,7 @@ flutter:
   assets:
     - assets/icon/
     - assets/images/
+    - assets/animations/
 
 
 flutter_launcher_icons:

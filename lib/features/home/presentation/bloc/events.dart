@@ -7,30 +7,6 @@ abstract class HomeEvent with _$HomeEvent {
   const factory HomeEvent.onInitializationRequested() =
       HomeEventOnInitializationRequested;
 
-  /// Начать ожидание присоединения
-  const factory HomeEvent.onStartAwaitingConnection() =
-      HomeEventOnStartAwaitingConnection;
-
-  /// Начать поиск устройств
-  const factory HomeEvent.onStartSearchingDevices() =
-      HomeEventOnStartSearchingDevices;
-
-  /// Отмена ожидания
-  const factory HomeEvent.onCancelAwaiting() = HomeEventOnCancelAwaiting;
-
-  /// Отмена поиска устройств
-  const factory HomeEvent.onCancelSearching() = HomeEventOnCancelSearching;
-
-  /// Подключиться к выбранному устройству
-  const factory HomeEvent.onConnectToDevice() = HomeEventOnConnectToDevice;
-
-  /// Ручной рефреш списка устройств
-  const factory HomeEvent.onRefreshRequested() = HomeEventOnRefreshRequested;
-
-  /// Выбор игрока
-  const factory HomeEvent.onDeviceSelected({required Device device}) =
-      HomeEventOnDeviceSelected;
-
   /// Приглашение игрока
   const factory HomeEvent.onInvite() = HomeEventOnInvite;
 
@@ -46,9 +22,6 @@ abstract class HomeEvent with _$HomeEvent {
   /// Сохранение псевдонима
   const factory HomeEvent.onNicknameSaved({required String nickname}) =
       HomeEventOnNicknameSaved;
-
-  /// Изменился стейт экрана
-  const factory HomeEvent.onViewStateChanged() = HomeEventOnViewStateChanged;
 
   /// Получено приглашение
   const factory HomeEvent.onInvitationReceived({required User invitingUser}) =

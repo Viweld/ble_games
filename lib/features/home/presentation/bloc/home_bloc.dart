@@ -31,15 +31,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         HomeEventOnInitializationRequested() => _onInitializationRequested(
           emitter,
         ),
-        HomeEventOnStartAwaitingConnection() => _onStartAwaitingConnection(
-          emitter,
-        ),
-        HomeEventOnStartSearchingDevices() => _onStartSearchingDevices(emitter),
-        HomeEventOnCancelAwaiting() => _onCancelAwaiting(emitter),
-        HomeEventOnCancelSearching() => _onCancelSearching(emitter),
-        HomeEventOnConnectToDevice() => _onConnectToDevice(emitter),
-        HomeEventOnDeviceSelected() => _onDeviceSelected(event, emitter),
-        HomeEventOnViewStateChanged() => _onViewStateChanged(emitter),
         HomeEventOnNicknameSaved() => _onNicknameSaved(event, emitter),
         HomeEventOnInvitationReceived() => _onInvitationReceived(
           event,
@@ -56,32 +47,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       },
     );
 
-    _discoveredDevicesSubscription = _bluetoothRepository.discoveredDevices
-        .listen(_updateDiscoveredDevices);
     _incomingDataSubscription = _bluetoothRepository.incomingMessages.listen(
       _handleIncomingMessage,
     );
-    _clientConnectionSubscription = _bluetoothRepository.clientConnections
-        .listen(_handleClientConnection);
     add(const HomeEvent.onInitializationRequested());
   }
 
   final IUserRepository _playerRepository;
   final IBluetoothManager _bluetoothRepository;
 
-  late final StreamSubscription<List<Device>> _discoveredDevicesSubscription;
   late final StreamSubscription<Message> _incomingDataSubscription;
-  late final StreamSubscription<String> _clientConnectionSubscription;
 
-  List<Device> _devices = [];
-  Device? _selectedDevice;
   User? _currentUser;
 
   @override
   Future<void> close() {
-    _discoveredDevicesSubscription.cancel();
     _incomingDataSubscription.cancel();
-    _clientConnectionSubscription.cancel();
     _bluetoothRepository.dispose();
     return super.close();
   }
@@ -94,93 +75,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     } catch (e) {
       emitter(HomeState.initializationError(message: e.toString()));
     }
-  }
-
-  /// Обработчик начала ожидания подключения
-  Future<void> _onStartAwaitingConnection(Emitter<HomeState> emitter) async {
-    try {
-      await _bluetoothRepository.startAdvertising();
-      emitter(const HomeState.awaitingConnection());
-    } catch (e) {
-      emitter(
-        HomeState.initializationError(
-          message: 'Ошибка запуска режима ожидания: $e',
-        ),
-      );
-    }
-  }
-
-  /// Обработчик начала поиска устройств
-  Future<void> _onStartSearchingDevices(Emitter<HomeState> emitter) async {
-    try {
-      _devices = [];
-      _selectedDevice = null;
-      await _bluetoothRepository.startDiscovery();
-      emitter(
-        HomeState.searchingDevices(
-          devices: _devices,
-          selectedDevice: _selectedDevice,
-        ),
-      );
-    } catch (e) {
-      emitter(
-        HomeState.initializationError(message: 'Ошибка запуска поиска: $e'),
-      );
-    }
-  }
-
-  /// Обработчик отмены ожидания
-  Future<void> _onCancelAwaiting(Emitter<HomeState> emitter) async {
-    try {
-      await _bluetoothRepository.stopAdvertising();
-      emitter(const HomeState.view());
-    } catch (e) {
-      emitter(
-        HomeState.initializationError(message: 'Ошибка отмены ожидания: $e'),
-      );
-    }
-  }
-
-  /// Обработчик отмены поиска устройств
-  Future<void> _onCancelSearching(Emitter<HomeState> emitter) async {
-    try {
-      await _bluetoothRepository.stopDiscovery();
-      emitter(const HomeState.view());
-    } catch (e) {
-      emitter(
-        HomeState.initializationError(message: 'Ошибка отмены поиска: $e'),
-      );
-    }
-  }
-
-  /// Обработчик подключения к устройству
-  Future<void> _onConnectToDevice(Emitter<HomeState> emitter) async {
-    try {
-      if (_selectedDevice == null) {
-        emitter(
-          const HomeState.initializationError(
-            message: 'Не выбрано устройство для подключения',
-          ),
-        );
-        return;
-      }
-      await _bluetoothRepository.connectToDevice(_selectedDevice!);
-      // TODO(Vadim): Возможно, стоит здесь отправлять приглашение
-      // TODO(Vadim): Тут переход в список игр
-    } catch (e) {
-      emitter(HomeState.initializationError(message: 'Ошибка подключения: $e'));
-    }
-  }
-
-  /// Обработчик выбора устройства
-  Future<void> _onDeviceSelected(
-    HomeEventOnDeviceSelected event,
-    Emitter<HomeState> emitter,
-  ) async {
-    _selectedDevice = event.device;
-    final currentState = state;
-    if (currentState is! HomeStateSearchingDevices) return;
-    emitter(currentState.copyWith(selectedDevice: _selectedDevice));
   }
 
   /// Обработчик сохранения псевдонима
@@ -201,15 +95,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         ),
       );
     }
-  }
-
-  /// Обработчик изменения состояния представления
-  void _onViewStateChanged(Emitter<HomeState> emitter) {
-    final currentState = state;
-    if (currentState is! HomeStateSearchingDevices) return;
-    emitter(
-      currentState.copyWith(devices: _devices, selectedDevice: _selectedDevice),
-    );
   }
 
   /// Обработчик получения приглашения
@@ -274,74 +159,31 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  /// Обновление списка найденных устройств
-  void _updateDiscoveredDevices(List<Device> devices) {
-    if (isClosed) return;
-    _devices = devices;
-    final currentState = state;
-
-    if (currentState is! HomeStateSearchingDevices) return;
-    add(const HomeEvent.onViewStateChanged());
-  }
-
   /// Обработка входящих данных
   void _handleIncomingMessage(Message message) {
     if (isClosed) return;
-    final currentState = state;
     switch (message) {
       case InvitationMessage(:final user):
-        if (currentState is HomeStateAwaitingConnection) {
-          add(const HomeEvent.onAcceptInvitation());
-        } else {
-          add(HomeEvent.onInvitationReceived(invitingUser: user));
-        }
+        add(HomeEvent.onInvitationReceived(invitingUser: user));
       case AcceptanceMessage(:final user):
         final currentState = state;
         if (currentState is HomeStateInvitationPending) {
           add(HomeEvent.onConnected(opponent: user));
-        } else if (currentState is HomeStateAwaitingConnection) {
-          // fixme
         }
       case RejectionMessage(:final user):
         final currentState = state;
         if (currentState is HomeStateInvitationPending) {
           add(HomeEvent.onInvitationRejected(rejectedUser: user));
-        } else {
-          // fixme
         }
       case TerminationMessage():
-        final currentState = state;
-        if (currentState is HomeStateAwaitingConnection ||
-            currentState is HomeStateSearchingDevices) {
-          add(const HomeEvent.onViewStateChanged());
-        } else {
-          // fixme
-        }
+      // fixme
+
       case MoveMessage():
         break;
       case RoleAssignmentMessage():
         break;
       case OpponentLeftMessage():
-        final currentState = state;
-        if (currentState is HomeStateAwaitingConnection ||
-            currentState is HomeStateSearchingDevices) {
-          add(const HomeEvent.onViewStateChanged());
-        } else {
-          // fixme
-        }
+      // fixme
     }
-  }
-
-  /// Обработка подключений клиентов (для сервера)
-  void _handleClientConnection(String clientId) {
-    if (isClosed) return;
-    final currentState = state;
-    if (currentState is! HomeStateAwaitingConnection) return;
-    final currentUser = _currentUser ?? User(id: 'server_user', name: 'Сервер');
-    final invitationMessage = InvitationMessage(
-      device: Device(id: clientId, name: 'Клиент', isOurApp: true),
-      user: currentUser,
-    );
-    _bluetoothRepository.sendMessage(invitationMessage).catchError((error) {});
   }
 }

@@ -1,6 +1,6 @@
+import 'package:batuga/core/data/repositories/bluetooth_manager.dart';
 import 'package:batuga/core/domain/services/bluetooth_manager/i_bluetooth_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:batuga/core/repositories/bluetooth_manager.dart';
 
 void main() {
   group('Bluetooth Connection Integration Test', () {

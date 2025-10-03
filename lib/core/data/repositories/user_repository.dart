@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import '../data/data_providers/i_cached_data_provider.dart';
-import '../data/dto/user_dto.dart';
-import '../domain/models/user.dart';
-import '../domain/repositories/i_user_repository.dart';
+import '../../data/data_providers/i_cached_data_provider.dart';
+import '../../data/models/user_dto.dart';
+import '../../domain/models/user.dart';
+import '../../domain/repositories/i_user_repository.dart';
 
 /// Реализация репозитория игроков
 class UserRepository implements IUserRepository {

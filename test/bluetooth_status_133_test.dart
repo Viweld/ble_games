@@ -1,6 +1,5 @@
+import 'package:batuga/core/data/repositories/bluetooth_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import '../lib/core/repositories/bluetooth_manager.dart';
 
 void main() {
   group('Bluetooth Status 133 Error Handling', () {
