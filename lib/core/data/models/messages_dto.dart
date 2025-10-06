@@ -44,7 +44,6 @@ abstract class MessageDto<T extends Message> extends BaseDto<T> {
   /// Универсальная фабрика для создания конкретного наследника MessageDto
   static MessageDto fromJson(Map<String, dynamic> json) => switch (json[typeKey]
       as String) {
-    HandshakeMessageDto.typeValue => HandshakeMessageDto.fromJson(json),
     InvitationMessageDto.typeValue => InvitationMessageDto.fromJson(json),
     AcceptanceMessageDto.typeValue => AcceptanceMessageDto.fromJson(json),
     RejectionMessageDto.typeValue => RejectionMessageDto.fromJson(json),
@@ -59,7 +58,6 @@ abstract class MessageDto<T extends Message> extends BaseDto<T> {
 
   /// Универсальная фабрика для создания конкретного наследника MessageDto из доменной модели
   static MessageDto fromDomain(Message message) => switch (message) {
-    HandshakeMessage m => HandshakeMessageDto.fromDomain(m),
     InvitationMessage m => InvitationMessageDto.fromDomain(m),
     AcceptanceMessage m => AcceptanceMessageDto.fromDomain(m),
     RejectionMessage m => RejectionMessageDto.fromDomain(m),
@@ -68,37 +66,6 @@ abstract class MessageDto<T extends Message> extends BaseDto<T> {
     RoleAssignmentMessage m => RoleAssignmentMessageDto.fromDomain(m),
     OpponentLeftMessage m => OpponentLeftMessageDto.fromDomain(m),
   };
-}
-
-// -----------------------------------------------------------------------------
-/// DTO приглашения к подключению
-@immutable
-@JsonSerializable(explicitToJson: true)
-class HandshakeMessageDto extends MessageDto<HandshakeMessage> {
-  const HandshakeMessageDto({
-    required super.type,
-    required super.device,
-    required super.user,
-  });
-
-  static const String typeValue = 'handshake';
-
-  factory HandshakeMessageDto.fromJson(Map<String, dynamic> json) =>
-      _$HandshakeMessageDtoFromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() => _$HandshakeMessageDtoToJson(this);
-
-  @override
-  HandshakeMessage toDomain() =>
-      HandshakeMessage(device: device.toDomain(), user: user.toDomain());
-
-  static HandshakeMessageDto fromDomain(HandshakeMessage message) =>
-      HandshakeMessageDto(
-        type: typeValue,
-        device: DeviceDto.fromDomain(message.device),
-        user: UserDto.fromDomain(message.user),
-      );
 }
 
 // -----------------------------------------------------------------------------

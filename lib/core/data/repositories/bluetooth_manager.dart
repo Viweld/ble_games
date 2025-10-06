@@ -220,9 +220,9 @@ class BluetoothManager implements IBluetoothManager {
       _BluetoothLogger.debug('✅ Сервис добавлен');
 
       // Настраиваем обработку записи в характеристику
-      // _writeRequestSubscription = _peripheralManager
-      //     .characteristicWriteRequested
-      //     .listen(_peripheralEventHandler);
+      _writeRequestSubscription = _peripheralManager
+          .characteristicWriteRequested
+          .listen(_peripheralEventHandler);
 
       // Начинаем рекламу с нашим именем и специальными данными
       await _peripheralManager.startAdvertising(
@@ -252,7 +252,9 @@ class BluetoothManager implements IBluetoothManager {
       _BluetoothLogger.debug('📥 Входящее сообщение: $rawMessage');
       final jsonData = jsonDecode(rawMessage) as Map<String, dynamic>;
       final message = MessageDto.fromJson(jsonData).toDomain();
-      if (message is HandshakeMessage) {}
+      if (message is InvitationMessage) {
+        // todo: сохранить User
+      }
       _incomingMessagesController.add(message);
       _peripheralManager.respondWriteRequest(event.request);
     } catch (e) {
