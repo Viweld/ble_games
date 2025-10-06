@@ -33,11 +33,9 @@ class AwaitingConnectionBloc
   }
 
   final IBluetoothManager _bluetoothRepository;
-  late final StreamSubscription<String> _clientConnectionSubscription;
 
   @override
   close() {
-    _clientConnectionSubscription.cancel();
     unawaited(_bluetoothRepository.stopAdvertising());
     return super.close();
   }

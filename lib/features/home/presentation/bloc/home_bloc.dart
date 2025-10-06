@@ -47,9 +47,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       },
     );
 
-    _incomingDataSubscription = _bluetoothRepository.incomingMessages.listen(
-      _handleIncomingMessage,
-    );
+    _incomingDataSubscription = _bluetoothRepository.incomingMessagesStream
+        .listen(_handleIncomingMessage);
     add(const HomeEvent.onInitializationRequested());
   }
 
@@ -126,13 +125,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final currentUser =
           _currentUser ?? User(id: 'temp_user', name: 'Тестовый пользователь');
       // Отправляем сообщение о принятии
-      if (_bluetoothRepository.isConnected) {
-        final acceptanceMessage = AcceptanceMessage(
-          device: _bluetoothRepository.connectedDevice!,
-          user: currentUser,
-        );
-        await _bluetoothRepository.sendMessage(acceptanceMessage);
-      }
+      // if (_bluetoothRepository.isConnected) {
+      //   final acceptanceMessage = AcceptanceMessage(
+      //     device: _bluetoothRepository.connectedDevice!,
+      //     user: currentUser,
+      //   );
+      //   await _bluetoothRepository.sendMessage(acceptanceMessage);
+      // }
 
       // TODO(Vadim): Тут переход в список игр
     } catch (e) {
@@ -146,13 +145,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final currentUser =
           _currentUser ?? User(id: 'temp_user', name: 'Тестовый пользователь');
 
-      if (_bluetoothRepository.isConnected) {
-        final rejectionMessage = RejectionMessage(
-          device: _bluetoothRepository.connectedDevice!,
-          user: currentUser,
-        );
-        await _bluetoothRepository.sendMessage(rejectionMessage);
-      }
+      // if (_bluetoothRepository.isConnected) {
+      //   final rejectionMessage = RejectionMessage(
+      //     device: _bluetoothRepository.connectedDevice!,
+      //     user: currentUser,
+      //   );
+      //   await _bluetoothRepository.sendMessage(rejectionMessage);
+      // }
       emitter(const HomeState.view());
     } catch (e) {
       emitter(HomeState.connectionError(message: 'Ошибка отклонения: $e'));
