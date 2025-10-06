@@ -8,8 +8,8 @@ abstract class SearchingDevicesEvent with _$SearchingDevicesEvent {
       SearchingDevicesEventOnViewStateChanged;
 
   /// Запрошено включение режима поиска
-  const factory SearchingDevicesEvent.onSearchingRequested() =
-      SearchingDevicesEventOnSearchingRequested;
+  const factory SearchingDevicesEvent.onInitializationRequested() =
+      SearchingDevicesEventOnInitializationRequested;
 
   /// Подключиться к выбранному устройству
   const factory SearchingDevicesEvent.onConnectToDevice() =

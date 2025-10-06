@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/build_context_extension.dart';
+import '../../../core/presentation/widgets/common_progress_indicator.dart';
 import '../../tictactoe/domain/models/enums/game_winner.dart';
 import '../../tictactoe/domain/models/enums/player_type.dart';
 import 'bloc/game_bloc.dart';
@@ -72,7 +73,7 @@ class _GameView extends StatelessWidget {
         builder: (context, state) {
           return switch (state) {
             GameStateInitializationPending() => const Center(
-              child: CircularProgressIndicator(),
+              child: CommonProgressIndicator(),
             ),
             GameStateInitializationError(:final message) => Center(
               child: Column(

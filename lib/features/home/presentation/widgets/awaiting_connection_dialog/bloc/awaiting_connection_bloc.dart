@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
+import 'package:flutter/services.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../../../../core/domain/models/exceptions/bluetooth_exceptions.dart';
 import '../../../../../../core/domain/services/bluetooth_manager/i_bluetooth_manager.dart';
 
 part 'events.dart';
@@ -64,12 +66,15 @@ class AwaitingConnectionBloc
   ) async {
     try {
       await _bluetoothRepository.startAdvertising();
-    } catch (e) {
+    } on BluetoothDisabledException {
       emitter(
         AwaitingConnectionState.error(
-          message: 'Ошибка запуска режима ожидания: $e',
+          message: 'Bluetooth выключен или недоступен',
         ),
       );
+    } on Object {
+      emitter(AwaitingConnectionState.error(message: 'Неизвестная ошибка'));
+      rethrow;
     }
   }
 }

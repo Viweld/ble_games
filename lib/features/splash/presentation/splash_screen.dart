@@ -2,6 +2,7 @@ import 'package:batuga/core/di/builders.dep_gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/presentation/widgets/common_progress_indicator.dart';
 import 'bloc/splash_bloc.dart';
 
 /// Экран сплэш-скрина
@@ -86,9 +87,7 @@ class _SplashView extends StatelessWidget {
                   SplashStateInitializationPending() => true,
                   _ => false,
                 })
-                  CircularProgressIndicator(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
+                  CommonProgressIndicator(),
               ],
             ),
           );

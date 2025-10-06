@@ -4,11 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/domain/models/device.dart';
 import '../../../../../core/presentation/widgets/common_error.dart';
+import '../../../../../core/presentation/widgets/common_progress_indicator.dart';
 import 'bloc/searching_devices_bloc.dart';
 
 /// Диалог ввода псевдонима
 class SearchingDevicesDialog extends StatelessWidget {
   const SearchingDevicesDialog._();
+
+  static const widthFraction = 0.9;
+  static const heightFraction = 0.6;
 
   static Future<void> show(BuildContext context) => showDialog<void>(
     context: context,
@@ -25,16 +29,20 @@ class SearchingDevicesDialog extends StatelessWidget {
           SearchingDevicesStateConnected() => true,
           _ => false,
         },
-        buildWhen: (previous, state) => switch (state) {
-          SearchingDevicesStateView() => true,
-          SearchingDevicesStateError() => true,
-          _ => false,
-        },
         listener: (context, state) => switch (state) {
           SearchingDevicesStateConnected() => Navigator.pop(context),
           _ => null,
         },
+        buildWhen: (previous, state) => switch (state) {
+          SearchingDevicesStatePending() => true,
+          SearchingDevicesStateView() => true,
+          SearchingDevicesStateError() => true,
+          _ => false,
+        },
         builder: (context, state) => switch (state) {
+          SearchingDevicesStatePending() => _SearchingDevicesPending(
+            onCancelPressed: () => _onCancelPressed(context),
+          ),
           SearchingDevicesStateView(:final devices, :final selectedDevice) =>
             _SearchingDevicesView(
               devices: devices,
@@ -44,6 +52,7 @@ class SearchingDevicesDialog extends StatelessWidget {
               onCancelPressed: () => _onCancelPressed(context),
             ),
           SearchingDevicesStateError(:final message) => _SearchingDevicesError(
+            onCancelPressed: () => _onCancelPressed(context),
             message: message,
           ),
           _ => throw UnsupportedError('${state.runtimeType} нельзя строить'),
@@ -107,14 +116,14 @@ class _SearchingDevicesView extends StatelessWidget {
     return AlertDialog(
       title: Text('Найденные устройства', textAlign: TextAlign.center),
       content: SizedBox(
-        height: screenSize.height * 0.7,
-        width: screenSize.width * 0.9,
+        width: screenSize.width * SearchingDevicesDialog.widthFraction,
+        height: screenSize.height * SearchingDevicesDialog.heightFraction,
         child: devices.isEmpty
             ? const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(),
+                    CommonProgressIndicator(),
                     SizedBox(height: 16),
                     Text('Поиск устройств...'),
                   ],
@@ -182,22 +191,26 @@ class _SearchingDevicesView extends StatelessWidget {
               ),
       ),
       actions: [
-        /// Кнопка отмены
-        Expanded(
-          child: ElevatedButton(
-            onPressed: onCancelPressed,
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-            child: const Text('Отмена'),
-          ),
-        ),
-        const SizedBox(width: 16),
+        Row(
+          children: [
+            /// Кнопка отмены
+            Expanded(
+              child: ElevatedButton(
+                onPressed: onCancelPressed,
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                child: const Text('Отмена'),
+              ),
+            ),
+            const SizedBox(width: 16),
 
-        /// Кнопка подключения
-        Expanded(
-          child: ElevatedButton(
-            onPressed: selectedDevice != null ? onConnectPressed : null,
-            child: const Text('Подключиться'),
-          ),
+            /// Кнопка подключения
+            Expanded(
+              child: ElevatedButton(
+                onPressed: selectedDevice != null ? onConnectPressed : null,
+                child: const Text('Подключиться'),
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -209,23 +222,78 @@ class _SearchingDevicesView extends StatelessWidget {
 // -----------------------------------------------------------------------------
 /// Ошибка ожидания подключения
 class _SearchingDevicesError extends StatelessWidget {
-  const _SearchingDevicesError({this.message});
+  const _SearchingDevicesError({required this.onCancelPressed, this.message});
 
+  /// Коллбэк отмены
+  final VoidCallback onCancelPressed;
+
+  /// Сообщение об ошибке
   final String? message;
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
     return AlertDialog(
       title: Text('Ошибка ожидания подключения!', textAlign: TextAlign.center),
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(padding: EdgeInsets.only(bottom: 16), child: CommonError()),
-          if (message != null) Text(message!, textAlign: TextAlign.center),
-        ],
+      content: SizedBox(
+        width: screenSize.width * SearchingDevicesDialog.widthFraction,
+        height: screenSize.height * SearchingDevicesDialog.heightFraction,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(padding: EdgeInsets.only(bottom: 16), child: CommonError()),
+            if (message != null) Text(message!, textAlign: TextAlign.center),
+          ],
+        ),
       ),
-      actions: [],
+      actions: [
+        /// Кнопка отмены
+        ElevatedButton(
+          onPressed: onCancelPressed,
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+          child: const Text('Отмена'),
+        ),
+      ],
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+/// Ошибка ожидания подключения
+class _SearchingDevicesPending extends StatelessWidget {
+  const _SearchingDevicesPending({required this.onCancelPressed});
+
+  /// Коллбэк отмены
+  final VoidCallback onCancelPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
+    return AlertDialog(
+      title: Text('Найденные устройства', textAlign: TextAlign.center),
+      content: SizedBox(
+        width: screenSize.width * SearchingDevicesDialog.widthFraction,
+        height: screenSize.height * SearchingDevicesDialog.heightFraction,
+        child: Column(
+          children: [
+            CommonProgressIndicator(),
+            Text('Загрузка...', textAlign: TextAlign.center),
+          ],
+        ),
+      ),
+      actions: [
+        /// Кнопка отмены
+        ElevatedButton(
+          onPressed: onCancelPressed,
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+          child: const Text('Отмена'),
+        ),
+      ],
     );
   }
 }

@@ -12,6 +12,12 @@ sealed class Message {
   final User user;
 }
 
+/// Рукопожатие при установлении соединения
+@immutable
+class HandshakeMessage extends Message {
+  const HandshakeMessage({required super.device, required super.user});
+}
+
 /// Приглашение к подключению
 @immutable
 class InvitationMessage extends Message {

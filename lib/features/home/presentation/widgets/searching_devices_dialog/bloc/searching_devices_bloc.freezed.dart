@@ -55,12 +55,12 @@ extension SearchingDevicesEventPatterns on SearchingDevicesEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SearchingDevicesEventOnViewStateChanged value)?  onViewStateChanged,TResult Function( SearchingDevicesEventOnSearchingRequested value)?  onSearchingRequested,TResult Function( SearchingDevicesEventOnConnectToDevice value)?  onConnectToDevice,TResult Function( SearchingDevicesEventOnRefreshRequested value)?  onRefreshRequested,TResult Function( SearchingDevicesEventOnDeviceSelected value)?  onDeviceSelected,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SearchingDevicesEventOnViewStateChanged value)?  onViewStateChanged,TResult Function( SearchingDevicesEventOnInitializationRequested value)?  onInitializationRequested,TResult Function( SearchingDevicesEventOnConnectToDevice value)?  onConnectToDevice,TResult Function( SearchingDevicesEventOnRefreshRequested value)?  onRefreshRequested,TResult Function( SearchingDevicesEventOnDeviceSelected value)?  onDeviceSelected,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case SearchingDevicesEventOnViewStateChanged() when onViewStateChanged != null:
-return onViewStateChanged(_that);case SearchingDevicesEventOnSearchingRequested() when onSearchingRequested != null:
-return onSearchingRequested(_that);case SearchingDevicesEventOnConnectToDevice() when onConnectToDevice != null:
+return onViewStateChanged(_that);case SearchingDevicesEventOnInitializationRequested() when onInitializationRequested != null:
+return onInitializationRequested(_that);case SearchingDevicesEventOnConnectToDevice() when onConnectToDevice != null:
 return onConnectToDevice(_that);case SearchingDevicesEventOnRefreshRequested() when onRefreshRequested != null:
 return onRefreshRequested(_that);case SearchingDevicesEventOnDeviceSelected() when onDeviceSelected != null:
 return onDeviceSelected(_that);case _:
@@ -81,12 +81,12 @@ return onDeviceSelected(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SearchingDevicesEventOnViewStateChanged value)  onViewStateChanged,required TResult Function( SearchingDevicesEventOnSearchingRequested value)  onSearchingRequested,required TResult Function( SearchingDevicesEventOnConnectToDevice value)  onConnectToDevice,required TResult Function( SearchingDevicesEventOnRefreshRequested value)  onRefreshRequested,required TResult Function( SearchingDevicesEventOnDeviceSelected value)  onDeviceSelected,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SearchingDevicesEventOnViewStateChanged value)  onViewStateChanged,required TResult Function( SearchingDevicesEventOnInitializationRequested value)  onInitializationRequested,required TResult Function( SearchingDevicesEventOnConnectToDevice value)  onConnectToDevice,required TResult Function( SearchingDevicesEventOnRefreshRequested value)  onRefreshRequested,required TResult Function( SearchingDevicesEventOnDeviceSelected value)  onDeviceSelected,}){
 final _that = this;
 switch (_that) {
 case SearchingDevicesEventOnViewStateChanged():
-return onViewStateChanged(_that);case SearchingDevicesEventOnSearchingRequested():
-return onSearchingRequested(_that);case SearchingDevicesEventOnConnectToDevice():
+return onViewStateChanged(_that);case SearchingDevicesEventOnInitializationRequested():
+return onInitializationRequested(_that);case SearchingDevicesEventOnConnectToDevice():
 return onConnectToDevice(_that);case SearchingDevicesEventOnRefreshRequested():
 return onRefreshRequested(_that);case SearchingDevicesEventOnDeviceSelected():
 return onDeviceSelected(_that);case _:
@@ -106,12 +106,12 @@ return onDeviceSelected(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SearchingDevicesEventOnViewStateChanged value)?  onViewStateChanged,TResult? Function( SearchingDevicesEventOnSearchingRequested value)?  onSearchingRequested,TResult? Function( SearchingDevicesEventOnConnectToDevice value)?  onConnectToDevice,TResult? Function( SearchingDevicesEventOnRefreshRequested value)?  onRefreshRequested,TResult? Function( SearchingDevicesEventOnDeviceSelected value)?  onDeviceSelected,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SearchingDevicesEventOnViewStateChanged value)?  onViewStateChanged,TResult? Function( SearchingDevicesEventOnInitializationRequested value)?  onInitializationRequested,TResult? Function( SearchingDevicesEventOnConnectToDevice value)?  onConnectToDevice,TResult? Function( SearchingDevicesEventOnRefreshRequested value)?  onRefreshRequested,TResult? Function( SearchingDevicesEventOnDeviceSelected value)?  onDeviceSelected,}){
 final _that = this;
 switch (_that) {
 case SearchingDevicesEventOnViewStateChanged() when onViewStateChanged != null:
-return onViewStateChanged(_that);case SearchingDevicesEventOnSearchingRequested() when onSearchingRequested != null:
-return onSearchingRequested(_that);case SearchingDevicesEventOnConnectToDevice() when onConnectToDevice != null:
+return onViewStateChanged(_that);case SearchingDevicesEventOnInitializationRequested() when onInitializationRequested != null:
+return onInitializationRequested(_that);case SearchingDevicesEventOnConnectToDevice() when onConnectToDevice != null:
 return onConnectToDevice(_that);case SearchingDevicesEventOnRefreshRequested() when onRefreshRequested != null:
 return onRefreshRequested(_that);case SearchingDevicesEventOnDeviceSelected() when onDeviceSelected != null:
 return onDeviceSelected(_that);case _:
@@ -131,11 +131,11 @@ return onDeviceSelected(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  onViewStateChanged,TResult Function()?  onSearchingRequested,TResult Function()?  onConnectToDevice,TResult Function()?  onRefreshRequested,TResult Function( Device device)?  onDeviceSelected,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  onViewStateChanged,TResult Function()?  onInitializationRequested,TResult Function()?  onConnectToDevice,TResult Function()?  onRefreshRequested,TResult Function( Device device)?  onDeviceSelected,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case SearchingDevicesEventOnViewStateChanged() when onViewStateChanged != null:
-return onViewStateChanged();case SearchingDevicesEventOnSearchingRequested() when onSearchingRequested != null:
-return onSearchingRequested();case SearchingDevicesEventOnConnectToDevice() when onConnectToDevice != null:
+return onViewStateChanged();case SearchingDevicesEventOnInitializationRequested() when onInitializationRequested != null:
+return onInitializationRequested();case SearchingDevicesEventOnConnectToDevice() when onConnectToDevice != null:
 return onConnectToDevice();case SearchingDevicesEventOnRefreshRequested() when onRefreshRequested != null:
 return onRefreshRequested();case SearchingDevicesEventOnDeviceSelected() when onDeviceSelected != null:
 return onDeviceSelected(_that.device);case _:
@@ -156,11 +156,11 @@ return onDeviceSelected(_that.device);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  onViewStateChanged,required TResult Function()  onSearchingRequested,required TResult Function()  onConnectToDevice,required TResult Function()  onRefreshRequested,required TResult Function( Device device)  onDeviceSelected,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  onViewStateChanged,required TResult Function()  onInitializationRequested,required TResult Function()  onConnectToDevice,required TResult Function()  onRefreshRequested,required TResult Function( Device device)  onDeviceSelected,}) {final _that = this;
 switch (_that) {
 case SearchingDevicesEventOnViewStateChanged():
-return onViewStateChanged();case SearchingDevicesEventOnSearchingRequested():
-return onSearchingRequested();case SearchingDevicesEventOnConnectToDevice():
+return onViewStateChanged();case SearchingDevicesEventOnInitializationRequested():
+return onInitializationRequested();case SearchingDevicesEventOnConnectToDevice():
 return onConnectToDevice();case SearchingDevicesEventOnRefreshRequested():
 return onRefreshRequested();case SearchingDevicesEventOnDeviceSelected():
 return onDeviceSelected(_that.device);case _:
@@ -180,11 +180,11 @@ return onDeviceSelected(_that.device);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  onViewStateChanged,TResult? Function()?  onSearchingRequested,TResult? Function()?  onConnectToDevice,TResult? Function()?  onRefreshRequested,TResult? Function( Device device)?  onDeviceSelected,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  onViewStateChanged,TResult? Function()?  onInitializationRequested,TResult? Function()?  onConnectToDevice,TResult? Function()?  onRefreshRequested,TResult? Function( Device device)?  onDeviceSelected,}) {final _that = this;
 switch (_that) {
 case SearchingDevicesEventOnViewStateChanged() when onViewStateChanged != null:
-return onViewStateChanged();case SearchingDevicesEventOnSearchingRequested() when onSearchingRequested != null:
-return onSearchingRequested();case SearchingDevicesEventOnConnectToDevice() when onConnectToDevice != null:
+return onViewStateChanged();case SearchingDevicesEventOnInitializationRequested() when onInitializationRequested != null:
+return onInitializationRequested();case SearchingDevicesEventOnConnectToDevice() when onConnectToDevice != null:
 return onConnectToDevice();case SearchingDevicesEventOnRefreshRequested() when onRefreshRequested != null:
 return onRefreshRequested();case SearchingDevicesEventOnDeviceSelected() when onDeviceSelected != null:
 return onDeviceSelected(_that.device);case _:
@@ -230,8 +230,8 @@ String toString() {
 /// @nodoc
 
 
-class SearchingDevicesEventOnSearchingRequested implements SearchingDevicesEvent {
-  const SearchingDevicesEventOnSearchingRequested();
+class SearchingDevicesEventOnInitializationRequested implements SearchingDevicesEvent {
+  const SearchingDevicesEventOnInitializationRequested();
   
 
 
@@ -241,7 +241,7 @@ class SearchingDevicesEventOnSearchingRequested implements SearchingDevicesEvent
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchingDevicesEventOnSearchingRequested);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchingDevicesEventOnInitializationRequested);
 }
 
 
@@ -250,7 +250,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SearchingDevicesEvent.onSearchingRequested()';
+  return 'SearchingDevicesEvent.onInitializationRequested()';
 }
 
 
@@ -433,13 +433,14 @@ extension SearchingDevicesStatePatterns on SearchingDevicesState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SearchingDevicesStateView value)?  view,TResult Function( SearchingDevicesStateConnected value)?  connected,TResult Function( SearchingDevicesStateError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SearchingDevicesStatePending value)?  pending,TResult Function( SearchingDevicesStateView value)?  view,TResult Function( SearchingDevicesStateError value)?  error,TResult Function( SearchingDevicesStateConnected value)?  connected,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case SearchingDevicesStateView() when view != null:
-return view(_that);case SearchingDevicesStateConnected() when connected != null:
-return connected(_that);case SearchingDevicesStateError() when error != null:
-return error(_that);case _:
+case SearchingDevicesStatePending() when pending != null:
+return pending(_that);case SearchingDevicesStateView() when view != null:
+return view(_that);case SearchingDevicesStateError() when error != null:
+return error(_that);case SearchingDevicesStateConnected() when connected != null:
+return connected(_that);case _:
   return orElse();
 
 }
@@ -457,13 +458,14 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SearchingDevicesStateView value)  view,required TResult Function( SearchingDevicesStateConnected value)  connected,required TResult Function( SearchingDevicesStateError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SearchingDevicesStatePending value)  pending,required TResult Function( SearchingDevicesStateView value)  view,required TResult Function( SearchingDevicesStateError value)  error,required TResult Function( SearchingDevicesStateConnected value)  connected,}){
 final _that = this;
 switch (_that) {
-case SearchingDevicesStateView():
-return view(_that);case SearchingDevicesStateConnected():
-return connected(_that);case SearchingDevicesStateError():
-return error(_that);case _:
+case SearchingDevicesStatePending():
+return pending(_that);case SearchingDevicesStateView():
+return view(_that);case SearchingDevicesStateError():
+return error(_that);case SearchingDevicesStateConnected():
+return connected(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -480,13 +482,14 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SearchingDevicesStateView value)?  view,TResult? Function( SearchingDevicesStateConnected value)?  connected,TResult? Function( SearchingDevicesStateError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SearchingDevicesStatePending value)?  pending,TResult? Function( SearchingDevicesStateView value)?  view,TResult? Function( SearchingDevicesStateError value)?  error,TResult? Function( SearchingDevicesStateConnected value)?  connected,}){
 final _that = this;
 switch (_that) {
-case SearchingDevicesStateView() when view != null:
-return view(_that);case SearchingDevicesStateConnected() when connected != null:
-return connected(_that);case SearchingDevicesStateError() when error != null:
-return error(_that);case _:
+case SearchingDevicesStatePending() when pending != null:
+return pending(_that);case SearchingDevicesStateView() when view != null:
+return view(_that);case SearchingDevicesStateError() when error != null:
+return error(_that);case SearchingDevicesStateConnected() when connected != null:
+return connected(_that);case _:
   return null;
 
 }
@@ -503,12 +506,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<Device> devices,  Device? selectedDevice)?  view,TResult Function()?  connected,TResult Function( String? message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  pending,TResult Function( List<Device> devices,  Device? selectedDevice)?  view,TResult Function( String? message)?  error,TResult Function()?  connected,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case SearchingDevicesStateView() when view != null:
-return view(_that.devices,_that.selectedDevice);case SearchingDevicesStateConnected() when connected != null:
-return connected();case SearchingDevicesStateError() when error != null:
-return error(_that.message);case _:
+case SearchingDevicesStatePending() when pending != null:
+return pending();case SearchingDevicesStateView() when view != null:
+return view(_that.devices,_that.selectedDevice);case SearchingDevicesStateError() when error != null:
+return error(_that.message);case SearchingDevicesStateConnected() when connected != null:
+return connected();case _:
   return orElse();
 
 }
@@ -526,12 +530,13 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<Device> devices,  Device? selectedDevice)  view,required TResult Function()  connected,required TResult Function( String? message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  pending,required TResult Function( List<Device> devices,  Device? selectedDevice)  view,required TResult Function( String? message)  error,required TResult Function()  connected,}) {final _that = this;
 switch (_that) {
-case SearchingDevicesStateView():
-return view(_that.devices,_that.selectedDevice);case SearchingDevicesStateConnected():
-return connected();case SearchingDevicesStateError():
-return error(_that.message);case _:
+case SearchingDevicesStatePending():
+return pending();case SearchingDevicesStateView():
+return view(_that.devices,_that.selectedDevice);case SearchingDevicesStateError():
+return error(_that.message);case SearchingDevicesStateConnected():
+return connected();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -548,12 +553,13 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<Device> devices,  Device? selectedDevice)?  view,TResult? Function()?  connected,TResult? Function( String? message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  pending,TResult? Function( List<Device> devices,  Device? selectedDevice)?  view,TResult? Function( String? message)?  error,TResult? Function()?  connected,}) {final _that = this;
 switch (_that) {
-case SearchingDevicesStateView() when view != null:
-return view(_that.devices,_that.selectedDevice);case SearchingDevicesStateConnected() when connected != null:
-return connected();case SearchingDevicesStateError() when error != null:
-return error(_that.message);case _:
+case SearchingDevicesStatePending() when pending != null:
+return pending();case SearchingDevicesStateView() when view != null:
+return view(_that.devices,_that.selectedDevice);case SearchingDevicesStateError() when error != null:
+return error(_that.message);case SearchingDevicesStateConnected() when connected != null:
+return connected();case _:
   return null;
 
 }
@@ -564,12 +570,44 @@ return error(_that.message);case _:
 /// @nodoc
 
 
+class SearchingDevicesStatePending implements SearchingDevicesState {
+  const SearchingDevicesStatePending();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchingDevicesStatePending);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SearchingDevicesState.pending()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
 class SearchingDevicesStateView implements SearchingDevicesState {
-  const SearchingDevicesStateView({required final  List<Device> devices, this.selectedDevice}): _devices = devices;
+  const SearchingDevicesStateView({final  List<Device> devices = const [], this.selectedDevice}): _devices = devices;
   
 
  final  List<Device> _devices;
- List<Device> get devices {
+@JsonKey() List<Device> get devices {
   if (_devices is EqualUnmodifiableListView) return _devices;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_devices);
@@ -638,38 +676,6 @@ as Device?,
 /// @nodoc
 
 
-class SearchingDevicesStateConnected implements SearchingDevicesState {
-  const SearchingDevicesStateConnected();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchingDevicesStateConnected);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'SearchingDevicesState.connected()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
 class SearchingDevicesStateError implements SearchingDevicesState {
   const SearchingDevicesStateError({this.message});
   
@@ -732,5 +738,37 @@ as String?,
 
 
 }
+
+/// @nodoc
+
+
+class SearchingDevicesStateConnected implements SearchingDevicesState {
+  const SearchingDevicesStateConnected();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchingDevicesStateConnected);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SearchingDevicesState.connected()';
+}
+
+
+}
+
+
+
 
 // dart format on

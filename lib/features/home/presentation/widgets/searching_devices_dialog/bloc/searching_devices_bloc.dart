@@ -20,16 +20,12 @@ class SearchingDevicesBloc
   SearchingDevicesBloc({
     @DepArg() required IBluetoothManager bluetoothRepository,
   }) : _bluetoothRepository = bluetoothRepository,
-       super(SearchingDevicesState.view(devices: [])) {
+       super(SearchingDevicesState.pending()) {
     on<SearchingDevicesEvent>(
       (event, emitter) => switch (event) {
-        SearchingDevicesEventOnViewStateChanged() => _onViewStateChanged(
-          emitter,
-        ),
-        SearchingDevicesEventOnSearchingRequested() => _onSearchingRequested(
-          event,
-          emitter,
-        ),
+        SearchingDevicesEventOnViewStateChanged() => emitter(_viewState),
+        SearchingDevicesEventOnInitializationRequested() =>
+          _onInitializationRequested(event, emitter),
         SearchingDevicesEventOnConnectToDevice() => _onConnectToDevice(emitter),
         SearchingDevicesEventOnDeviceSelected() => _onDeviceSelected(
           event,
@@ -41,16 +37,15 @@ class SearchingDevicesBloc
     );
 
     _discoveredDevicesSubscription = _bluetoothRepository.discoveredDevices
-        .listen(_updateDiscoveredDevices);
+        .listen(_discoveredDevicesListener);
 
-    add(const SearchingDevicesEvent.onSearchingRequested());
+    add(const SearchingDevicesEvent.onInitializationRequested());
   }
 
   final IBluetoothManager _bluetoothRepository;
   late final StreamSubscription<List<Device>> _discoveredDevicesSubscription;
 
-  List<Device> _devices = [];
-  Device? _selectedDevice;
+  late SearchingDevicesStateView _viewState;
 
   @override
   close() {
@@ -60,30 +55,20 @@ class SearchingDevicesBloc
   }
 
   /// Обновление списка найденных устройств
-  void _updateDiscoveredDevices(List<Device> devices) {
+  void _discoveredDevicesListener(List<Device> devices) {
     if (isClosed) return;
-    _devices = devices;
-    final currentState = state;
-
-    if (currentState is! SearchingDevicesStateView) return;
+    _viewState = _viewState.copyWith(devices: devices);
     add(const SearchingDevicesEvent.onViewStateChanged());
   }
 
-  /// Обработчик начала поиска устройств
-  Future<void> _onSearchingRequested(
-    SearchingDevicesEventOnSearchingRequested event,
+  /// Обработчик запроса на инициализацию
+  Future<void> _onInitializationRequested(
+    SearchingDevicesEventOnInitializationRequested event,
     Emitter<SearchingDevicesState> emitter,
   ) async {
     try {
-      _devices = [];
-      _selectedDevice = null;
+      _viewState = SearchingDevicesState.view() as SearchingDevicesStateView;
       await _bluetoothRepository.startDiscovery();
-      emitter(
-        SearchingDevicesState.view(
-          devices: _devices,
-          selectedDevice: _selectedDevice,
-        ),
-      );
     } catch (e) {
       emitter(
         SearchingDevicesState.error(message: 'Ошибка запуска поиска: $e'),
@@ -96,7 +81,7 @@ class SearchingDevicesBloc
     Emitter<SearchingDevicesState> emitter,
   ) async {
     try {
-      if (_selectedDevice == null) {
+      if (_viewState.selectedDevice == null) {
         emitter(
           const SearchingDevicesState.error(
             message: 'Не выбрано устройство для подключения',
@@ -104,7 +89,7 @@ class SearchingDevicesBloc
         );
         return;
       }
-      await _bluetoothRepository.connectToDevice(_selectedDevice!);
+      await _bluetoothRepository.connectToDevice(_viewState.selectedDevice!);
       // TODO(Vadim): Возможно, стоит здесь отправлять приглашение
       // TODO(Vadim): Тут переход в список игр
     } catch (e) {
@@ -117,18 +102,13 @@ class SearchingDevicesBloc
     SearchingDevicesEventOnDeviceSelected event,
     Emitter<SearchingDevicesState> emitter,
   ) async {
-    _selectedDevice = event.device;
-    final currentState = state;
-    if (currentState is! SearchingDevicesStateView) return;
-    emitter(currentState.copyWith(selectedDevice: _selectedDevice));
-  }
-
-  /// Обработчик изменения состояния представления
-  void _onViewStateChanged(Emitter<SearchingDevicesState> emitter) {
-    final currentState = state;
-    if (currentState is! SearchingDevicesStateView) return;
-    emitter(
-      currentState.copyWith(devices: _devices, selectedDevice: _selectedDevice),
+    final selectedDevice = event.device;
+    selectedDevice.id == _viewState.selectedDevice?.id ? null : selectedDevice;
+    _viewState = _viewState.copyWith(
+      selectedDevice: selectedDevice.id == _viewState.selectedDevice?.id
+          ? null
+          : selectedDevice,
     );
+    emitter(_viewState);
   }
 }

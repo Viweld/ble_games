@@ -10,6 +10,9 @@ import 'bloc/awaiting_connection_bloc.dart';
 class AwaitingConnectionDialog extends StatelessWidget {
   const AwaitingConnectionDialog._();
 
+  static const widthFraction = 0.9;
+  static const heightFraction = 0.40;
+
   static Future<void> show(BuildContext context) => showDialog<void>(
     context: context,
     barrierDismissible: true,
@@ -36,13 +39,23 @@ class AwaitingConnectionDialog extends StatelessWidget {
           _ => null,
         },
         builder: (context, state) => switch (state) {
-          AwaitingConnectionStateView() => const _AwaitingConnectionView(),
+          AwaitingConnectionStateView() => _AwaitingConnectionView(
+            onCancelPressed: () => _onCancelPressed(context),
+          ),
           AwaitingConnectionStateError(:final message) =>
-            _AwaitingConnectionError(message: message),
+            _AwaitingConnectionError(
+              onCancelPressed: () => _onCancelPressed(context),
+              message: message,
+            ),
           _ => throw UnsupportedError('${state.runtimeType} нельзя строить'),
         },
       ),
     );
+  }
+
+  /// Обработчик нажатия кнопки 'Отмена'
+  void _onCancelPressed(BuildContext context) {
+    Navigator.pop(context);
   }
 }
 
@@ -51,27 +64,42 @@ class AwaitingConnectionDialog extends StatelessWidget {
 // -----------------------------------------------------------------------------
 /// Ожидание подключения
 class _AwaitingConnectionView extends StatelessWidget {
-  const _AwaitingConnectionView();
+  const _AwaitingConnectionView({required this.onCancelPressed});
+
+  /// Коллбэк отмены
+  final VoidCallback onCancelPressed;
 
   @override
   Widget build(BuildContext context) {
-    return const AlertDialog(
+    final screenSize = MediaQuery.of(context).size;
+    return AlertDialog(
       title: Text('Ожидание подключения...', textAlign: TextAlign.center),
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(bottom: 16),
-            child: CommonAwaiting(),
-          ),
-          Text(
-            'Ваше устройство видимо для других устройств',
-            textAlign: TextAlign.center,
-          ),
-        ],
+      content: SizedBox(
+        width: screenSize.width * AwaitingConnectionDialog.widthFraction,
+        height: screenSize.height * AwaitingConnectionDialog.heightFraction,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(bottom: 16),
+              child: CommonAwaiting(),
+            ),
+            Text(
+              'Ваше устройство видимо для других устройств',
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
-      actions: [],
+      actions: [
+        /// Кнопка отмены
+        ElevatedButton(
+          onPressed: onCancelPressed,
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+          child: const Text('Отмена'),
+        ),
+      ],
     );
   }
 }
@@ -81,23 +109,45 @@ class _AwaitingConnectionView extends StatelessWidget {
 // -----------------------------------------------------------------------------
 /// Ошибка ожидания подключения
 class _AwaitingConnectionError extends StatelessWidget {
-  const _AwaitingConnectionError({this.message});
+  const _AwaitingConnectionError({required this.onCancelPressed, this.message});
 
+  /// Коллбэк отмены
+  final VoidCallback onCancelPressed;
+
+  /// Сообщение об ошибке
   final String? message;
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
     return AlertDialog(
       title: Text('Ошибка ожидания подключения!', textAlign: TextAlign.center),
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(padding: EdgeInsets.only(bottom: 16), child: CommonError()),
-          if (message != null) Text(message!, textAlign: TextAlign.center),
-        ],
+      content: SizedBox(
+        width: screenSize.width * AwaitingConnectionDialog.widthFraction,
+        height: screenSize.height * AwaitingConnectionDialog.heightFraction,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(padding: EdgeInsets.only(bottom: 16), child: CommonError()),
+            if (message != null)
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Text(message!, textAlign: TextAlign.center),
+                ),
+              ),
+          ],
+        ),
       ),
-      actions: [],
+      actions: [
+        /// Кнопка отмены
+        ElevatedButton(
+          onPressed: onCancelPressed,
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+          child: const Text('Отмена'),
+        ),
+      ],
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/di/builders.dep_gen.dart';
 import '../../../core/extensions/build_context_extension.dart';
+import '../../../core/presentation/widgets/common_progress_indicator.dart';
 import '../domain/models/game.dart';
 import 'bloc/games_list_bloc.dart';
 
@@ -56,7 +57,7 @@ class _GamesListView extends StatelessWidget {
         },
         builder: (context, state) => switch (state) {
           GamesListStateInitializationPending() => const Center(
-            child: CircularProgressIndicator(),
+            child: CommonProgressIndicator(),
           ),
           GamesListStateInitializationError(:final message) => _ErrorView(
             message: message,

@@ -162,28 +162,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   /// Обработка входящих данных
   void _handleIncomingMessage(Message message) {
     if (isClosed) return;
-    switch (message) {
-      case InvitationMessage(:final user):
-        add(HomeEvent.onInvitationReceived(invitingUser: user));
-      case AcceptanceMessage(:final user):
-        final currentState = state;
-        if (currentState is HomeStateInvitationPending) {
-          add(HomeEvent.onConnected(opponent: user));
-        }
-      case RejectionMessage(:final user):
-        final currentState = state;
-        if (currentState is HomeStateInvitationPending) {
-          add(HomeEvent.onInvitationRejected(rejectedUser: user));
-        }
-      case TerminationMessage():
-      // fixme
-
-      case MoveMessage():
-        break;
-      case RoleAssignmentMessage():
-        break;
-      case OpponentLeftMessage():
-      // fixme
-    }
+    // fixme: Добавить обработку других типов сообщений
   }
 }

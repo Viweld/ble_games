@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/domain/models/user.dart';
 import '../../../../core/extensions/build_context_extension.dart';
 import '../../../core/di/builders.dep_gen.dart';
+import '../../../core/presentation/widgets/common_progress_indicator.dart';
 import 'bloc/home_bloc.dart';
 
 /// Главный экран приложения
@@ -56,7 +57,7 @@ class _HomeView extends StatelessWidget {
         builder: (context, state) {
           return switch (state) {
             HomeStateInitializationPending() => const Center(
-              child: CircularProgressIndicator(),
+              child: CommonProgressIndicator(),
             ),
             HomeStateInitializationError(:final message) => Center(
               child: Column(
@@ -191,9 +192,6 @@ class _MainView extends StatelessWidget {
                 onPressed: onAwaitConnectionPressed,
                 icon: const Icon(Icons.visibility),
                 label: const Text('Ожидать присоединения'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(16),
-                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -205,9 +203,6 @@ class _MainView extends StatelessWidget {
                 onPressed: onSearchDevicesPressed,
                 icon: const Icon(Icons.search),
                 label: const Text('Найти и подключиться'),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.all(16),
-                ),
               ),
             ),
           ],

@@ -6,6 +6,21 @@ part of 'messages_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+HandshakeMessageDto _$HandshakeMessageDtoFromJson(Map<String, dynamic> json) =>
+    HandshakeMessageDto(
+      type: json['type'] as String,
+      device: DeviceDto.fromJson(json['device'] as Map<String, dynamic>),
+      user: UserDto.fromJson(json['user'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$HandshakeMessageDtoToJson(
+  HandshakeMessageDto instance,
+) => <String, dynamic>{
+  'type': instance.type,
+  'device': instance.device.toJson(),
+  'user': instance.user.toJson(),
+};
+
 InvitationMessageDto _$InvitationMessageDtoFromJson(
   Map<String, dynamic> json,
 ) => InvitationMessageDto(
