@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
-import 'package:flutter/services.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../../core/domain/models/exceptions/bluetooth_exceptions.dart';
@@ -30,27 +29,11 @@ class AwaitingConnectionBloc
       },
     );
 
-    _clientConnectionSubscription = _bluetoothRepository.clientConnections
-        .listen(_handleClientConnection);
-
     add(const AwaitingConnectionEvent.onAdvertisingRequested());
   }
 
   final IBluetoothManager _bluetoothRepository;
   late final StreamSubscription<String> _clientConnectionSubscription;
-
-  /// Обработка подключений клиентов (для сервера)
-  void _handleClientConnection(String clientId) {
-    // if (isClosed) return;
-    // final currentState = state;
-    // if (currentState is! HomeStateAwaitingConnection) return;
-    // final currentUser = _currentUser ?? User(id: 'server_user', name: 'Сервер');
-    // final invitationMessage = InvitationMessage(
-    //   device: Device(id: clientId, name: 'Клиент', isOurApp: true),
-    //   user: currentUser,
-    // );
-    // _bluetoothRepository.sendMessage(invitationMessage).catchError((error) {});
-  }
 
   @override
   close() {

@@ -15,18 +15,12 @@ import '../../domain/services/bluetooth_manager/i_bluetooth_manager.dart';
 
 /// Простой логгер для Bluetooth репозитория
 class _BluetoothLogger {
-  static const bool _enabled = true;
-
   static void debug(String message) {
-    if (_enabled) {
-      debugPrint('[Bluetooth] $message');
-    }
+    debugPrint('[Bluetooth] $message');
   }
 
   static void error(String message) {
-    if (_enabled) {
-      debugPrint('[Bluetooth ERROR] $message');
-    }
+    debugPrint('[Bluetooth ERROR] $message');
   }
 }
 
