@@ -14,8 +14,12 @@ abstract base class BBluetoothConnector {
   Stream<BluetoothConnectState> get connectionStateStream =>
       _connectionStateController.stream;
 
-  Future<void> send Raw(Uint8List data);
-  Stream<Uint8List> get incom ingRawData;
+  /// Поток входящих сырых данных
+  Stream<Uint8List> get incomingRawMessage =>
+      _incomingRawMessageController.stream;
+
+  /// Отправить сырые данные
+  Future<void> sendRawMessage(Uint8List data);
 
   // ЗАЩИЩЕННЫЕ МЕТОДЫ И СВОЙСТВА
   // ---------------------------------------------------------------------------
@@ -37,6 +41,16 @@ abstract base class BBluetoothConnector {
   /// Контроллер потока состояний подключения
   final _connectionStateController =
       StreamController<BluetoothConnectState>.broadcast();
+
+  /// Контроллер потока состояний подключения
+  final _incomingRawMessageController = StreamController<Uint8List>.broadcast();
+
+  /// Переводит входящие сырые данные в поток
+  @protected
+  void translateIncomingData(Uint8List value) {
+    if (_incomingRawMessageController.isClosed) return;
+    _incomingRawMessageController.add(value);
+  }
 
   /// Устанавливает текущее состояние соединения и уведомляет слушателей
   @protected

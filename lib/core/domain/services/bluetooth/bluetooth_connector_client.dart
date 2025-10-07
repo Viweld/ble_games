@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:batuga/core/domain/models/device.dart';
 import 'b_bluetooth_connector.dart';
 import 'i_connector_client.dart';
@@ -30,6 +32,12 @@ final class BluetoothConnectorClient extends BBluetoothConnector
   @override
   Future<void> connectToDevice(Device device) {
     // TODO: implement connectToDevice
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> sendRawMessage(Uint8List data) {
+    // TODO: implement sendRaw
     throw UnimplementedError();
   }
 

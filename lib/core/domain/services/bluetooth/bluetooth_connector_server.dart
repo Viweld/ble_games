@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'b_bluetooth_connector.dart';
 import 'i_connector_server.dart';
 
@@ -24,6 +26,12 @@ final class BluetoothConnectorServer extends BBluetoothConnector
   @override
   Future<void> rejectConnectionRequest() {
     // TODO: implement rejectConnectionRequest
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> sendRawMessage(Uint8List data) {
+    // TODO: implement sendRawMessage
     throw UnimplementedError();
   }
 
