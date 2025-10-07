@@ -44,26 +44,27 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     _gameBoard = List.generate(3, (_) => List.filled(3, null));
 
     // Подписка на входящие сообщения доменного уровня
-    _incomingDataSubscription = _bluetoothRepository.incomingMessagesStream
-        .listen((message) {
-          if (isClosed) return;
-          switch (message) {
-            case MoveMessage(:final move):
-              add(
-                GameEvent.onIncomingMove(
-                  row: move.position.row,
-                  column: move.position.column,
-                  playerType: move.playerType,
-                ),
-              );
-            case TerminationMessage():
-              add(const GameEvent.onConnectionLost());
-            case OpponentLeftMessage():
-              add(const GameEvent.onConnectionLost());
-            default:
-              break;
-          }
-        });
+    _incomingDataSubscription = _bluetoothRepository.messagesStream.listen((
+      message,
+    ) {
+      if (isClosed) return;
+      switch (message) {
+        case MoveMessage(:final move):
+          add(
+            GameEvent.onIncomingMove(
+              row: move.position.row,
+              column: move.position.column,
+              playerType: move.playerType,
+            ),
+          );
+        case TerminationMessage():
+          add(const GameEvent.onConnectionLost());
+        case OpponentLeftMessage():
+          add(const GameEvent.onConnectionLost());
+        default:
+          break;
+      }
+    });
 
     add(const GameEvent.onInitializationRequested());
   }

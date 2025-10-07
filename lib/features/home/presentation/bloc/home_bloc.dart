@@ -47,8 +47,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       },
     );
 
-    _incomingDataSubscription = _bluetoothRepository.incomingMessagesStream
-        .listen(_handleIncomingMessage);
+    _incomingDataSubscription = _bluetoothRepository.messagesStream.listen(
+      _handleIncomingMessage,
+    );
     add(const HomeEvent.onInitializationRequested());
   }
 

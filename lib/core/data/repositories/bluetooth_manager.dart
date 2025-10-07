@@ -33,23 +33,24 @@ class BluetoothManager implements IBluetoothManager {
   BluetoothManager() {
     _discoveredDevicesController = StreamController<List<Device>>.broadcast();
     _incomingMessagesController = StreamController<Message>.broadcast();
-    _bluetoothConnectionStateController =
+    _connectionStateController =
         StreamController<BluetoothConnectState>.broadcast();
   }
 
   late final CentralManager _centralManager;
-  late final PeripheralManager _peripheralManager;
-
   late final StreamController<List<Device>> _discoveredDevicesController;
-  late final StreamController<Message> _incomingMessagesController;
-  late final StreamController<BluetoothConnectState>
-  _bluetoothConnectionStateController;
-
-  final Map<String, Central> _connectedClients = {};
+  late final StreamController<BluetoothConnectState> _connectionStateController;
   final List<Device> _foundDevices = [];
   final Map<String, Peripheral> _discoveredPeripherals = {};
-
   Peripheral? _connectedPeripheral;
+
+  late final PeripheralManager _peripheralManager;
+  late final StreamController<BluetoothConnectState> _connectionStateController;
+  final Map<String, Central> _connectedClients = {};
+  final Map<String, Central> _unverifiedClients = {};
+
+  late final StreamController<Message> _incomingMessagesController;
+
   GATTCharacteristic? _writeCharacteristic;
   StreamSubscription<DiscoveredEventArgs>? _scanSubscription;
   StreamSubscription<GATTCharacteristicNotifiedEventArgs>? _dataSubscription;
@@ -57,8 +58,6 @@ class BluetoothManager implements IBluetoothManager {
   _writeRequestSubscription;
 
   bool _isInitialized = false;
-  bool _isAdvertising = false;
-  Timer? _scanTimer;
   BluetoothConnectState _currentConnectionState =
       const BluetoothDisconnectedState();
 
@@ -71,9 +70,9 @@ class BluetoothManager implements IBluetoothManager {
   static const String _appName = '🎮BaTuGa';
   late final String _deviceName;
 
+  // ---------------------------------------------------------------------------
   @override
-  Stream<Message> get incomingMessagesStream =>
-      _incomingMessagesController.stream;
+  Stream<Message> get messagesStream => _incomingMessagesController.stream;
 
   @override
   BluetoothConnectState get currentConnectionState => _currentConnectionState;
@@ -87,13 +86,12 @@ class BluetoothManager implements IBluetoothManager {
         )
       : null;
 
-  /// Получить поток подключений клиентов
   @override
   Stream<BluetoothConnectState> get connectionStateStream =>
-      _bluetoothConnectionStateController.stream;
+      _connectionStateController.stream;
 
   @override
-  Stream<List<Device>> get discoveredDevices =>
+  Stream<List<Device>> get discoveredDevicesStream =>
       _discoveredDevicesController.stream;
 
   @override
@@ -130,26 +128,10 @@ class BluetoothManager implements IBluetoothManager {
         _processDiscoveredDevice(peripheral, advertisement, isOurApp);
       });
 
-      // Начинаем сканирование
-      // Ищем устройства с нашим сервисом, но также добавим все устройства для полноты
-      await _centralManager.startDiscovery(serviceUUIDs: []);
+      // Начинаем сканирование, ищем устройства с нашим сервисом
+      await _centralManager.startDiscovery(serviceUUIDs: [_serviceUuid]);
 
       _BluetoothLogger.debug('✅ Сканирование запущено, ожидание устройств...');
-
-      // Таймер для автоматической остановки
-      _scanTimer?.cancel();
-      _scanTimer = Timer(const Duration(seconds: 30), () async {
-        try {
-          await stopDiscovery();
-          _BluetoothLogger.debug(
-            '🕐 Сканирование автоматически остановлено через 30 секунд',
-          );
-        } catch (e) {
-          _BluetoothLogger.error(
-            'Ошибка автоматической остановки сканирования: $e',
-          );
-        }
-      });
     } catch (e) {
       _BluetoothLogger.error('Ошибка запуска сканирования: $e');
       throw Exception('Ошибка поиска устройств: $e');
@@ -163,8 +145,6 @@ class BluetoothManager implements IBluetoothManager {
       await _centralManager.stopDiscovery();
       await _scanSubscription?.cancel();
       _scanSubscription = null;
-      _scanTimer?.cancel();
-      _scanTimer = null;
       _BluetoothLogger.debug('✅ Сканирование остановлено');
     } catch (e) {
       _BluetoothLogger.error('⚠️ Ошибка остановки сканирования: $e');
@@ -228,11 +208,8 @@ class BluetoothManager implements IBluetoothManager {
       await _peripheralManager.startAdvertising(
         Advertisement(name: _deviceName, serviceUUIDs: [_serviceUuid]),
       );
-
-      _isAdvertising = true;
     } on Object catch (e) {
       _BluetoothLogger.error('❌ Ошибка запуска рекламы: $e');
-      _isAdvertising = false;
       if (e is! PlatformException) rethrow;
       if (e.code.contains('IllegalStateException')) {
         throw BluetoothDisabledException();
@@ -253,7 +230,7 @@ class BluetoothManager implements IBluetoothManager {
       final jsonData = jsonDecode(rawMessage) as Map<String, dynamic>;
       final message = MessageDto.fromJson(jsonData).toDomain();
       if (message is InvitationMessage) {
-        // todo: сохранить User
+        _centralInvitationMessageHandler(event, message);
       }
       _incomingMessagesController.add(message);
       _peripheralManager.respondWriteRequest(event.request);
@@ -266,33 +243,32 @@ class BluetoothManager implements IBluetoothManager {
     }
   }
 
-  Future<void> _peripheralHandshakeHandler(
+  void _centralInvitationMessageHandler(
     GATTCharacteristicWriteRequestedEventArgs event,
-  ) async {
+    InvitationMessage message,
+  ) {
     // Проверяем, является ли клиент новым и сохраняем
     final central = event.central;
     final clientId = central.uuid.toString();
     if (_connectedClients.keys.contains(clientId)) return;
     _BluetoothLogger.debug('🆕 Новое подключение клиента: $clientId');
-    _setConnectionState(const BluetoothConnectingState());
-    _connectedClients.addAll({clientId: central});
-    // await _peripheralManager.notifyCharacteristic(
-    //   central,
-    //   _writeCharacteristic!,
-    //   value: _convertMessageToBytes(HandshakeMessage(device:, user:)),
-    // );
+    _setConnectionState(
+      BluetoothReceivedInvitationState(
+        user: message.user,
+        device: message.device,
+      ),
+    );
+    _unverifiedClients.addAll({clientId: central});
   }
 
   @override
   Future<void> stopAdvertising() async {
-    if (!_isAdvertising) return;
     _BluetoothLogger.debug('🛑 Остановка рекламы Bluetooth сервиса...');
 
     try {
       await _peripheralManager.stopAdvertising();
       await _writeRequestSubscription?.cancel();
       _writeRequestSubscription = null;
-      _isAdvertising = false;
     } catch (e) {
       _BluetoothLogger.error('⚠️ Ошибка остановки рекламы: $e');
     }
@@ -300,7 +276,7 @@ class BluetoothManager implements IBluetoothManager {
 
   @override
   Future<void> connectToDevice(Device device) async {
-    _setConnectionState(const BluetoothConnectingState());
+    _setConnectionState(const BluetoothReceiveInvitationState());
     _BluetoothLogger.debug(
       '\n🔗 Попытка подключения к устройству: ${device.name} (${device.id})',
     );
@@ -504,9 +480,8 @@ class BluetoothManager implements IBluetoothManager {
     _BluetoothLogger.debug('🧹 Очистка BluetoothRepository...');
     _discoveredDevicesController.close();
     _incomingMessagesController.close();
-    _bluetoothConnectionStateController.close();
+    _connectionStateController.close();
     _scanSubscription?.cancel();
-    _scanTimer?.cancel();
     _dataSubscription?.cancel();
     _writeRequestSubscription?.cancel();
     _connectedClients.clear();
@@ -529,8 +504,8 @@ class BluetoothManager implements IBluetoothManager {
   void _setConnectionState(BluetoothConnectState state) {
     if (_currentConnectionState == state) return;
     _currentConnectionState = state;
-    if (_bluetoothConnectionStateController.isClosed) return;
-    _bluetoothConnectionStateController.add(state);
+    if (_connectionStateController.isClosed) return;
+    _connectionStateController.add(state);
   }
 
   /// Проверяет, является ли устройство нашим приложением

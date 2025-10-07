@@ -36,7 +36,8 @@ class SearchingDevicesBloc
       },
     );
 
-    _discoveredDevicesSubscription = _bluetoothRepository.discoveredDevices
+    _discoveredDevicesSubscription = _bluetoothRepository
+        .discoveredDevicesStream
         .listen(_discoveredDevicesListener);
 
     add(const SearchingDevicesEvent.onInitializationRequested());
