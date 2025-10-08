@@ -228,10 +228,14 @@ final class BluetoothConnectorClient extends BBluetoothConnector
 
   @override
   Future<void> dispose() async {
+    _log.debug('🧹 Начата очистка ресурсов BluetoothConnectorClient...');
     super.dispose();
     _discoveredDevicesController.close();
     _scanSubscription?.cancel();
     _dataSubscription?.cancel();
+    stopDiscovery();
+    disconnect();
+    _log.debug('🧹 Завершена очистка ресурсов BluetoothConnectorClient...');
   }
 
   // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ

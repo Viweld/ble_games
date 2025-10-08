@@ -44,17 +44,17 @@ class BluetoothManager implements IBluetoothManager {
   // final Map<String, Peripheral> _discoveredPeripherals = {};
   // Peripheral? _connectedPeripheral;
 
-  late final PeripheralManager _peripheralManager;
-  final Map<String, Central> _connectedClients = {};
-  final Map<String, Central> _unverifiedClients = {};
+  // late final PeripheralManager _peripheralManager;
+  // final Map<String, Central> _connectedClients = {};
+  // final Map<String, Central> _unverifiedClients = {};
 
   late final StreamController<Message> _incomingMessagesController;
 
-  GATTCharacteristic? _writeCharacteristic;
+  // GATTCharacteristic? _writeCharacteristic;
   // StreamSubscription<DiscoveredEventArgs>? _scanSubscription;
   // StreamSubscription<GATTCharacteristicNotifiedEventArgs>? _dataSubscription;
-  StreamSubscription<GATTCharacteristicWriteRequestedEventArgs>?
-  _writeRequestSubscription;
+  // StreamSubscription<GATTCharacteristicWriteRequestedEventArgs>?
+  // _writeRequestSubscription;
 
   bool _isInitialized = false;
   BluetoothConnectState _currentConnectionState =
@@ -100,7 +100,7 @@ class BluetoothManager implements IBluetoothManager {
     try {
       _deviceName = await _getDeviceName();
       // _centralManager = CentralManager();
-      _peripheralManager = PeripheralManager();
+      // _peripheralManager = PeripheralManager();
       _isInitialized = true;
     } catch (e) {
       throw Exception('Ошибка инициализации Bluetooth: $e');
@@ -166,110 +166,110 @@ class BluetoothManager implements IBluetoothManager {
   @override
   Future<void> startAdvertising() async {
     if (!_isInitialized) return;
-    _BluetoothLogger.debug('\n📡 Запуск рекламы Bluetooth сервиса...');
-    try {
-      await stopAdvertising();
-
-      // Создаем характеристику для записи и уведомлений
-      _writeCharacteristic = GATTCharacteristic.mutable(
-        uuid: _characteristicUuid,
-        properties: [
-          GATTCharacteristicProperty.read,
-          GATTCharacteristicProperty.write,
-          GATTCharacteristicProperty.notify,
-        ],
-        permissions: [
-          GATTCharacteristicPermission.read,
-          GATTCharacteristicPermission.write,
-        ],
-        descriptors: [],
-      );
-
-      // Создаем сервис с характеристикой
-      final service = GATTService(
-        uuid: _serviceUuid,
-        isPrimary: true,
-        includedServices: [],
-        characteristics: [_writeCharacteristic!],
-      );
-
-      // Добавляем сервис
-      await _peripheralManager.addService(service);
-      _BluetoothLogger.debug('✅ Сервис добавлен');
-
-      // Настраиваем обработку записи в характеристику
-      _writeRequestSubscription = _peripheralManager
-          .characteristicWriteRequested
-          .listen(_peripheralEventHandler);
-
-      // Начинаем рекламу с нашим именем и специальными данными
-      await _peripheralManager.startAdvertising(
-        Advertisement(name: _deviceName, serviceUUIDs: [_serviceUuid]),
-      );
-    } on Object catch (e) {
-      _BluetoothLogger.error('❌ Ошибка запуска рекламы: $e');
-      if (e is! PlatformException) rethrow;
-      if (e.code.contains('IllegalStateException')) {
-        throw BluetoothDisabledException();
-      } else {
-        rethrow;
-      }
-    }
+    // _BluetoothLogger.debug('\n📡 Запуск рекламы Bluetooth сервиса...');
+    // try {
+    //   await stopAdvertising();
+    //
+    //   // Создаем характеристику для записи и уведомлений
+    //   _writeCharacteristic = GATTCharacteristic.mutable(
+    //     uuid: _characteristicUuid,
+    //     properties: [
+    //       GATTCharacteristicProperty.read,
+    //       GATTCharacteristicProperty.write,
+    //       GATTCharacteristicProperty.notify,
+    //     ],
+    //     permissions: [
+    //       GATTCharacteristicPermission.read,
+    //       GATTCharacteristicPermission.write,
+    //     ],
+    //     descriptors: [],
+    //   );
+    //
+    //   // Создаем сервис с характеристикой
+    //   final service = GATTService(
+    //     uuid: _serviceUuid,
+    //     isPrimary: true,
+    //     includedServices: [],
+    //     characteristics: [_writeCharacteristic!],
+    //   );
+    //
+    //   // Добавляем сервис
+    //   await _peripheralManager.addService(service);
+    //   _BluetoothLogger.debug('✅ Сервис добавлен');
+    //
+    //   // Настраиваем обработку записи в характеристику
+    //   _writeRequestSubscription = _peripheralManager
+    //       .characteristicWriteRequested
+    //       .listen(_peripheralEventHandler);
+    //
+    //   // Начинаем рекламу с нашим именем и специальными данными
+    //   await _peripheralManager.startAdvertising(
+    //     Advertisement(name: _deviceName, serviceUUIDs: [_serviceUuid]),
+    //   );
+    // } on Object catch (e) {
+    //   _BluetoothLogger.error('❌ Ошибка запуска рекламы: $e');
+    //   if (e is! PlatformException) rethrow;
+    //   if (e.code.contains('IllegalStateException')) {
+    //     throw BluetoothDisabledException();
+    //   } else {
+    //     rethrow;
+    //   }
+    // }
   }
 
-  void _peripheralEventHandler(
-    GATTCharacteristicWriteRequestedEventArgs event,
-  ) {
-    _BluetoothLogger.debug('📥 Получен запрос записи от ${event.central.uuid}');
+  // void _peripheralEventHandler(
+  //   GATTCharacteristicWriteRequestedEventArgs event,
+  // ) {
+  //   _BluetoothLogger.debug('📥 Получен запрос записи от ${event.central.uuid}');
+  //
+  //   try {
+  //     final rawMessage = utf8.decode(event.request.value);
+  //     _BluetoothLogger.debug('📥 Входящее сообщение: $rawMessage');
+  //     final jsonData = jsonDecode(rawMessage) as Map<String, dynamic>;
+  //     final message = MessageDto.fromJson(jsonData).toDomain();
+  //     if (message is InvitationMessage) {
+  //       _centralInvitationMessageHandler(event, message);
+  //     }
+  //     _incomingMessagesController.add(message);
+  //     _peripheralManager.respondWriteRequest(event.request);
+  //   } catch (e) {
+  //     _BluetoothLogger.error('❌ Ошибка обработки входящих данных: $e');
+  //     _peripheralManager.respondWriteRequestWithError(
+  //       event.request,
+  //       error: GATTError.invalidAttributeValueLength,
+  //     );
+  //   }
+  // }
 
-    try {
-      final rawMessage = utf8.decode(event.request.value);
-      _BluetoothLogger.debug('📥 Входящее сообщение: $rawMessage');
-      final jsonData = jsonDecode(rawMessage) as Map<String, dynamic>;
-      final message = MessageDto.fromJson(jsonData).toDomain();
-      if (message is InvitationMessage) {
-        _centralInvitationMessageHandler(event, message);
-      }
-      _incomingMessagesController.add(message);
-      _peripheralManager.respondWriteRequest(event.request);
-    } catch (e) {
-      _BluetoothLogger.error('❌ Ошибка обработки входящих данных: $e');
-      _peripheralManager.respondWriteRequestWithError(
-        event.request,
-        error: GATTError.invalidAttributeValueLength,
-      );
-    }
-  }
-
-  void _centralInvitationMessageHandler(
-    GATTCharacteristicWriteRequestedEventArgs event,
-    InvitationMessage message,
-  ) {
-    // Проверяем, является ли клиент новым и сохраняем
-    final central = event.central;
-    final clientId = central.uuid.toString();
-    if (_connectedClients.keys.contains(clientId)) return;
-    _BluetoothLogger.debug('🆕 Новое подключение клиента: $clientId');
-    _setConnectionState(
-      BluetoothReceivedInvitationState(
-        user: message.user,
-        device: message.device,
-      ),
-    );
-    _unverifiedClients.addAll({clientId: central});
-  }
+  // void _centralInvitationMessageHandler(
+  //   GATTCharacteristicWriteRequestedEventArgs event,
+  //   InvitationMessage message,
+  // ) {
+  //   // Проверяем, является ли клиент новым и сохраняем
+  //   final central = event.central;
+  //   final clientId = central.uuid.toString();
+  //   if (_connectedClients.keys.contains(clientId)) return;
+  //   _BluetoothLogger.debug('🆕 Новое подключение клиента: $clientId');
+  //   _setConnectionState(
+  //     BluetoothReceivedInvitationState(
+  //       user: message.user,
+  //       device: message.device,
+  //     ),
+  //   );
+  //   _unverifiedClients.addAll({clientId: central});
+  // }
 
   @override
   Future<void> stopAdvertising() async {
-    _BluetoothLogger.debug('🛑 Остановка рекламы Bluetooth сервиса...');
-
-    try {
-      await _peripheralManager.stopAdvertising();
-      await _writeRequestSubscription?.cancel();
-      _writeRequestSubscription = null;
-    } catch (e) {
-      _BluetoothLogger.error('⚠️ Ошибка остановки рекламы: $e');
-    }
+    // _BluetoothLogger.debug('🛑 Остановка рекламы Bluetooth сервиса...');
+    //
+    // try {
+    //   await _peripheralManager.stopAdvertising();
+    //   await _writeRequestSubscription?.cancel();
+    //   _writeRequestSubscription = null;
+    // } catch (e) {
+    //   _BluetoothLogger.error('⚠️ Ошибка остановки рекламы: $e');
+    // }
   }
 
   @override
@@ -389,19 +389,19 @@ class BluetoothManager implements IBluetoothManager {
 
   @override
   Future<void> disconnect() async {
-    _BluetoothLogger.debug('🔌 Отключение от устройства...');
-    try {
-      _connectedClients.clear();
-      // await _dataSubscription?.cancel();
-      // _dataSubscription = null;
-      // if (_connectedPeripheral != null) {
-      //   await _centralManager.disconnect(_connectedPeripheral!);
-      // }
-      // _connectedPeripheral = null;
-      _writeCharacteristic = null;
-    } catch (e) {
-      _BluetoothLogger.error('⚠️ Ошибка отключения: $e');
-    }
+    // _BluetoothLogger.debug('🔌 Отключение от устройства...');
+    // try {
+    //   _connectedClients.clear();
+    //   // await _dataSubscription?.cancel();
+    //   // _dataSubscription = null;
+    //   // if (_connectedPeripheral != null) {
+    //   //   await _centralManager.disconnect(_connectedPeripheral!);
+    //   // }
+    //   // _connectedPeripheral = null;
+    //   _writeCharacteristic = null;
+    // } catch (e) {
+    //   _BluetoothLogger.error('⚠️ Ошибка отключения: $e');
+    // }
   }
 
   @override
@@ -477,15 +477,15 @@ class BluetoothManager implements IBluetoothManager {
   Future<void> dispose() async {
     _BluetoothLogger.debug('🧹 Очистка BluetoothRepository...');
     //_discoveredDevicesController.close();
-    _incomingMessagesController.close();
-    _connectionStateController.close();
+    // _incomingMessagesController.close();
+    // _connectionStateController.close();
     // _scanSubscription?.cancel();
     // _dataSubscription?.cancel();
-    _writeRequestSubscription?.cancel();
-    _connectedClients.clear();
-    stopAdvertising();
-    stopDiscovery();
-    disconnect();
+    // _writeRequestSubscription?.cancel();
+    // _connectedClients.clear();
+    // stopAdvertising();
+    // stopDiscovery();
+    // disconnect();
   }
 
   /// Получение имени устройства
