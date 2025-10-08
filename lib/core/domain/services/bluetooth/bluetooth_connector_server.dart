@@ -35,6 +35,18 @@ final class BluetoothConnectorServer extends BBluetoothConnector
     throw UnimplementedError();
   }
 
+  @override
+  Future<void> disconnect() {
+    // TODO: implement disconnect
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> dispose() {
+    // TODO: implement dispose
+    throw UnimplementedError();
+  }
+
   // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
   // ---------------------------------------------------------------------------
 }

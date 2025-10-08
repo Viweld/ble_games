@@ -15,14 +15,35 @@ abstract base class BBluetoothConnector {
       _connectionStateController.stream;
 
   /// Поток входящих сырых данных
-  Stream<Uint8List> get incomingRawMessage =>
+  Stream<Uint8List> get incomingRawMessageStream =>
       _incomingRawMessageController.stream;
 
   /// Отправить сырые данные
   Future<void> sendRawMessage(Uint8List data);
 
+  /// Отключиться от устройства
+  Future<void> disconnect();
+
+  /// Освободить ресурсы
+  @protected
+  Future<void> dispose() async {
+    _connectionStateController.close();
+    _incomingRawMessageController.close();
+  }
+
   // ЗАЩИЩЕННЫЕ МЕТОДЫ И СВОЙСТВА
   // ---------------------------------------------------------------------------
+  /// Текущее состояние подключения
+  BluetoothConnectState _currentConnectionState =
+      const BluetoothDisconnectedState();
+
+  /// Контроллер потока состояний подключения
+  final _connectionStateController =
+      StreamController<BluetoothConnectState>.broadcast();
+
+  /// Контроллер потока входящих сырых данных
+  final _incomingRawMessageController = StreamController<Uint8List>.broadcast();
+
   /// Часть UUID для всех сервисов и характеристик приложения
   static const _appUuidPart = '0000-1000-8000-00805f9b34fb';
 
@@ -34,16 +55,13 @@ abstract base class BBluetoothConnector {
   @protected
   final characteristicUuid = UUID.fromString('0000a7c1-$_appUuidPart');
 
-  /// Текущее состояние подключения
-  BluetoothConnectState _currentConnectionState =
-      const BluetoothDisconnectedState();
+  /// Уникальное имя приложения для идентификации
+  @protected
+  late final appName = '🎮BaTuGa';
 
-  /// Контроллер потока состояний подключения
-  final _connectionStateController =
-      StreamController<BluetoothConnectState>.broadcast();
-
-  /// Контроллер потока состояний подключения
-  final _incomingRawMessageController = StreamController<Uint8List>.broadcast();
+  /// Уникальное имя устройства для идентификации
+  @protected
+  late final deviceName = '$appName-УСТРОЙСТВО';
 
   /// Переводит входящие сырые данные в поток
   @protected

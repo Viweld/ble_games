@@ -29,9 +29,13 @@ final class BluetoothReceivedInvitationState implements BluetoothConnectState {
 
 /// Состояние подключено
 final class BluetoothConnectedState implements BluetoothConnectState {
-  const BluetoothConnectedState(this.role);
+  const BluetoothConnectedState({
+    required this.role,
+    required this.connectedDevice,
+  });
 
   final BluetoothConnectionRole role;
+  final Device connectedDevice;
 }
 
 // -----------------------------------------------------------------------------
