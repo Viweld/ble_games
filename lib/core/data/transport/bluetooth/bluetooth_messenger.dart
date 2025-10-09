@@ -28,7 +28,7 @@ final class BluetoothMessenger implements IMessenger {
   late final StreamController<Message> _incomingMessagesController;
 
   @override
-  void close() => _incomingRawMessagesSubscription.cancel();
+  Future<void> dispose() => _incomingRawMessagesSubscription.cancel();
 
   @override
   Stream<Message> get messages => _incomingMessagesController.stream;

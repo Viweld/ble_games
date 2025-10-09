@@ -1,25 +1,26 @@
 import 'dart:async';
 
-import 'package:batuga/core/domain/services/bluetooth_manager/i_bluetooth_connection.dart';
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:flutter/foundation.dart';
 
+import 'i_connector.dart';
+
 /// Базовый класс для Bluetooth коннектора (клиент или сервер).
 /// Содержит общие методы и свойства для работы с Bluetooth соединением.
-abstract base class BBluetoothConnector {
+abstract base class BBluetoothConnector implements IConnector {
   // ПУБЛИЧНЫЕ МЕТОДЫ И СВОЙСТВА
   // ---------------------------------------------------------------------------
-  /// Поток входящих сырых данных
+  @override
   Stream<Uint8List> get incomingRawMessageStream =>
       _incomingRawMessageController.stream;
 
-  /// Отправить сырые данные
+  @override
   Future<void> sendRawMessage(Uint8List data);
 
-  /// Отключиться от устройства
+  @override
   Future<void> disconnect();
 
-  /// Освободить ресурсы
+  @override
   Future<void> dispose() async {
     await onDispose();
     await _incomingRawMessageController.close();

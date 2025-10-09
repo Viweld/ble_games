@@ -1,10 +1,13 @@
+import 'package:batuga/core/domain/models/device.dart';
+
 import '../../../domain/logger/i_logger.dart';
 import '../../../domain/transport/bluetooth/b_bluetooth_connection_manager.dart';
+import '../../../domain/transport/bluetooth/i_connection_manager_client.dart';
 import '../../../domain/transport/bluetooth/i_messenger.dart';
 import 'bluetooth_connector_client.dart';
 
-final class BluetoothConnectionManagerClient
-    extends BBluetoothConnectionManager {
+final class BluetoothConnectionManagerClient extends BBluetoothConnectionManager
+    implements IConnectionManagerClient {
   BluetoothConnectionManagerClient({
     required BluetoothConnectorClient connector,
     required IMessenger messenger,
@@ -20,10 +23,44 @@ final class BluetoothConnectionManagerClient
   @override
   IMessenger get messenger => _messenger;
 
+  @override
+  Stream<List<Device>> get discoveredDevicesStream =>
+      _connector.discoveredDevicesStream;
+
   /// Освободить ресурсы
   @override
   Future<void> onDispose() async {
-    // TODO(Vadim): реализовать
-    throw UnimplementedError('Реализовать onDispose()');
+    await _messenger.dispose();
+    await _connector.dispose();
+  }
+
+  @override
+  Future<void> startDiscovery() {
+    // TODO: implement startDiscovery
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> stopDiscovery() {
+    // TODO: implement stopDiscovery
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> refreshDiscovery() {
+    // TODO: implement refreshDiscovery
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> connectToDevice(Device device) {
+    // TODO: implement connectToDevice
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> disconnect() {
+    // TODO: implement disconnect
+    throw UnimplementedError();
   }
 }

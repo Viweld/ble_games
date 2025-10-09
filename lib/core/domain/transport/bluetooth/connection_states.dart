@@ -1,6 +1,6 @@
-part of 'b_bluetooth_connection_manager.dart';
+import '../../models/device.dart';
+import '../../models/user.dart';
 
-// -----------------------------------------------------------------------------
 /// Состояния подключения Bluetooth
 sealed class BluetoothConnectionState {}
 

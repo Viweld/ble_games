@@ -1,29 +1,28 @@
 import 'dart:async';
 
+import 'package:batuga/core/domain/transport/bluetooth/i_connection_manager.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../models/device.dart';
-import '../../models/user.dart';
+import 'connection_states.dart';
 import 'i_messenger.dart';
-
-part 'connection_states.dart';
 
 /// Базовый класс для менеджера подключения Bluetooth.
 /// Содержит общие методы и свойства для управления состоянием подключения.
-abstract base class BBluetoothConnectionManager {
+abstract base class BBluetoothConnectionManager implements IConnectionManager {
   // ПУБЛИЧНЫЕ МЕТОДЫ И СВОЙСТВА
   // ---------------------------------------------------------------------------
-  /// Текущее состояние подключения
+  @override
   BluetoothConnectionState? get currentConnectionState =>
       _currentConnectionState;
 
-  /// Поток состояний подключения
+  @override
   Stream<BluetoothConnectionState> get connectionStateStream =>
       _connectionStateController.stream;
 
+  @override
   IMessenger get messenger;
 
-  /// Освободить ресурсы
+  @override
   Future<void> dispose() async {
     await onDispose();
     await _connectionStateController.close();
