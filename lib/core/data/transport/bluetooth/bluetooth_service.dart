@@ -1,6 +1,6 @@
-import 'i_connector_client.dart';
-import 'i_connector_server.dart';
-import 'i_messenger.dart';
+import '../../../domain/transport/bluetooth/i_connector_client.dart';
+import '../../../domain/transport/bluetooth/i_connector_server.dart';
+import '../../../domain/transport/bluetooth/i_messenger.dart';
 
 final class BluetoothService {
   BluetoothService({

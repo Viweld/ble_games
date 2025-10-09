@@ -4,12 +4,17 @@ import 'dart:typed_data';
 
 import 'package:batuga/core/data/models/messages_dto.dart';
 import 'package:batuga/core/domain/models/messages.dart';
-import 'package:batuga/core/domain/services/bluetooth/b_bluetooth_connector.dart';
-import 'package:batuga/core/domain/services/bluetooth/i_messenger.dart';
+
+import '../../../domain/logger/i_logger.dart';
+import '../../../domain/transport/bluetooth/b_bluetooth_connector.dart';
+import '../../../domain/transport/bluetooth/i_messenger.dart';
 
 final class BluetoothMessenger implements IMessenger {
-  BluetoothMessenger({required BBluetoothConnector connector})
-    : _connector = connector {
+  BluetoothMessenger({
+    required BBluetoothConnector connector,
+    required ILogger logger,
+  }) : _connector = connector,
+       _log = logger {
     _incomingRawMessagesSubscription = connector.incomingRawMessageStream
         .listen(_incomingRawMessagesListener);
     _incomingMessagesController = StreamController<Message>.broadcast();
@@ -18,6 +23,8 @@ final class BluetoothMessenger implements IMessenger {
   late StreamSubscription<Uint8List> _incomingRawMessagesSubscription;
 
   final BBluetoothConnector _connector;
+  final ILogger _log;
+
   late final StreamController<Message> _incomingMessagesController;
 
   @override
@@ -28,8 +35,8 @@ final class BluetoothMessenger implements IMessenger {
 
   @override
   Future<void> sendMessage(Message message) async {
-    print('📤 Запрос на отправку сообщения ${message.runtimeType}');
-    _connector.sendRawMessage(
+    _log.d('📤 Запрос на отправку сообщения ${message.runtimeType}');
+    await _connector.sendRawMessage(
       utf8.encode(jsonEncode(MessageDto.fromDomain(message))),
     );
   }
@@ -41,12 +48,12 @@ final class BluetoothMessenger implements IMessenger {
     if (_incomingMessagesController.isClosed) return;
     try {
       final message = utf8.decode(event);
-      print('📥 Входящее сообщение: $message');
+      _log.d('📥 Входящее сообщение: $message');
       _incomingMessagesController.add(
         MessageDto.fromJson(jsonDecode(message)).toDomain(),
       );
     } catch (e) {
-      print('❌ Ошибка обработки входящих данных: $e');
+      _log.e('❌ Ошибка обработки входящих данных: $e');
     }
   }
 }

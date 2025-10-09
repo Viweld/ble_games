@@ -439,38 +439,38 @@ class BluetoothManager implements IBluetoothManager {
   }
 
   Future<void> notifyClients(Message message) async {
-    if (_connectedClients.isEmpty) {
-      _BluetoothLogger.debug('⚠️ Нет подключённых клиентов для уведомления');
-      return;
-    }
-
-    try {
-      final jsonMessage = jsonEncode(MessageDto.fromDomain(message).toJson());
-      final bytes = Uint8List.fromList(utf8.encode(jsonMessage));
-
-      _BluetoothLogger.debug(
-        '📢 Отправка уведомления всем клиентам: $jsonMessage',
-      );
-
-      for (final client in _connectedClients.entries) {
-        try {
-          await _peripheralManager.notifyCharacteristic(
-            client.value,
-            _writeCharacteristic!,
-            value: bytes,
-          );
-          _BluetoothLogger.debug(
-            '📤 Уведомление отправлено клиенту: ${client.key}',
-          );
-        } catch (e) {
-          _BluetoothLogger.error(
-            '❌ Ошибка уведомления клиента ${client.key}: $e',
-          );
-        }
-      }
-    } catch (e) {
-      _BluetoothLogger.error('❌ Ошибка сериализации уведомления: $e');
-    }
+    // if (_connectedClients.isEmpty) {
+    //   _BluetoothLogger.debug('⚠️ Нет подключённых клиентов для уведомления');
+    //   return;
+    // }
+    //
+    // try {
+    //   final jsonMessage = jsonEncode(MessageDto.fromDomain(message).toJson());
+    //   final bytes = Uint8List.fromList(utf8.encode(jsonMessage));
+    //
+    //   _BluetoothLogger.debug(
+    //     '📢 Отправка уведомления всем клиентам: $jsonMessage',
+    //   );
+    //
+    //   for (final client in _connectedClients.entries) {
+    //     try {
+    //       await _peripheralManager.notifyCharacteristic(
+    //         client.value,
+    //         _writeCharacteristic!,
+    //         value: bytes,
+    //       );
+    //       _BluetoothLogger.debug(
+    //         '📤 Уведомление отправлено клиенту: ${client.key}',
+    //       );
+    //     } catch (e) {
+    //       _BluetoothLogger.error(
+    //         '❌ Ошибка уведомления клиента ${client.key}: $e',
+    //       );
+    //     }
+    //   }
+    // } catch (e) {
+    //   _BluetoothLogger.error('❌ Ошибка сериализации уведомления: $e');
+    // }
   }
 
   @override

@@ -4,18 +4,17 @@ import 'dart:typed_data';
 import 'package:batuga/core/domain/models/device.dart';
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import '../../../constants/app_constants.dart';
-import '../bluetooth_manager/i_bluetooth_connection.dart';
-import 'b_bluetooth_connector.dart';
-import 'bluetooth_logger.dart';
-import 'i_connector_client.dart';
+import '../../../domain/logger/i_logger.dart';
+import '../../../domain/transport/bluetooth/b_bluetooth_connector.dart';
+import '../../../domain/transport/bluetooth/i_connector_client.dart';
 
 final class BluetoothConnectorClient extends BBluetoothConnector
     implements IConnectorClient {
-  BluetoothConnectorClient({required BluetoothLogger logger}) : _log = logger {
+  BluetoothConnectorClient({required ILogger logger}) : _log = logger {
     _discoveredDevicesController = StreamController<List<Device>>.broadcast();
   }
 
-  final BluetoothLogger _log;
+  final ILogger _log;
   final _centralManager = CentralManager();
   late final StreamController<List<Device>> _discoveredDevicesController;
   final List<Device> _foundDevices = [];
@@ -38,7 +37,7 @@ final class BluetoothConnectorClient extends BBluetoothConnector
 
       _foundDevices.clear();
       _discoveredPeripherals.clear();
-      _log.debug('\n🔍 Запуск поиска Bluetooth устройств...');
+      _log.d('\n🔍 Запуск поиска Bluetooth устройств...');
 
       // Подписываемся на результаты сканирования
       _scanSubscription = _centralManager.discovered.listen((event) {
@@ -51,23 +50,23 @@ final class BluetoothConnectorClient extends BBluetoothConnector
       // Начинаем сканирование, ищем устройства с нашим сервисом
       await _centralManager.startDiscovery(serviceUUIDs: [super.serviceUuid]);
 
-      _log.debug('✅ Сканирование запущено, ожидание устройств...');
+      _log.d('✅ Сканирование запущено, ожидание устройств...');
     } catch (e) {
-      _log.error('Ошибка запуска сканирования: $e');
+      _log.e('Ошибка запуска сканирования: $e');
       throw Exception('Ошибка поиска устройств: $e');
     }
   }
 
   @override
   Future<void> stopDiscovery() async {
-    _log.debug('🛑 Остановка сканирования...');
+    _log.d('🛑 Остановка сканирования...');
     try {
       await _centralManager.stopDiscovery();
       await _scanSubscription?.cancel();
       _scanSubscription = null;
-      _log.debug('✅ Сканирование остановлено');
+      _log.d('✅ Сканирование остановлено');
     } catch (e) {
-      _log.error('⚠️ Ошибка остановки сканирования: $e');
+      _log.e('⚠️ Ошибка остановки сканирования: $e');
     }
   }
 
@@ -84,8 +83,7 @@ final class BluetoothConnectorClient extends BBluetoothConnector
 
   @override
   Future<void> connectToDevice(Device device) async {
-    super.setConnectionState(const BluetoothWaitingConfirmationState());
-    _log.debug(
+    _log.d(
       '\n🔗 Попытка подключения к устройству: ${device.name} (${device.id})',
     );
 
@@ -98,18 +96,18 @@ final class BluetoothConnectorClient extends BBluetoothConnector
 
       _connectedPeripheral = peripheral;
       await _centralManager.connect(peripheral);
-      _log.debug('✅ Подключение установлено');
+      _log.d('✅ Подключение установлено');
       final services = await _centralManager.discoverGATT(peripheral);
 
       bool serviceFound = false;
       for (final service in services) {
-        _log.debug('Проверяем сервис: ${service.uuid}');
+        _log.d('Проверяем сервис: ${service.uuid}');
         if (service.uuid == super.serviceUuid) {
-          _log.debug('✅ Найден наш сервис!');
+          _log.d('✅ Найден наш сервис!');
           serviceFound = true;
 
           for (final characteristic in service.characteristics) {
-            _log.debug('Найдена характеристика: ${characteristic.uuid}');
+            _log.d('Найдена характеристика: ${characteristic.uuid}');
 
             if (characteristic.uuid == super.characteristicUuid) {
               // Настраиваем уведомления
@@ -161,7 +159,7 @@ final class BluetoothConnectorClient extends BBluetoothConnector
       // Небольшая задержка для стабилизации соединения
       await Future.delayed(const Duration(milliseconds: 300));
     } catch (e) {
-      _log.error('❌ Ошибка подключения: $e');
+      _log.e('❌ Ошибка подключения: $e');
 
       // Очищаем состояние при ошибке
       _connectedPeripheral = null;
@@ -187,7 +185,7 @@ final class BluetoothConnectorClient extends BBluetoothConnector
 
   @override
   Future<void> sendRawMessage(Uint8List data) async {
-    _log.debug('📤 Попытка отправки сообщения...');
+    _log.d('📤 Попытка отправки сообщения...');
     if (_connectedPeripheral == null || _writeCharacteristic == null) {
       throw Exception('Нет активного соединения или характеристики для записи');
     }
@@ -200,7 +198,7 @@ final class BluetoothConnectorClient extends BBluetoothConnector
         type: GATTCharacteristicWriteType.withoutResponse,
       );
     } on Exception catch (e) {
-      _log.error('❌ Ошибка отправки данных: $e');
+      _log.e('❌ Ошибка отправки данных: $e');
       if (!_isGattError133(e)) {
         throw Exception('Ошибка отправки данных: $e');
       } else {
@@ -214,7 +212,7 @@ final class BluetoothConnectorClient extends BBluetoothConnector
 
   @override
   Future<void> disconnect() async {
-    _log.debug('🔌 Отключение от устройства...');
+    _log.d('🔌 Отключение от устройства...');
     try {
       await _dataSubscription?.cancel();
       _dataSubscription = null;
@@ -222,20 +220,19 @@ final class BluetoothConnectorClient extends BBluetoothConnector
       await _centralManager.disconnect(_connectedPeripheral!);
       _connectedPeripheral = null;
     } catch (e) {
-      _log.error('⚠️ Ошибка отключения: $e');
+      _log.e('⚠️ Ошибка отключения: $e');
     }
   }
 
   @override
-  Future<void> dispose() async {
-    _log.debug('🧹 Начата очистка ресурсов BluetoothConnectorClient...');
-    super.dispose();
-    _discoveredDevicesController.close();
-    _scanSubscription?.cancel();
-    _dataSubscription?.cancel();
-    stopDiscovery();
-    disconnect();
-    _log.debug('🧹 Завершена очистка ресурсов BluetoothConnectorClient...');
+  Future<void> onDispose() async {
+    _log.d('🧹 Начата очистка ресурсов BluetoothConnectorClient...');
+    await _discoveredDevicesController.close();
+    await _scanSubscription?.cancel();
+    await _dataSubscription?.cancel();
+    await stopDiscovery();
+    await disconnect();
+    _log.d('🧹 Завершена очистка ресурсов BluetoothConnectorClient...');
   }
 
   // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
@@ -308,14 +305,14 @@ final class BluetoothConnectorClient extends BBluetoothConnector
 
   /// Метод для сброса соединения и попытки переподключения
   Future<void> _resetConnection() async {
-    _log.debug('🔄 Сброс соединения...');
+    _log.d('🔄 Сброс соединения...');
     try {
       await disconnect();
       _connectedPeripheral = null;
       _writeCharacteristic = null;
       await Future.delayed(const Duration(milliseconds: 500));
     } catch (e) {
-      _log.error('❌ Ошибка сброса соединения: $e');
+      _log.e('❌ Ошибка сброса соединения: $e');
     }
   }
 }

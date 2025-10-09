@@ -3,6 +3,12 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   plugins:
     - custom_lint
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+  errors:
+    unawaited_futures: error
+    discarded_futures: error
 
 linter:
   rules:
@@ -17,3 +23,10 @@ linter:
     prefer_single_quotes: true
     use_super_parameters: true
     avoid_print: true
+
+    # 🧱 асинхронная дисциплина
+    unawaited_futures: true
+    await_only_futures: true
+    discarded_futures: true
+    avoid_void_async: true
+    prefer_void_to_null: true

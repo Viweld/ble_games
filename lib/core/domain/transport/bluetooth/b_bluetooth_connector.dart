@@ -4,16 +4,11 @@ import 'package:batuga/core/domain/services/bluetooth_manager/i_bluetooth_connec
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:flutter/foundation.dart';
 
+/// Базовый класс для Bluetooth коннектора (клиент или сервер).
+/// Содержит общие методы и свойства для работы с Bluetooth соединением.
 abstract base class BBluetoothConnector {
   // ПУБЛИЧНЫЕ МЕТОДЫ И СВОЙСТВА
   // ---------------------------------------------------------------------------
-  /// Текущее состояние подключения
-  BluetoothConnectState? get currentConnectionState => _currentConnectionState;
-
-  /// Поток состояний подключения
-  Stream<BluetoothConnectState> get connectionStateStream =>
-      _connectionStateController.stream;
-
   /// Поток входящих сырых данных
   Stream<Uint8List> get incomingRawMessageStream =>
       _incomingRawMessageController.stream;
@@ -25,22 +20,13 @@ abstract base class BBluetoothConnector {
   Future<void> disconnect();
 
   /// Освободить ресурсы
-  @protected
   Future<void> dispose() async {
-    _connectionStateController.close();
-    _incomingRawMessageController.close();
+    await onDispose();
+    await _incomingRawMessageController.close();
   }
 
-  // ЗАЩИЩЕННЫЕ МЕТОДЫ И СВОЙСТВА
+  // ЗАЩИЩЕННЫЕ И ПРИВАТНЫЕ МЕТОДЫ И СВОЙСТВА
   // ---------------------------------------------------------------------------
-  /// Текущее состояние подключения
-  BluetoothConnectState _currentConnectionState =
-      const BluetoothDisconnectedState();
-
-  /// Контроллер потока состояний подключения
-  final _connectionStateController =
-      StreamController<BluetoothConnectState>.broadcast();
-
   /// Контроллер потока входящих сырых данных
   final _incomingRawMessageController = StreamController<Uint8List>.broadcast();
 
@@ -59,6 +45,19 @@ abstract base class BBluetoothConnector {
   @protected
   late final appName = '🎮BaTuGa';
 
+  // TODO(Vadim): сделать возможность переопределения имени устройства, например, через
+  // todo - конструктор
+  // todo - сеттер
+  // todo - метод инициализации
+  // todo - параметры платформы (Android, iOS)
+  // todo - настройки приложения
+  // todo - профиль пользователя
+  // todo - генерацию случайного имени при первом запуске
+  // todo - сохранение имени в локальное хранилище
+  // todo - получение имени от сервера
+  // todo - получение имени от пользователя
+  // todo - получение имени от другого устройства
+  // todo - получение имени от системных настроек
   /// Уникальное имя устройства для идентификации
   @protected
   late final deviceName = '$appName-УСТРОЙСТВО';
@@ -70,12 +69,7 @@ abstract base class BBluetoothConnector {
     _incomingRawMessageController.add(value);
   }
 
-  /// Устанавливает текущее состояние соединения и уведомляет слушателей
+  /// Освободить ресурсы в подклассах
   @protected
-  void setConnectionState(BluetoothConnectState state) {
-    if (_currentConnectionState == state) return;
-    _currentConnectionState = state;
-    if (_connectionStateController.isClosed) return;
-    _connectionStateController.add(state);
-  }
+  Future<void> onDispose();
 }
