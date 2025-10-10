@@ -6,8 +6,7 @@ import 'package:crypto/crypto.dart';
 /// Поддерживает до ~25 байт полезной нагрузки (ограничение BLE рекламы).
 /// Гарантирует безопасные ASCII-символы и совместимость с iOS/Android.
 ///
-/// Формат: MyApp-<payload>
-/// где <payload> — base64Url от JSON или сжатой строки.
+/// Формат: MyApp- где  base64Url от JSON или сжатой строки.
 class BleNameCodec {
   static const int _maxNameLength =
       29; // BLE лимит (iOS может обрезать после ~20–25)

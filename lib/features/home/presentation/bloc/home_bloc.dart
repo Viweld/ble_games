@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:batuga/core/domain/transport/bluetooth/i_transport_facade.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -9,6 +8,7 @@ import '../../../../core/domain/models/device.dart';
 import '../../../../core/domain/models/messages.dart';
 import '../../../../core/domain/models/user.dart';
 import '../../../../core/domain/repositories/i_user_repository.dart';
+import '../../../../core/domain/transport/i_transport_facade.dart';
 import '../../../tictactoe/domain/models/enums/player_type.dart';
 
 part 'events.dart';
@@ -22,9 +22,9 @@ part 'home_bloc.freezed.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc({
     @DepArg() required IUserRepository playerRepository,
-    @DepArg() required ITransportFacade gateway,
+    @DepArg() required ITransportFacade transport,
   }) : _playerRepository = playerRepository,
-       _gateway = gateway,
+       _transport = transport,
        super(const HomeState.initializationPending()) {
     on<HomeEvent>(
       (event, emitter) => switch (event) {
@@ -47,22 +47,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       },
     );
 
-    _incomingDataSubscription = _gateway.connectionManager.messagesStream
+    _incomingDataSubscription = _transport.transportSession.messagesStream
         .listen(_handleIncomingMessage);
     add(const HomeEvent.onInitializationRequested());
   }
 
   final IUserRepository _playerRepository;
-  final ITransportFacade _gateway;
+  final ITransportFacade _transport;
 
   late final StreamSubscription<Message> _incomingDataSubscription;
 
   User? _currentUser;
 
   @override
-  Future<void> close() {
-    _incomingDataSubscription.cancel();
-    _gateway.dispose();
+  Future<void> close() async {
+    await _incomingDataSubscription.cancel();
+    await _transport.dispose();
     return super.close();
   }
 
@@ -123,7 +123,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> _onAcceptInvitation(Emitter<HomeState> emitter) async {
     try {
       final currentUser =
-          _currentUser ?? User(id: 'temp_user', name: 'Тестовый пользователь');
+          _currentUser ??
+          const User(id: 'temp_user', name: 'Тестовый пользователь');
       // Отправляем сообщение о принятии
       // if (_bluetoothRepository.isConnected) {
       //   final acceptanceMessage = AcceptanceMessage(
@@ -143,7 +144,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> _onRejectInvitation(Emitter<HomeState> emitter) async {
     try {
       final currentUser =
-          _currentUser ?? User(id: 'temp_user', name: 'Тестовый пользователь');
+          _currentUser ??
+          const User(id: 'temp_user', name: 'Тестовый пользователь');
 
       // if (_bluetoothRepository.isConnected) {
       //   final rejectionMessage = RejectionMessage(

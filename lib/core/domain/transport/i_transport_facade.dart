@@ -11,20 +11,14 @@ abstract interface class ITransportFacade {
   /// Отправить сообщение
   Future<void> sendMessage(Message message);
 
-  /// Клиентская часть менеджера подключений
-  ITransportSessionClient get connectionManagerClient;
-
-  /// Серверная часть менеджера подключений
-  ITransportSessionServer get connectionManagerServer;
-
-  /// Текущий активный менеджер подключений (если есть)
-  ITransportSession? get connectionManager;
+  /// Текущий активный менеджер подключений
+  ITransportSession get transportSession;
 
   /// Запустить транспорт в режиме клиента
-  void initializeClient();
+  Future<ITransportSessionClient> startClientTransportSession();
 
   /// Запустить транспорт в режиме сервера
-  void initializeServer();
+  Future<ITransportSessionServer> startServerTransportSession();
 
   /// Освободить ресурсы
   Future<void> dispose();

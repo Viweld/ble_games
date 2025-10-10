@@ -29,7 +29,7 @@ final class BleMessenger implements IMessenger {
   Future<void> dispose() => _incomingRawMessagesSubscription.cancel();
 
   @override
-  Stream<Message> get messages => _incomingMessagesController.stream;
+  Stream<Message> get messagesStream => _incomingMessagesController.stream;
 
   @override
   Future<void> sendMessage(Message message) async {

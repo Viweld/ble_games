@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'awaiting_connection_bloc.dart';
+part of 'server_session_bloc.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,7 +12,7 @@ part of 'awaiting_connection_bloc.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$AwaitingConnectionEvent {
+mixin _$ServerSessionEvent {
 
 
 
@@ -20,7 +20,7 @@ mixin _$AwaitingConnectionEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AwaitingConnectionEvent);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerSessionEvent);
 }
 
 
@@ -29,20 +29,20 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AwaitingConnectionEvent()';
+  return 'ServerSessionEvent()';
 }
 
 
 }
 
 /// @nodoc
-class $AwaitingConnectionEventCopyWith<$Res>  {
-$AwaitingConnectionEventCopyWith(AwaitingConnectionEvent _, $Res Function(AwaitingConnectionEvent) __);
+class $ServerSessionEventCopyWith<$Res>  {
+$ServerSessionEventCopyWith(ServerSessionEvent _, $Res Function(ServerSessionEvent) __);
 }
 
 
-/// Adds pattern-matching-related methods to [AwaitingConnectionEvent].
-extension AwaitingConnectionEventPatterns on AwaitingConnectionEvent {
+/// Adds pattern-matching-related methods to [ServerSessionEvent].
+extension ServerSessionEventPatterns on ServerSessionEvent {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -55,11 +55,11 @@ extension AwaitingConnectionEventPatterns on AwaitingConnectionEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AwaitingConnectionEventOnAdvertisingRequested value)?  onAdvertisingRequested,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ServerSessionEventOnInitializationRequested value)?  onInitializationRequested,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case AwaitingConnectionEventOnAdvertisingRequested() when onAdvertisingRequested != null:
-return onAdvertisingRequested(_that);case _:
+case ServerSessionEventOnInitializationRequested() when onInitializationRequested != null:
+return onInitializationRequested(_that);case _:
   return orElse();
 
 }
@@ -77,11 +77,11 @@ return onAdvertisingRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AwaitingConnectionEventOnAdvertisingRequested value)  onAdvertisingRequested,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ServerSessionEventOnInitializationRequested value)  onInitializationRequested,}){
 final _that = this;
 switch (_that) {
-case AwaitingConnectionEventOnAdvertisingRequested():
-return onAdvertisingRequested(_that);case _:
+case ServerSessionEventOnInitializationRequested():
+return onInitializationRequested(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -98,11 +98,11 @@ return onAdvertisingRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AwaitingConnectionEventOnAdvertisingRequested value)?  onAdvertisingRequested,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ServerSessionEventOnInitializationRequested value)?  onInitializationRequested,}){
 final _that = this;
 switch (_that) {
-case AwaitingConnectionEventOnAdvertisingRequested() when onAdvertisingRequested != null:
-return onAdvertisingRequested(_that);case _:
+case ServerSessionEventOnInitializationRequested() when onInitializationRequested != null:
+return onInitializationRequested(_that);case _:
   return null;
 
 }
@@ -119,10 +119,10 @@ return onAdvertisingRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  onAdvertisingRequested,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  onInitializationRequested,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case AwaitingConnectionEventOnAdvertisingRequested() when onAdvertisingRequested != null:
-return onAdvertisingRequested();case _:
+case ServerSessionEventOnInitializationRequested() when onInitializationRequested != null:
+return onInitializationRequested();case _:
   return orElse();
 
 }
@@ -140,10 +140,10 @@ return onAdvertisingRequested();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  onAdvertisingRequested,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  onInitializationRequested,}) {final _that = this;
 switch (_that) {
-case AwaitingConnectionEventOnAdvertisingRequested():
-return onAdvertisingRequested();case _:
+case ServerSessionEventOnInitializationRequested():
+return onInitializationRequested();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -160,10 +160,10 @@ return onAdvertisingRequested();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  onAdvertisingRequested,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  onInitializationRequested,}) {final _that = this;
 switch (_that) {
-case AwaitingConnectionEventOnAdvertisingRequested() when onAdvertisingRequested != null:
-return onAdvertisingRequested();case _:
+case ServerSessionEventOnInitializationRequested() when onInitializationRequested != null:
+return onInitializationRequested();case _:
   return null;
 
 }
@@ -174,8 +174,8 @@ return onAdvertisingRequested();case _:
 /// @nodoc
 
 
-class AwaitingConnectionEventOnAdvertisingRequested implements AwaitingConnectionEvent {
-  const AwaitingConnectionEventOnAdvertisingRequested();
+class ServerSessionEventOnInitializationRequested implements ServerSessionEvent {
+  const ServerSessionEventOnInitializationRequested();
   
 
 
@@ -185,7 +185,7 @@ class AwaitingConnectionEventOnAdvertisingRequested implements AwaitingConnectio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AwaitingConnectionEventOnAdvertisingRequested);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerSessionEventOnInitializationRequested);
 }
 
 
@@ -194,7 +194,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AwaitingConnectionEvent.onAdvertisingRequested()';
+  return 'ServerSessionEvent.onInitializationRequested()';
 }
 
 
@@ -204,7 +204,7 @@ String toString() {
 
 
 /// @nodoc
-mixin _$AwaitingConnectionState {
+mixin _$ServerSessionState {
 
 
 
@@ -212,7 +212,7 @@ mixin _$AwaitingConnectionState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AwaitingConnectionState);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerSessionState);
 }
 
 
@@ -221,20 +221,20 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AwaitingConnectionState()';
+  return 'ServerSessionState()';
 }
 
 
 }
 
 /// @nodoc
-class $AwaitingConnectionStateCopyWith<$Res>  {
-$AwaitingConnectionStateCopyWith(AwaitingConnectionState _, $Res Function(AwaitingConnectionState) __);
+class $ServerSessionStateCopyWith<$Res>  {
+$ServerSessionStateCopyWith(ServerSessionState _, $Res Function(ServerSessionState) __);
 }
 
 
-/// Adds pattern-matching-related methods to [AwaitingConnectionState].
-extension AwaitingConnectionStatePatterns on AwaitingConnectionState {
+/// Adds pattern-matching-related methods to [ServerSessionState].
+extension ServerSessionStatePatterns on ServerSessionState {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -247,12 +247,12 @@ extension AwaitingConnectionStatePatterns on AwaitingConnectionState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AwaitingConnectionStateView value)?  view,TResult Function( AwaitingConnectionStateConnected value)?  connected,TResult Function( AwaitingConnectionStateError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ServerSessionStateView value)?  view,TResult Function( ServerSessionStateConnected value)?  connected,TResult Function( ServerSessionStateError value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case AwaitingConnectionStateView() when view != null:
-return view(_that);case AwaitingConnectionStateConnected() when connected != null:
-return connected(_that);case AwaitingConnectionStateError() when error != null:
+case ServerSessionStateView() when view != null:
+return view(_that);case ServerSessionStateConnected() when connected != null:
+return connected(_that);case ServerSessionStateError() when error != null:
 return error(_that);case _:
   return orElse();
 
@@ -271,12 +271,12 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AwaitingConnectionStateView value)  view,required TResult Function( AwaitingConnectionStateConnected value)  connected,required TResult Function( AwaitingConnectionStateError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ServerSessionStateView value)  view,required TResult Function( ServerSessionStateConnected value)  connected,required TResult Function( ServerSessionStateError value)  error,}){
 final _that = this;
 switch (_that) {
-case AwaitingConnectionStateView():
-return view(_that);case AwaitingConnectionStateConnected():
-return connected(_that);case AwaitingConnectionStateError():
+case ServerSessionStateView():
+return view(_that);case ServerSessionStateConnected():
+return connected(_that);case ServerSessionStateError():
 return error(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -294,12 +294,12 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AwaitingConnectionStateView value)?  view,TResult? Function( AwaitingConnectionStateConnected value)?  connected,TResult? Function( AwaitingConnectionStateError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ServerSessionStateView value)?  view,TResult? Function( ServerSessionStateConnected value)?  connected,TResult? Function( ServerSessionStateError value)?  error,}){
 final _that = this;
 switch (_that) {
-case AwaitingConnectionStateView() when view != null:
-return view(_that);case AwaitingConnectionStateConnected() when connected != null:
-return connected(_that);case AwaitingConnectionStateError() when error != null:
+case ServerSessionStateView() when view != null:
+return view(_that);case ServerSessionStateConnected() when connected != null:
+return connected(_that);case ServerSessionStateError() when error != null:
 return error(_that);case _:
   return null;
 
@@ -319,9 +319,9 @@ return error(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  view,TResult Function()?  connected,TResult Function( String? message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case AwaitingConnectionStateView() when view != null:
-return view();case AwaitingConnectionStateConnected() when connected != null:
-return connected();case AwaitingConnectionStateError() when error != null:
+case ServerSessionStateView() when view != null:
+return view();case ServerSessionStateConnected() when connected != null:
+return connected();case ServerSessionStateError() when error != null:
 return error(_that.message);case _:
   return orElse();
 
@@ -342,9 +342,9 @@ return error(_that.message);case _:
 
 @optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  view,required TResult Function()  connected,required TResult Function( String? message)  error,}) {final _that = this;
 switch (_that) {
-case AwaitingConnectionStateView():
-return view();case AwaitingConnectionStateConnected():
-return connected();case AwaitingConnectionStateError():
+case ServerSessionStateView():
+return view();case ServerSessionStateConnected():
+return connected();case ServerSessionStateError():
 return error(_that.message);case _:
   throw StateError('Unexpected subclass');
 
@@ -364,9 +364,9 @@ return error(_that.message);case _:
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  view,TResult? Function()?  connected,TResult? Function( String? message)?  error,}) {final _that = this;
 switch (_that) {
-case AwaitingConnectionStateView() when view != null:
-return view();case AwaitingConnectionStateConnected() when connected != null:
-return connected();case AwaitingConnectionStateError() when error != null:
+case ServerSessionStateView() when view != null:
+return view();case ServerSessionStateConnected() when connected != null:
+return connected();case ServerSessionStateError() when error != null:
 return error(_that.message);case _:
   return null;
 
@@ -378,8 +378,8 @@ return error(_that.message);case _:
 /// @nodoc
 
 
-class AwaitingConnectionStateView implements AwaitingConnectionState {
-  const AwaitingConnectionStateView();
+class ServerSessionStateView implements ServerSessionState {
+  const ServerSessionStateView();
   
 
 
@@ -389,7 +389,7 @@ class AwaitingConnectionStateView implements AwaitingConnectionState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AwaitingConnectionStateView);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerSessionStateView);
 }
 
 
@@ -398,7 +398,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AwaitingConnectionState.view()';
+  return 'ServerSessionState.view()';
 }
 
 
@@ -410,8 +410,8 @@ String toString() {
 /// @nodoc
 
 
-class AwaitingConnectionStateConnected implements AwaitingConnectionState {
-  const AwaitingConnectionStateConnected();
+class ServerSessionStateConnected implements ServerSessionState {
+  const ServerSessionStateConnected();
   
 
 
@@ -421,7 +421,7 @@ class AwaitingConnectionStateConnected implements AwaitingConnectionState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AwaitingConnectionStateConnected);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerSessionStateConnected);
 }
 
 
@@ -430,7 +430,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AwaitingConnectionState.connected()';
+  return 'ServerSessionState.connected()';
 }
 
 
@@ -442,23 +442,23 @@ String toString() {
 /// @nodoc
 
 
-class AwaitingConnectionStateError implements AwaitingConnectionState {
-  const AwaitingConnectionStateError({this.message});
+class ServerSessionStateError implements ServerSessionState {
+  const ServerSessionStateError({this.message});
   
 
  final  String? message;
 
-/// Create a copy of AwaitingConnectionState
+/// Create a copy of ServerSessionState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$AwaitingConnectionStateErrorCopyWith<AwaitingConnectionStateError> get copyWith => _$AwaitingConnectionStateErrorCopyWithImpl<AwaitingConnectionStateError>(this, _$identity);
+$ServerSessionStateErrorCopyWith<ServerSessionStateError> get copyWith => _$ServerSessionStateErrorCopyWithImpl<ServerSessionStateError>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AwaitingConnectionStateError&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerSessionStateError&&(identical(other.message, message) || other.message == message));
 }
 
 
@@ -467,15 +467,15 @@ int get hashCode => Object.hash(runtimeType,message);
 
 @override
 String toString() {
-  return 'AwaitingConnectionState.error(message: $message)';
+  return 'ServerSessionState.error(message: $message)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $AwaitingConnectionStateErrorCopyWith<$Res> implements $AwaitingConnectionStateCopyWith<$Res> {
-  factory $AwaitingConnectionStateErrorCopyWith(AwaitingConnectionStateError value, $Res Function(AwaitingConnectionStateError) _then) = _$AwaitingConnectionStateErrorCopyWithImpl;
+abstract mixin class $ServerSessionStateErrorCopyWith<$Res> implements $ServerSessionStateCopyWith<$Res> {
+  factory $ServerSessionStateErrorCopyWith(ServerSessionStateError value, $Res Function(ServerSessionStateError) _then) = _$ServerSessionStateErrorCopyWithImpl;
 @useResult
 $Res call({
  String? message
@@ -486,17 +486,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$AwaitingConnectionStateErrorCopyWithImpl<$Res>
-    implements $AwaitingConnectionStateErrorCopyWith<$Res> {
-  _$AwaitingConnectionStateErrorCopyWithImpl(this._self, this._then);
+class _$ServerSessionStateErrorCopyWithImpl<$Res>
+    implements $ServerSessionStateErrorCopyWith<$Res> {
+  _$ServerSessionStateErrorCopyWithImpl(this._self, this._then);
 
-  final AwaitingConnectionStateError _self;
-  final $Res Function(AwaitingConnectionStateError) _then;
+  final ServerSessionStateError _self;
+  final $Res Function(ServerSessionStateError) _then;
 
-/// Create a copy of AwaitingConnectionState
+/// Create a copy of ServerSessionState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? message = freezed,}) {
-  return _then(AwaitingConnectionStateError(
+  return _then(ServerSessionStateError(
 message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

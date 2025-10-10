@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:batuga/core/domain/models/device.dart';
 import 'package:batuga/core/domain/models/messages.dart';
+import 'package:batuga/core/domain/transport/models/transport_session_state.dart';
 
 import '../../../../domain/logger/i_logger.dart';
 import '../link/ble_link_client.dart';
@@ -12,19 +13,19 @@ import '../../../../domain/transport/i_messenger.dart';
 final class BleSessionClient extends BleSessionBase
     implements ITransportSessionClient {
   BleSessionClient({
-    required BleLinkClient connector,
+    required BleLinkClient link,
     required IMessenger messenger,
     required ILogger logger,
-  }) : _connector = connector,
+  }) : _link = link,
        _messenger = messenger,
        _log = logger {
-    _unhandledMessagesSubscription = _messenger.messages.listen(
+    _unhandledMessagesSubscription = _messenger.messagesStream.listen(
       _messagesHandler,
     );
     _handledMessagesController = StreamController<Message>.broadcast();
   }
 
-  final BleLinkClient _connector;
+  final BleLinkClient _link;
   final IMessenger _messenger;
   final ILogger _log;
 
@@ -32,11 +33,8 @@ final class BleSessionClient extends BleSessionBase
   late final StreamController<Message> _handledMessagesController;
 
   @override
-  IMessenger get messenger => _messenger;
-
-  @override
   Stream<List<Device>> get discoveredDevicesStream =>
-      _connector.discoveredDevicesStream;
+      _link.discoveredDevicesStream;
 
   // ---------------------------------------------------------------------------
   @override
@@ -46,39 +44,27 @@ final class BleSessionClient extends BleSessionBase
   Future<void> sendMessage(Message message) => _messenger.sendMessage(message);
 
   @override
-  Future<void> startDiscovery() {
-    // TODO: implement startDiscovery
-    throw UnimplementedError();
+  Future<void> startDiscovery() => _link.startDiscovery();
+
+  @override
+  Future<void> stopDiscovery() => _link.stopDiscovery();
+
+  @override
+  Future<void> refreshDiscovery() => _link.refreshDiscovery();
+
+  @override
+  Future<void> connectToDevice(Device device) async {
+    await _link.connectToDevice(device);
+    super.setConnectionState(const TransportSessionAwaitingConfirmation());
   }
 
   @override
-  Future<void> stopDiscovery() {
-    // TODO: implement stopDiscovery
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> refreshDiscovery() {
-    // TODO: implement refreshDiscovery
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> connectToDevice(Device device) {
-    // TODO: implement connectToDevice
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> disconnect() {
-    // TODO: implement disconnect
-    throw UnimplementedError();
-  }
+  Future<void> disconnect() => _link.disconnect();
 
   /// Освободить ресурсы
   @override
   Future<void> onDispose() async {
-    await _connector.dispose();
+    await _link.dispose();
     await _messenger.dispose();
     await _unhandledMessagesSubscription.cancel();
     await _handledMessagesController.close();
@@ -87,8 +73,16 @@ final class BleSessionClient extends BleSessionBase
   // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
   // ---------------------------------------------------------------------------
   /// Обработчик входящих сообщений
-  void _messagesHandler(Message event) {
-    // TODO: implement messagesHandler
-    throw UnimplementedError();
+  Future<void> _messagesHandler(Message event) async {
+    _log.d('Ретрансляция сообщения в BleSessionClient');
+    if (_handledMessagesController.isClosed) return;
+    _handledMessagesController.add(event);
+
+    // Обрабатываем различные кейсы
+    if (event is RejectionMessage) {
+      _log.w('Получен отказ на приглашение');
+      await _link.disconnect();
+      super.setConnectionState(const TransportSessionDisconnected());
+    }
   }
 }

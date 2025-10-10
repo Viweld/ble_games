@@ -7,7 +7,7 @@ abstract interface class IMessenger {
   Future<void> dispose();
 
   /// Поток входящих сообщений
-  Stream<Message> get messages;
+  Stream<Message> get messagesStream;
 
   /// Отправить сообщение
   Future<void> sendMessage(Message message);

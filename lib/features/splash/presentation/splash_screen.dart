@@ -87,7 +87,7 @@ class _SplashView extends StatelessWidget {
                   SplashStateInitializationPending() => true,
                   _ => false,
                 })
-                  CommonProgressIndicator(),
+                  const CommonProgressIndicator(),
               ],
             ),
           );

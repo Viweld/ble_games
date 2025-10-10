@@ -16,7 +16,7 @@ final class BleSessionServer extends BleSessionBase
   }) : _connector = connector,
        _messenger = messenger,
        _log = logger {
-    _unhandledMessagesSubscription = _messenger.messages.listen(
+    _unhandledMessagesSubscription = _messenger.messagesStream.listen(
       _messagesHandler,
     );
     _handledMessagesController = StreamController<Message>.broadcast();

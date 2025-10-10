@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:batuga/features/home/presentation/widgets/awaiting_connection_dialog/awaiting_connection_dialog.dart';
-import 'package:batuga/features/home/presentation/widgets/searching_devices_dialog/searching_devices_dialog.dart';
+import 'package:batuga/features/home/presentation/widgets/client_session_dialog/client_session_dialog.dart';
+import 'package:batuga/features/home/presentation/widgets/server_session_dialog/server_session_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -81,9 +81,10 @@ class _HomeView extends StatelessWidget {
               ),
             ),
             HomeStateView() => _MainView(
-              onAwaitConnectionPressed: () =>
-                  _onAwaitConnectionPressed(context),
-              onSearchDevicesPressed: () => _onSearchDevicesPressed(context),
+              onStartSeverSessionTapped: () =>
+                  _onStartSeverSessionTapped(context),
+              onStartClientSessionTapped: () =>
+                  _onStartClientSessionTapped(context),
             ),
             _ => throw UnsupportedError('${state.runtimeType} нельзя строить'),
           };
@@ -92,14 +93,14 @@ class _HomeView extends StatelessWidget {
     );
   }
 
-  /// Обработчик нажатия кнопки 'Ожидать присоединения'
-  void _onAwaitConnectionPressed(BuildContext context) {
-    unawaited(AwaitingConnectionDialog.show(context));
+  /// Обработчик нажатия кнопки 'Начать как сервер'
+  void _onStartSeverSessionTapped(BuildContext context) {
+    unawaited(ServerSessionDialog.show(context));
   }
 
-  /// Обработчик нажатия кнопки 'Найти и подключиться'
-  void _onSearchDevicesPressed(BuildContext context) {
-    unawaited(SearchingDevicesDialog.show(context));
+  /// Обработчик нажатия кнопки 'Начать как клиент'
+  void _onStartClientSessionTapped(BuildContext context) {
+    unawaited(ClientSessionDialog.show(context));
   }
 
   /// Обработчик перехода на экран списка игр
@@ -164,15 +165,15 @@ class _HomeView extends StatelessWidget {
 /// Основной вид
 class _MainView extends StatelessWidget {
   const _MainView({
-    required this.onAwaitConnectionPressed,
-    required this.onSearchDevicesPressed,
+    required this.onStartSeverSessionTapped,
+    required this.onStartClientSessionTapped,
   });
 
   /// Коллбэк нажатия 'Ожидать присоединения'
-  final VoidCallback onAwaitConnectionPressed;
+  final VoidCallback onStartSeverSessionTapped;
 
   /// Коллбэк нажатия 'Найти и подключиться'
-  final VoidCallback onSearchDevicesPressed;
+  final VoidCallback onStartClientSessionTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +196,7 @@ class _MainView extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: onAwaitConnectionPressed,
+                onPressed: onStartSeverSessionTapped,
                 icon: const Icon(Icons.visibility),
                 label: const Text('Ожидать присоединения'),
               ),
@@ -206,7 +207,7 @@ class _MainView extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
-                onPressed: onSearchDevicesPressed,
+                onPressed: onStartClientSessionTapped,
                 icon: const Icon(Icons.search),
                 label: const Text('Найти и подключиться'),
               ),

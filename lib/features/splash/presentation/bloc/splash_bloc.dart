@@ -3,7 +3,6 @@ import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/domain/services/bluetooth_manager/i_bluetooth_manager.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/domain/services/i_bluetooth_permissions_service.dart';
 
@@ -17,11 +16,9 @@ part 'splash_bloc.freezed.dart';
 @DepGen()
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
   SplashBloc({
-    @DepArg() required IBluetoothManager bluetoothManager,
     @DepArg() required IBluetoothPermissionsService bluetoothPermissionsService,
     @DepArg() required IBluetoothStateService bluetoothStateService,
-  }) : _bluetoothManager = bluetoothManager,
-       _bluetoothPermissionsService = bluetoothPermissionsService,
+  }) : _bluetoothPermissionsService = bluetoothPermissionsService,
        _bluetoothStateService = bluetoothStateService,
        super(const SplashState.initializationPending()) {
     on<SplashEvent>(
@@ -36,7 +33,6 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     add(const SplashEvent.onInitializationRequested());
   }
 
-  final IBluetoothManager _bluetoothManager;
   final IBluetoothPermissionsService _bluetoothPermissionsService;
   final IBluetoothStateService _bluetoothStateService;
 
@@ -53,11 +49,10 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
         await _bluetoothStateService.enableBluetooth();
       }
 
-      // 3. Инициализация Bluetooth
-      await _bluetoothManager.initialize();
-
       // Задержка для показа сплэш-скрина
-      await Future.delayed(Duration(milliseconds: AppConstants.splashDelayMs));
+      await Future.delayed(
+        const Duration(milliseconds: AppConstants.splashDelayMs),
+      );
 
       emitter(const SplashState.view());
     } catch (e) {

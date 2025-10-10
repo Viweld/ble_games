@@ -11,45 +11,18 @@ import 'package:flutter/widgets.dart';
 // DepGen code generator
 // **************************************************************************
 
-import 'package:batuga/core/themes/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:flutter/foundation.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:batuga/features/tictactoe/data/models/game_move_dto.dart'
-    as game_move_dto;
-import 'package:batuga/core/data/models/user_dto.dart';
-import 'package:batuga/core/domain/models/device.dart';
-import 'package:batuga/core/domain/models/messages.dart';
-import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
-import 'package:flutter/services.dart';
-import 'package:batuga/core/data/models/messages_dto.dart';
-import 'package:batuga/core/domain/models/user.dart';
-import 'package:batuga/core/domain/transport/bluetooth/i_transport_session.dart';
-import 'package:batuga/core/domain/transport/bluetooth/i_messenger.dart';
-import 'package:dep_gen/dep_gen.dart';
-import 'package:batuga/core/resources/app_animations.dart';
-import 'package:lottie/lottie.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:crypto/crypto.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:bloc/bloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:batuga/features/home/presentation/widgets/awaiting_connection_dialog/awaiting_connection_dialog.dart';
-import 'package:batuga/features/home/presentation/widgets/searching_devices_dialog/searching_devices_dialog.dart';
-import 'package:batuga/core/di/builders.dep_gen.dart';
+import 'package:batuga/core/domain/transport/i_transport_session_client.dart';
+import 'package:batuga/core/domain/transport/i_transport_session_server.dart';
 import 'package:batuga/core/domain/services/i_bluetooth_state_service.dart';
 import 'package:batuga/core/domain/repositories/i_user_repository.dart';
 import 'package:batuga/core/domain/services/i_bluetooth_permissions_service.dart';
-import 'package:batuga/core/domain/services/i_bluetooth_state_service.dart';
+import 'package:batuga/core/domain/transport/i_transport_facade.dart';
 import 'package:batuga/features/games_list/presentation/bloc/games_list_bloc.dart';
 import 'package:batuga/features/home/presentation/bloc/home_bloc.dart';
-import 'package:batuga/features/home/presentation/widgets/awaiting_connection_dialog/bloc/awaiting_connection_bloc.dart';
+import 'package:batuga/features/home/presentation/widgets/client_session_dialog/bloc/client_session_bloc.dart';
 import 'package:batuga/features/home/presentation/widgets/nickname_dialog/bloc/nickname_bloc.dart';
-import 'package:batuga/features/home/presentation/widgets/searching_devices_dialog/bloc/searching_devices_bloc.dart';
+import 'package:batuga/features/home/presentation/widgets/server_session_dialog/bloc/server_session_bloc.dart';
 import 'package:batuga/features/splash/presentation/bloc/splash_bloc.dart';
 import 'package:batuga/features/tictactoe/presentation/bloc/game_bloc.dart';
 
@@ -142,30 +115,29 @@ class DepProvider extends InheritedWidget {
   // ---------------------------------------------------------------------------
   HomeBloc buildHomeBloc() => HomeBloc(
     playerRepository: _env.g<IUserRepository>(),
-    gateway: _env.g<IBluetoothManager>(),
+    transport: _env.g<ITransportFacade>(),
   );
 
   // ---------------------------------------------------------------------------
-  AwaitingConnectionBloc buildAwaitingConnectionBloc() =>
-      AwaitingConnectionBloc(bluetoothRepository: _env.g<IBluetoothManager>());
+  ClientSessionBloc buildClientSessionBloc() =>
+      ClientSessionBloc(session: _env.g<ITransportSessionClient>());
 
   // ---------------------------------------------------------------------------
   NicknameBloc buildNicknameBloc() => NicknameBloc();
 
   // ---------------------------------------------------------------------------
-  SearchingDevicesBloc buildSearchingDevicesBloc() =>
-      SearchingDevicesBloc(bluetoothRepository: _env.g<IBluetoothManager>());
+  ServerSessionBloc buildServerSessionBloc() =>
+      ServerSessionBloc(session: _env.g<ITransportSessionServer>());
 
   // ---------------------------------------------------------------------------
   SplashBloc buildSplashBloc() => SplashBloc(
-    bluetoothManager: _env.g<IBluetoothManager>(),
     bluetoothPermissionsService: _env.g<IBluetoothPermissionsService>(),
     bluetoothStateService: _env.g<IBluetoothStateService>(),
   );
 
   // ---------------------------------------------------------------------------
   GameBloc buildGameBloc() => GameBloc(
-    bluetoothRepository: _env.g<IBluetoothManager>(),
+    transport: _env.g<ITransportFacade>(),
     userRepository: _env.g<IUserRepository>(),
   );
 }

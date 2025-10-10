@@ -1,3 +1,4 @@
+import 'package:batuga/core/domain/transport/i_transport_session_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/data_providers/i_cached_data_provider.dart';
@@ -14,6 +15,7 @@ import '../domain/services/i_bluetooth_permissions_service.dart';
 import '../domain/services/i_bluetooth_state_service.dart';
 import '../data/repositories/user_repository.dart';
 import '../domain/transport/i_transport_facade.dart';
+import '../domain/transport/i_transport_session_server.dart';
 import '../services/app_logger.dart';
 import '../services/bluetooth_permissions_service.dart';
 import '../services/bluetooth_state_service.dart';
@@ -60,10 +62,11 @@ class Environment extends DepGenEnvironment {
     final linkClient = BleLinkClient(logger: logger);
     final messengerClient = BleMessenger(connector: linkClient, logger: logger);
     final sessionClient = BleSessionClient(
-      connector: linkClient,
+      link: linkClient,
       messenger: messengerClient,
       logger: logger,
     );
+    registry<ITransportSessionClient>(sessionClient);
 
     // Серверная часть
     final linkServer = BleLinkServer(logger: logger);
@@ -73,11 +76,12 @@ class Environment extends DepGenEnvironment {
       messenger: messengerServer,
       logger: logger,
     );
+    registry<ITransportSessionServer>(sessionServer);
 
     // Единый транспортный узел
     final bleTransport = BleTransportFacade(
-      connectionManagerClient: sessionClient,
-      connectionManagerServer: sessionServer,
+      transportSessionClient: sessionClient,
+      transportSessionServer: sessionServer,
     );
     registry<ITransportFacade>(bleTransport);
 

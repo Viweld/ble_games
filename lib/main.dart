@@ -13,7 +13,7 @@ void main() async {
   await environment.prepare();
 
   // Устанавливаем ориентацию экрана
-  SystemChrome.setPreferredOrientations([
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);

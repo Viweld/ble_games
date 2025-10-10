@@ -6,7 +6,7 @@ class CommonProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.square(
+    return const SizedBox.square(
       dimension: 24,
       child: const CircularProgressIndicator(),
     );

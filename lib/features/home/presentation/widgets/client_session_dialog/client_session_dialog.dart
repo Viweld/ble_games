@@ -5,11 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/domain/models/device.dart';
 import '../../../../../core/presentation/widgets/common_error.dart';
 import '../../../../../core/presentation/widgets/common_progress_indicator.dart';
-import 'bloc/searching_devices_bloc.dart';
+import 'bloc/client_session_bloc.dart';
 
 /// Диалог ввода псевдонима
-class SearchingDevicesDialog extends StatelessWidget {
-  const SearchingDevicesDialog._();
+class ClientSessionDialog extends StatelessWidget {
+  const ClientSessionDialog._();
 
   static const widthFraction = 0.9;
   static const heightFraction = 0.6;
@@ -17,41 +17,41 @@ class SearchingDevicesDialog extends StatelessWidget {
   static Future<void> show(BuildContext context) => showDialog<void>(
     context: context,
     barrierDismissible: true,
-    builder: (context) => SearchingDevicesDialog._(),
+    builder: (context) => const ClientSessionDialog._(),
   );
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => DepProvider.of(context).buildSearchingDevicesBloc(),
-      child: BlocConsumer<SearchingDevicesBloc, SearchingDevicesState>(
+      create: (context) => DepProvider.of(context).buildClientSessionBloc(),
+      child: BlocConsumer<ClientSessionBloc, ClientSessionState>(
         listenWhen: (previous, state) => switch (state) {
-          SearchingDevicesStateConnected() => true,
+          ClientSessionStateConnected() => true,
           _ => false,
         },
         listener: (context, state) => switch (state) {
-          SearchingDevicesStateConnected() => Navigator.pop(context),
+          ClientSessionStateConnected() => Navigator.pop(context),
           _ => null,
         },
         buildWhen: (previous, state) => switch (state) {
-          SearchingDevicesStatePending() => true,
-          SearchingDevicesStateView() => true,
-          SearchingDevicesStateError() => true,
+          ClientSessionStatePending() => true,
+          ClientSessionStateView() => true,
+          ClientSessionStateError() => true,
           _ => false,
         },
         builder: (context, state) => switch (state) {
-          SearchingDevicesStatePending() => _SearchingDevicesPending(
+          ClientSessionStatePending() => _ClientSessionPending(
             onCancelPressed: () => _onCancelPressed(context),
           ),
-          SearchingDevicesStateView(:final devices, :final selectedDevice) =>
-            _SearchingDevicesView(
+          ClientSessionStateView(:final devices, :final selectedDevice) =>
+            _ClientSessionView(
               devices: devices,
               selectedDevice: selectedDevice,
               onDeviceSelected: (device) => _onDeviceSelected(context, device),
               onConnectPressed: () => _onConnectPressed(context),
               onCancelPressed: () => _onCancelPressed(context),
             ),
-          SearchingDevicesStateError(:final message) => _SearchingDevicesError(
+          ClientSessionStateError(:final message) => _ClientSessionError(
             onCancelPressed: () => _onCancelPressed(context),
             message: message,
           ),
@@ -63,15 +63,15 @@ class SearchingDevicesDialog extends StatelessWidget {
 
   /// Обработчик выбора устройства
   void _onDeviceSelected(BuildContext context, Device device) {
-    context.read<SearchingDevicesBloc>().add(
-      SearchingDevicesEvent.onDeviceSelected(device: device),
+    context.read<ClientSessionBloc>().add(
+      ClientSessionEvent.onDeviceSelected(device: device),
     );
   }
 
   /// Обработчик нажатия кнопки 'Подключиться'
   void _onConnectPressed(BuildContext context) {
-    context.read<SearchingDevicesBloc>().add(
-      const SearchingDevicesEvent.onConnectToDevice(),
+    context.read<ClientSessionBloc>().add(
+      const ClientSessionEvent.onConnectToDevice(),
     );
   }
 
@@ -85,8 +85,8 @@ class SearchingDevicesDialog extends StatelessWidget {
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 /// Ожидание подключения
-class _SearchingDevicesView extends StatelessWidget {
-  const _SearchingDevicesView({
+class _ClientSessionView extends StatelessWidget {
+  const _ClientSessionView({
     required this.devices,
     required this.selectedDevice,
     required this.onDeviceSelected,
@@ -114,10 +114,10 @@ class _SearchingDevicesView extends StatelessWidget {
     final screenSize = MediaQuery.of(context).size;
 
     return AlertDialog(
-      title: Text('Найденные устройства', textAlign: TextAlign.center),
+      title: const Text('Найденные устройства', textAlign: TextAlign.center),
       content: SizedBox(
-        width: screenSize.width * SearchingDevicesDialog.widthFraction,
-        height: screenSize.height * SearchingDevicesDialog.heightFraction,
+        width: screenSize.width * ClientSessionDialog.widthFraction,
+        height: screenSize.height * ClientSessionDialog.heightFraction,
         child: devices.isEmpty
             ? const Center(
                 child: Column(
@@ -221,8 +221,8 @@ class _SearchingDevicesView extends StatelessWidget {
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 /// Ошибка ожидания подключения
-class _SearchingDevicesError extends StatelessWidget {
-  const _SearchingDevicesError({required this.onCancelPressed, this.message});
+class _ClientSessionError extends StatelessWidget {
+  const _ClientSessionError({required this.onCancelPressed, this.message});
 
   /// Коллбэк отмены
   final VoidCallback onCancelPressed;
@@ -235,15 +235,21 @@ class _SearchingDevicesError extends StatelessWidget {
     final screenSize = MediaQuery.of(context).size;
 
     return AlertDialog(
-      title: Text('Ошибка ожидания подключения!', textAlign: TextAlign.center),
+      title: const Text(
+        'Ошибка ожидания подключения!',
+        textAlign: TextAlign.center,
+      ),
       content: SizedBox(
-        width: screenSize.width * SearchingDevicesDialog.widthFraction,
-        height: screenSize.height * SearchingDevicesDialog.heightFraction,
+        width: screenSize.width * ClientSessionDialog.widthFraction,
+        height: screenSize.height * ClientSessionDialog.heightFraction,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(padding: EdgeInsets.only(bottom: 16), child: CommonError()),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 16),
+              child: CommonError(),
+            ),
             if (message != null) Text(message!, textAlign: TextAlign.center),
           ],
         ),
@@ -264,8 +270,8 @@ class _SearchingDevicesError extends StatelessWidget {
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 /// Ошибка ожидания подключения
-class _SearchingDevicesPending extends StatelessWidget {
-  const _SearchingDevicesPending({required this.onCancelPressed});
+class _ClientSessionPending extends StatelessWidget {
+  const _ClientSessionPending({required this.onCancelPressed});
 
   /// Коллбэк отмены
   final VoidCallback onCancelPressed;
@@ -275,11 +281,11 @@ class _SearchingDevicesPending extends StatelessWidget {
     final screenSize = MediaQuery.of(context).size;
 
     return AlertDialog(
-      title: Text('Найденные устройства', textAlign: TextAlign.center),
+      title: const Text('Найденные устройства', textAlign: TextAlign.center),
       content: SizedBox(
-        width: screenSize.width * SearchingDevicesDialog.widthFraction,
-        height: screenSize.height * SearchingDevicesDialog.heightFraction,
-        child: Column(
+        width: screenSize.width * ClientSessionDialog.widthFraction,
+        height: screenSize.height * ClientSessionDialog.heightFraction,
+        child: const Column(
           children: [
             CommonProgressIndicator(),
             Text('Загрузка...', textAlign: TextAlign.center),

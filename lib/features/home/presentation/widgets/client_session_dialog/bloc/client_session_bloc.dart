@@ -1,33 +1,31 @@
 import 'dart:async';
 
+import 'package:batuga/core/domain/transport/i_transport_session_client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../../core/domain/models/device.dart';
-import '../../../../../../core/domain/services/bluetooth_manager/i_bluetooth_manager.dart';
 
 part 'events.dart';
 
 part 'states.dart';
 
-part 'searching_devices_bloc.freezed.dart';
+part 'client_session_bloc.freezed.dart';
 
 /// BLoC для диалога ожидания подключения
 @DepGen()
-class SearchingDevicesBloc
-    extends Bloc<SearchingDevicesEvent, SearchingDevicesState> {
-  SearchingDevicesBloc({
-    @DepArg() required IBluetoothManager bluetoothRepository,
-  }) : _bluetoothRepository = bluetoothRepository,
-       super(SearchingDevicesState.pending()) {
-    on<SearchingDevicesEvent>(
+class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
+  ClientSessionBloc({@DepArg() required ITransportSessionClient session})
+    : _session = session,
+      super(const ClientSessionState.pending()) {
+    on<ClientSessionEvent>(
       (event, emitter) => switch (event) {
-        SearchingDevicesEventOnViewStateChanged() => emitter(_viewState),
-        SearchingDevicesEventOnInitializationRequested() =>
+        ClientSessionEventOnViewStateChanged() => emitter(_viewState),
+        ClientSessionEventOnInitializationRequested() =>
           _onInitializationRequested(event, emitter),
-        SearchingDevicesEventOnConnectToDevice() => _onConnectToDevice(emitter),
-        SearchingDevicesEventOnDeviceSelected() => _onDeviceSelected(
+        ClientSessionEventOnConnectToDevice() => _onConnectToDevice(emitter),
+        ClientSessionEventOnDeviceSelected() => _onDeviceSelected(
           event,
           emitter,
         ),
@@ -36,22 +34,22 @@ class SearchingDevicesBloc
       },
     );
 
-    _discoveredDevicesSubscription = _bluetoothRepository
-        .discoveredDevicesStream
-        .listen(_discoveredDevicesListener);
+    _discoveredDevicesSubscription = _session.discoveredDevicesStream.listen(
+      _discoveredDevicesListener,
+    );
 
-    add(const SearchingDevicesEvent.onInitializationRequested());
+    add(const ClientSessionEvent.onInitializationRequested());
   }
 
-  final IBluetoothManager _bluetoothRepository;
+  final ITransportSessionClient _session;
   late final StreamSubscription<List<Device>> _discoveredDevicesSubscription;
 
-  late SearchingDevicesStateView _viewState;
+  late ClientSessionStateView _viewState;
 
   @override
-  close() {
-    _discoveredDevicesSubscription.cancel();
-    unawaited(_bluetoothRepository.stopDiscovery());
+  Future<void> close() async {
+    await _discoveredDevicesSubscription.cancel();
+    await _session.stopDiscovery();
     return super.close();
   }
 
@@ -59,49 +57,45 @@ class SearchingDevicesBloc
   void _discoveredDevicesListener(List<Device> devices) {
     if (isClosed) return;
     _viewState = _viewState.copyWith(devices: devices);
-    add(const SearchingDevicesEvent.onViewStateChanged());
+    add(const ClientSessionEvent.onViewStateChanged());
   }
 
   /// Обработчик запроса на инициализацию
   Future<void> _onInitializationRequested(
-    SearchingDevicesEventOnInitializationRequested event,
-    Emitter<SearchingDevicesState> emitter,
+    ClientSessionEventOnInitializationRequested event,
+    Emitter<ClientSessionState> emitter,
   ) async {
     try {
-      _viewState = SearchingDevicesState.view() as SearchingDevicesStateView;
-      await _bluetoothRepository.startDiscovery();
+      _viewState = const ClientSessionState.view() as ClientSessionStateView;
+      await _session.startDiscovery();
     } catch (e) {
-      emitter(
-        SearchingDevicesState.error(message: 'Ошибка запуска поиска: $e'),
-      );
+      emitter(ClientSessionState.error(message: 'Ошибка запуска поиска: $e'));
     }
   }
 
   /// Обработчик подключения к устройству
-  Future<void> _onConnectToDevice(
-    Emitter<SearchingDevicesState> emitter,
-  ) async {
+  Future<void> _onConnectToDevice(Emitter<ClientSessionState> emitter) async {
     try {
       if (_viewState.selectedDevice == null) {
         emitter(
-          const SearchingDevicesState.error(
+          const ClientSessionState.error(
             message: 'Не выбрано устройство для подключения',
           ),
         );
         return;
       }
-      await _bluetoothRepository.connectToDevice(_viewState.selectedDevice!);
+      await _session.connectToDevice(_viewState.selectedDevice!);
       // TODO(Vadim): Возможно, стоит здесь отправлять приглашение
       // TODO(Vadim): Тут переход в список игр
     } catch (e) {
-      emitter(SearchingDevicesState.error(message: 'Ошибка подключения: $e'));
+      emitter(ClientSessionState.error(message: 'Ошибка подключения: $e'));
     }
   }
 
   /// Обработчик выбора устройства
   Future<void> _onDeviceSelected(
-    SearchingDevicesEventOnDeviceSelected event,
-    Emitter<SearchingDevicesState> emitter,
+    ClientSessionEventOnDeviceSelected event,
+    Emitter<ClientSessionState> emitter,
   ) async {
     final selectedDevice = event.device;
     selectedDevice.id == _viewState.selectedDevice?.id ? null : selectedDevice;

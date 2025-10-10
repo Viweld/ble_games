@@ -6,27 +6,28 @@ import '../../../../domain/models/messages.dart';
 import '../../../../domain/transport/i_transport_session.dart';
 import '../../../../domain/transport/i_transport_session_server.dart';
 import '../../../../domain/transport/i_transport_facade.dart';
+import '../../../../domain/transport/models/transport_role.dart';
 
 final class BleTransportFacade implements ITransportFacade {
   BleTransportFacade({
-    required ITransportSessionClient connectionManagerClient,
-    required ITransportSessionServer connectionManagerServer,
-  }) : _connectionManagerClient = connectionManagerClient,
-       _connectionManagerServer = connectionManagerServer {
+    required ITransportSessionClient transportSessionClient,
+    required ITransportSessionServer transportSessionServer,
+  }) : _transportSessionClient = transportSessionClient,
+       _transportSessionServer = transportSessionServer {
     _proxyMessagesStreamController = StreamController<Message>.broadcast();
     _proxyClientMessagesStreamSubscription =
-        (connectionManagerClient as ITransportSession).messagesStream.listen(
+        (transportSessionClient as ITransportSession).messagesStream.listen(
           _proxyMessagesStreamController.add,
         );
     _proxyServerMessagesStreamSubscription =
-        (connectionManagerServer as ITransportSession).messagesStream.listen(
+        (transportSessionServer as ITransportSession).messagesStream.listen(
           _proxyMessagesStreamController.add,
         );
   }
 
-  final ITransportSessionClient _connectionManagerClient;
-  final ITransportSessionServer _connectionManagerServer;
-  TransportRole? _mode;
+  final ITransportSessionClient _transportSessionClient;
+  final ITransportSessionServer _transportSessionServer;
+  TransportRole _role = TransportRole.server;
 
   // КАНАЛ ПЕРЕДАЧИ ДАННЫХ:
   // ---------------------------------------------------------------------------
@@ -40,36 +41,35 @@ final class BleTransportFacade implements ITransportFacade {
 
   @override
   Future<void> sendMessage(Message message) =>
-      (connectionManager as ITransportSession).sendMessage(message);
+      transportSession.sendMessage(message);
+
   // ---------------------------------------------------------------------------
-
   @override
-  ITransportSessionClient get connectionManagerClient =>
-      _connectionManagerClient;
-
-  @override
-  ITransportSessionServer get connectionManagerServer =>
-      _connectionManagerServer;
-
-  @override
-  ITransportSession? get connectionManager => switch (_mode) {
-    TransportRole.client => _connectionManagerClient as ITransportSession,
-    TransportRole.server => _connectionManagerServer as ITransportSession,
-    _ => null,
+  ITransportSession get transportSession => switch (_role) {
+    TransportRole.client => _transportSessionClient as ITransportSession,
+    TransportRole.server => _transportSessionServer as ITransportSession,
   };
 
   @override
-  void initializeClient() => _mode = TransportRole.client;
+  Future<ITransportSessionClient> startClientTransportSession() async {
+    await transportSession.disconnect();
+    _role = TransportRole.client;
+    return _transportSessionClient;
+  }
 
   @override
-  void initializeServer() => _mode = TransportRole.server;
+  Future<ITransportSessionServer> startServerTransportSession() async {
+    await transportSession.disconnect();
+    _role = TransportRole.server;
+    return _transportSessionServer;
+  }
 
   @override
   Future<void> dispose() async {
     await _proxyClientMessagesStreamSubscription.cancel();
     await _proxyServerMessagesStreamSubscription.cancel();
     await _proxyMessagesStreamController.close();
-    await (_connectionManagerClient as ITransportSession).dispose();
-    await (_connectionManagerServer as ITransportSession).dispose();
+    await (_transportSessionClient as ITransportSession).dispose();
+    await (_transportSessionServer as ITransportSession).dispose();
   }
 }

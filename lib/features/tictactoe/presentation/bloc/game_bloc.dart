@@ -1,13 +1,14 @@
 import 'dart:async';
 
+import 'package:batuga/core/domain/transport/models/transport_session_state.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/domain/models/messages.dart';
 import '../../../../core/domain/models/user.dart';
-import '../../../../core/domain/services/bluetooth_manager/i_bluetooth_manager.dart';
 import '../../../../core/domain/repositories/i_user_repository.dart';
+import '../../../../core/domain/transport/i_transport_facade.dart';
 import '../../domain/models/enums/game_winner.dart';
 import '../../domain/models/enums/player_type.dart';
 import '../../domain/models/game_move.dart';
@@ -24,9 +25,9 @@ part 'game_bloc.freezed.dart';
 @DepGen()
 class GameBloc extends Bloc<GameEvent, GameState> {
   GameBloc({
-    @DepArg() required IBluetoothManager bluetoothRepository,
+    @DepArg() required ITransportFacade transport,
     @DepArg() required IUserRepository userRepository,
-  }) : _bluetoothRepository = bluetoothRepository,
+  }) : _transport = transport,
        _userRepository = userRepository,
        super(const GameState.initializationPending()) {
     on<GameEvent>(
@@ -44,9 +45,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     _gameBoard = List.generate(3, (_) => List.filled(3, null));
 
     // Подписка на входящие сообщения доменного уровня
-    _incomingDataSubscription = _bluetoothRepository.messagesStream.listen((
-      message,
-    ) {
+    _incomingDataSubscription = _transport.messagesStream.listen((message) {
       if (isClosed) return;
       switch (message) {
         case MoveMessage(:final move):
@@ -69,7 +68,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     add(const GameEvent.onInitializationRequested());
   }
 
-  final IBluetoothManager _bluetoothRepository;
+  final ITransportFacade _transport;
   final IUserRepository _userRepository;
 
   late final StreamSubscription<Message> _incomingDataSubscription;
@@ -81,9 +80,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   GameStateView? _viewState;
 
   @override
-  Future<void> close() {
-    _incomingDataSubscription.cancel();
-    return super.close();
+  Future<void> close() async {
+    await _incomingDataSubscription.cancel();
+    await super.close();
   }
 
   /// Обработчик запроса инициализации
@@ -130,9 +129,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       _gameWinner = GameRules.determineWinner(_gameBoard);
 
       // Отправляем ход сопернику доменной моделью
-      final device = _bluetoothRepository.connectedDevice;
-      if (device != null && _currentUser != null) {
-        await _bluetoothRepository.sendMessage(
+      final sessionState = _transport.transportSession.currentConnectionState;
+      if (sessionState is! TransportSessionConnected) return;
+      final device = sessionState.remoteDevice;
+      if (_currentUser != null) {
+        await _transport.sendMessage(
           MoveMessage(
             device: device,
             user: _currentUser!,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:batuga/core/di/builders.dep_gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -106,7 +108,7 @@ class _GameView extends StatelessWidget {
                     child: Text(
                       currentPlayer == playerType ? 'Ваш ход' : 'Ход соперника',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: AppConstants.turnNotificationFontSize,
                         fontWeight: FontWeight.bold,
                       ),
@@ -161,42 +163,46 @@ class _GameView extends StatelessWidget {
       message = 'Вы проиграли';
     }
 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Результат игры'),
-        content: Text(message),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Закрыть диалог
-              Navigator.of(context).pop(); // Вернуться на главный экран
-            },
-            child: const Text('Ок'),
-          ),
-        ],
+    unawaited(
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          title: const Text('Результат игры'),
+          content: Text(message),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Закрыть диалог
+                Navigator.of(context).pop(); // Вернуться на главный экран
+              },
+              child: const Text('Ок'),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   /// Показать диалог выхода соперника
   void _showOpponentLeftDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Игра прервана'),
-        content: const Text('Соперник прервал игру'),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Закрыть диалог
-              Navigator.of(context).pop(); // Вернуться на главный экран
-            },
-            child: const Text('Ок'),
-          ),
-        ],
+    unawaited(
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          title: const Text('Игра прервана'),
+          content: const Text('Соперник прервал игру'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Закрыть диалог
+                Navigator.of(context).pop(); // Вернуться на главный экран
+              },
+              child: const Text('Ок'),
+            ),
+          ],
+        ),
       ),
     );
   }
