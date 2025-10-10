@@ -1,26 +1,19 @@
 import 'dart:async';
 
-import 'package:batuga/core/domain/transport/bluetooth/i_connection_manager.dart';
 import 'package:flutter/foundation.dart';
 
-import 'connection_states.dart';
-import 'i_messenger.dart';
+import '../../../../domain/transport/models/transport_session_state.dart';
+import '../../../../domain/transport/i_transport_session.dart';
 
-/// Базовый класс для менеджера подключения Bluetooth.
-/// Содержит общие методы и свойства для управления состоянием подключения.
-abstract base class BBluetoothConnectionManager implements IConnectionManager {
+abstract base class BleSessionBase implements ITransportSession {
   // ПУБЛИЧНЫЕ МЕТОДЫ И СВОЙСТВА
   // ---------------------------------------------------------------------------
   @override
-  BluetoothConnectionState? get currentConnectionState =>
-      _currentConnectionState;
+  TransportSessionState? get currentConnectionState => _currentConnectionState;
 
   @override
-  Stream<BluetoothConnectionState> get connectionStateStream =>
+  Stream<TransportSessionState> get connectionStateStream =>
       _connectionStateController.stream;
-
-  @override
-  IMessenger get messenger;
 
   @override
   Future<void> dispose() async {
@@ -31,16 +24,16 @@ abstract base class BBluetoothConnectionManager implements IConnectionManager {
   // ЗАЩИЩЕННЫЕ И ПРИВАТНЫЕ МЕТОДЫ И СВОЙСТВА
   // ---------------------------------------------------------------------------
   /// Текущее состояние подключения
-  BluetoothConnectionState _currentConnectionState =
-      const BluetoothDisconnectedState();
+  TransportSessionState _currentConnectionState =
+      const TransportSessionDisconnected();
 
   /// Контроллер потока состояний подключения
   final _connectionStateController =
-      StreamController<BluetoothConnectionState>.broadcast();
+      StreamController<TransportSessionState>.broadcast();
 
   /// Устанавливает текущее состояние соединения и уведомляет слушателей
   @protected
-  void setConnectionState(BluetoothConnectionState state) {
+  void setConnectionState(TransportSessionState state) {
     if (_currentConnectionState == state) return;
     _currentConnectionState = state;
     if (_connectionStateController.isClosed) return;

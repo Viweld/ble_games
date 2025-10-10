@@ -3,11 +3,9 @@ import 'dart:async';
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:flutter/foundation.dart';
 
-import 'i_connector.dart';
+import '../../../../domain/transport/i_transport_link.dart';
 
-/// Базовый класс для Bluetooth коннектора (клиент или сервер).
-/// Содержит общие методы и свойства для работы с Bluetooth соединением.
-abstract base class BBluetoothConnector implements IConnector {
+abstract base class BleLinkBase implements ITransportLink {
   // ПУБЛИЧНЫЕ МЕТОДЫ И СВОЙСТВА
   // ---------------------------------------------------------------------------
   @override

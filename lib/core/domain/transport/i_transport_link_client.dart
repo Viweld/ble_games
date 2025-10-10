@@ -1,7 +1,7 @@
-import '../../models/device.dart';
+import '../models/device.dart';
 
-/// Интерфейс сервиса сканирования bluetooth-устройств
-abstract interface class IBluetoothDiscovery {
+/// Интерфейс клиента для управления транспортным соединением (например, Bluetooth)
+abstract interface class ITransportLinkClient {
   /// Поток найденных устройств
   Stream<List<Device>> get discoveredDevicesStream;
 
@@ -13,4 +13,7 @@ abstract interface class IBluetoothDiscovery {
 
   /// Обновить сканирование устройств (перезапустить)
   Future<void> refreshDiscovery();
+
+  /// Подключиться к устройству
+  Future<void> connectToDevice(Device device);
 }

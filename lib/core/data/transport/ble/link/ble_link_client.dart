@@ -3,14 +3,14 @@ import 'dart:typed_data';
 
 import 'package:batuga/core/domain/models/device.dart';
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
-import '../../../constants/app_constants.dart';
-import '../../../domain/logger/i_logger.dart';
-import '../../../domain/transport/bluetooth/b_bluetooth_connector.dart';
-import '../../../domain/transport/bluetooth/i_connector_client.dart';
 
-final class BluetoothConnectorClient extends BBluetoothConnector
-    implements IConnectorClient {
-  BluetoothConnectorClient({required ILogger logger}) : _log = logger {
+import '../../../../constants/app_constants.dart';
+import '../../../../domain/logger/i_logger.dart';
+import '../../../../domain/transport/i_transport_link_client.dart';
+import 'ble_link_base.dart';
+
+final class BleLinkClient extends BleLinkBase implements ITransportLinkClient {
+  BleLinkClient({required ILogger logger}) : _log = logger {
     _discoveredDevicesController = StreamController<List<Device>>.broadcast();
   }
 

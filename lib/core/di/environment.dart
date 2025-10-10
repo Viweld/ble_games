@@ -2,18 +2,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/data_providers/i_cached_data_provider.dart';
 import '../data/data_providers/cached_data_provider.dart';
+import '../data/transport/ble/facade/ble_transport_facade.dart';
+import '../data/transport/ble/link/ble_link_client.dart';
+import '../data/transport/ble/link/ble_link_server.dart';
+import '../data/transport/ble/messenger/ble_messenger.dart';
+import '../data/transport/ble/session/ble_session_client.dart';
+import '../data/transport/ble/session/ble_session_server.dart';
 import '../domain/logger/i_logger.dart';
 import '../domain/repositories/i_user_repository.dart';
-import '../domain/services/bluetooth/bluetooth_connection_manager_client.dart';
-import '../domain/services/bluetooth/bluetooth_connector_client.dart';
-import '../domain/services/bluetooth/bluetooth_connector_server.dart';
-import '../domain/services/bluetooth/bluetooth_logger.dart';
-import '../domain/services/bluetooth/bluetooth_messenger.dart';
-import '../domain/services/bluetooth_manager/i_bluetooth_manager.dart';
 import '../domain/services/i_bluetooth_permissions_service.dart';
 import '../domain/services/i_bluetooth_state_service.dart';
 import '../data/repositories/user_repository.dart';
-import '../data/repositories/bluetooth_manager.dart';
+import '../domain/transport/i_transport_facade.dart';
 import '../services/app_logger.dart';
 import '../services/bluetooth_permissions_service.dart';
 import '../services/bluetooth_state_service.dart';
@@ -43,7 +43,7 @@ class Environment extends DepGenEnvironment {
     );
     registry<IUserRepository>(playerRepository);
 
-    /// СЕРВИСЫ
+    /// BLUETOOTH СЕРВИСЫ
     // -------------------------------------------------------------------------
     // Сервис состояния Bluetooth
     final bluetoothStateService = BluetoothStateService();
@@ -54,35 +54,32 @@ class Environment extends DepGenEnvironment {
     final bluetoothPermissionsService = BluetoothPermissionsService();
     registry<IBluetoothPermissionsService>(bluetoothPermissionsService);
 
-    // Менеджер Bluetooth
-    final bluetoothManager = BluetoothManager();
-    registry<IBluetoothManager>(bluetoothManager);
-
     /// BLUETOOTH
     // -------------------------------------------------------------------------
     // Клиентская часть
-    final connectorClient = BluetoothConnectorClient(logger: logger);
-    final messengerClient = BluetoothMessenger(
-      connector: connectorClient,
-      logger: logger,
-    );
-    final connectionManagerClient = BluetoothConnectionManagerClient(
-      connector: connectorClient,
+    final linkClient = BleLinkClient(logger: logger);
+    final messengerClient = BleMessenger(connector: linkClient, logger: logger);
+    final sessionClient = BleSessionClient(
+      connector: linkClient,
       messenger: messengerClient,
       logger: logger,
     );
 
     // Серверная часть
-    final connectorServer = BluetoothConnectorServer(logger: logger);
-    final messengerServer = BluetoothMessenger(
-      connector: connectorServer,
-      logger: logger,
-    );
-    final connectionManagerServer = BluetoothConnectionManagerServer(
-      connector: connectorServer,
+    final linkServer = BleLinkServer(logger: logger);
+    final messengerServer = BleMessenger(connector: linkServer, logger: logger);
+    final sessionServer = BleSessionServer(
+      connector: linkServer,
       messenger: messengerServer,
       logger: logger,
     );
+
+    // Единый транспортный узел
+    final bleTransport = BleTransportFacade(
+      connectionManagerClient: sessionClient,
+      connectionManagerServer: sessionServer,
+    );
+    registry<ITransportFacade>(bleTransport);
 
     // -------------------------------------------------------------------------
     return this;

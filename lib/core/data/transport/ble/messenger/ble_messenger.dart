@@ -5,16 +5,14 @@ import 'dart:typed_data';
 import 'package:batuga/core/data/models/messages_dto.dart';
 import 'package:batuga/core/domain/models/messages.dart';
 
-import '../../../domain/logger/i_logger.dart';
-import '../../../domain/transport/bluetooth/b_bluetooth_connector.dart';
-import '../../../domain/transport/bluetooth/i_messenger.dart';
+import '../../../../domain/logger/i_logger.dart';
+import '../../../../domain/transport/i_messenger.dart';
+import '../link/ble_link_base.dart';
 
-final class BluetoothMessenger implements IMessenger {
-  BluetoothMessenger({
-    required BBluetoothConnector connector,
-    required ILogger logger,
-  }) : _connector = connector,
-       _log = logger {
+final class BleMessenger implements IMessenger {
+  BleMessenger({required BleLinkBase connector, required ILogger logger})
+    : _connector = connector,
+      _log = logger {
     _incomingRawMessagesSubscription = connector.incomingRawMessageStream
         .listen(_incomingRawMessagesListener);
     _incomingMessagesController = StreamController<Message>.broadcast();
@@ -22,7 +20,7 @@ final class BluetoothMessenger implements IMessenger {
 
   late StreamSubscription<Uint8List> _incomingRawMessagesSubscription;
 
-  final BBluetoothConnector _connector;
+  final BleLinkBase _connector;
   final ILogger _log;
 
   late final StreamController<Message> _incomingMessagesController;

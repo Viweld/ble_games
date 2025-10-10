@@ -33,9 +33,9 @@ class BluetoothStateService implements IBluetoothStateService {
   /// Открыть настройки Bluetooth
   Future<void> _openBluetoothSettings() async {
     if (Platform.isAndroid) {
-      BluetoothEnablePanelUtil.open();
+      await BluetoothEnablePanelUtil.open();
     } else if (Platform.isIOS) {
-      await launchUrl(Uri.parse("App-Prefs:root=Bluetooth"));
+      await launchUrl(Uri.parse('App-Prefs:root=Bluetooth'));
     }
   }
 }

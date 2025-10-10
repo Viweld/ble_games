@@ -1,5 +1,5 @@
-/// Интерфейс сервера для работы с Bluetooth соединением
-abstract interface class IConnectorServer {
+/// Интерфейс сервера для управления Bluetooth-соединениями
+abstract interface class ITransportLinkServer {
   /// Начать рекламу присутствия приложения
   Future<void> startAdvertising();
 

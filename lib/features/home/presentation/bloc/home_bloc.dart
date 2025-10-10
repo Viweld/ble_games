@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:batuga/core/domain/transport/bluetooth/i_transport_facade.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -8,7 +9,6 @@ import '../../../../core/domain/models/device.dart';
 import '../../../../core/domain/models/messages.dart';
 import '../../../../core/domain/models/user.dart';
 import '../../../../core/domain/repositories/i_user_repository.dart';
-import '../../../../core/domain/services/bluetooth_manager/i_bluetooth_manager.dart';
 import '../../../tictactoe/domain/models/enums/player_type.dart';
 
 part 'events.dart';
@@ -22,9 +22,9 @@ part 'home_bloc.freezed.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc({
     @DepArg() required IUserRepository playerRepository,
-    @DepArg() required IBluetoothManager bluetoothRepository,
+    @DepArg() required ITransportFacade gateway,
   }) : _playerRepository = playerRepository,
-       _bluetoothRepository = bluetoothRepository,
+       _gateway = gateway,
        super(const HomeState.initializationPending()) {
     on<HomeEvent>(
       (event, emitter) => switch (event) {
@@ -47,14 +47,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       },
     );
 
-    _incomingDataSubscription = _bluetoothRepository.messagesStream.listen(
-      _handleIncomingMessage,
-    );
+    _incomingDataSubscription = _gateway.connectionManager.messagesStream
+        .listen(_handleIncomingMessage);
     add(const HomeEvent.onInitializationRequested());
   }
 
   final IUserRepository _playerRepository;
-  final IBluetoothManager _bluetoothRepository;
+  final ITransportFacade _gateway;
 
   late final StreamSubscription<Message> _incomingDataSubscription;
 
@@ -63,7 +62,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   @override
   Future<void> close() {
     _incomingDataSubscription.cancel();
-    _bluetoothRepository.dispose();
+    _gateway.dispose();
     return super.close();
   }
 

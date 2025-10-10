@@ -1,8 +1,8 @@
-import '../../models/device.dart';
+import '../models/device.dart';
 
-/// Интерфейс сервиса сканирования bluetooth-устройств
-abstract interface class IConnectorClient {
-  /// Поток найденных устройств
+/// Интерфейс сессии транспортного соединения со стороны клиента
+abstract interface class ITransportSessionClient {
+  /// Поток обнаруженных устройств
   Stream<List<Device>> get discoveredDevicesStream;
 
   /// Начать сканирование устройств

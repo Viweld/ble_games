@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -89,7 +91,7 @@ class _GamesListView extends StatelessWidget {
 
   /// Обработчик запуска игры
   void _gameStarting(BuildContext context, Game game) {
-    Navigator.of(context).pushNamed(game.routeName);
+    unawaited(Navigator.of(context).pushNamed(game.routeName));
   }
 
   /// Обработчик повтора инициализации

@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-/// Интерфейс коннектора для обмена сырыми данными
-abstract interface class IConnector {
+/// Интерфейс транспортного канала
+abstract interface class ITransportLink {
   /// Поток входящих сырых данных
   Stream<Uint8List> get incomingRawMessageStream;
 

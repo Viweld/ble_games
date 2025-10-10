@@ -1,17 +1,15 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:flutter/services.dart';
 
-import '../../../domain/logger/i_logger.dart';
-import '../../../domain/models/exceptions/bluetooth_exceptions.dart';
-import '../../../domain/transport/bluetooth/b_bluetooth_connector.dart';
-import '../../../domain/transport/bluetooth/i_connector_server.dart';
+import '../../../../domain/logger/i_logger.dart';
+import '../../../../domain/models/exceptions/bluetooth_exceptions.dart';
+import '../../../../domain/transport/i_transport_link_server.dart';
+import 'ble_link_base.dart';
 
-final class BluetoothConnectorServer extends BBluetoothConnector
-    implements IConnectorServer {
-  BluetoothConnectorServer({required ILogger logger}) : _log = logger;
+final class BleLinkServer extends BleLinkBase implements ITransportLinkServer {
+  BleLinkServer({required ILogger logger}) : _log = logger;
 
   final ILogger _log;
   final _peripheralManager = PeripheralManager();
@@ -19,7 +17,7 @@ final class BluetoothConnectorServer extends BBluetoothConnector
   StreamSubscription<GATTCharacteristicWriteRequestedEventArgs>?
   _writeRequestSubscription;
   final Map<String, Central> _connectedClients = {};
-  final Map<String, Central> _unverifiedClients = {};
+  Completer<bool>? _confirmCompleter;
 
   @override
   Future<void> startAdvertising() async {
@@ -91,21 +89,33 @@ final class BluetoothConnectorServer extends BBluetoothConnector
   }
 
   @override
-  Future<void> confirmConnectionRequest() {
-    // TODO: implement confirmConnectionRequest
-    throw UnimplementedError();
+  Future<void> confirmConnectionRequest() async {
+    if (_confirmCompleter == null || _confirmCompleter!.isCompleted) {
+      _log.w(
+        '⚠️ Нет активного запроса на подтверждение подключения для отклонения',
+      );
+      return;
+    }
+    _confirmCompleter!.complete(true);
+    _confirmCompleter = null;
   }
 
   @override
-  Future<void> rejectConnectionRequest() {
-    // TODO: implement rejectConnectionRequest
-    throw UnimplementedError();
+  Future<void> rejectConnectionRequest() async {
+    if (_confirmCompleter == null || _confirmCompleter!.isCompleted) {
+      _log.w(
+        '⚠️ Нет активного запроса на подтверждение подключения для отклонения',
+      );
+      return;
+    }
+    _confirmCompleter!.complete(false);
+    _confirmCompleter = null;
   }
 
   @override
   Future<void> sendRawMessage(Uint8List data) async {
     if (_connectedClients.isEmpty || _writeCharacteristic == null) {
-      _log.d(
+      _log.w(
         '⚠️ Нет подключённых клиентов для уведомления или характеристики для записи',
       );
       return;
@@ -147,45 +157,44 @@ final class BluetoothConnectorServer extends BBluetoothConnector
 
   // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
   // ---------------------------------------------------------------------------
-  void _peripheralEventHandler(
+  Future<void> _peripheralEventHandler(
     GATTCharacteristicWriteRequestedEventArgs event,
-  ) {
+  ) async {
     _log.d('📥 Получен запрос записи от ${event.central.uuid}');
+    super.translateIncomingData(event.request.value);
 
     try {
-      final rawMessage = utf8.decode(event.request.value);
-      _log.d('📥 Входящее сообщение: $rawMessage');
-      final jsonData = jsonDecode(rawMessage) as Map<String, dynamic>;
-      final message = MessageDto.fromJson(jsonData).toDomain();
-      if (message is InvitationMessage) {
-        _centralInvitationMessageHandler(event, message);
+      // проверяем есть ли такой клиент в списке подключенных
+      if (!_connectedClients.keys.contains(event.central.uuid.toString())) {
+        await _handleNewClientConnection(event);
+      } else {
+        _log.d('🔔 Запрос записи от известного клиента');
+        await _peripheralManager.respondWriteRequest(event.request);
       }
-      _incomingMessagesController.add(message);
-      _peripheralManager.respondWriteRequest(event.request);
     } catch (e) {
       _log.e('❌ Ошибка обработки входящих данных: $e');
-      _peripheralManager.respondWriteRequestWithError(
+      await _peripheralManager.respondWriteRequestWithError(
         event.request,
         error: GATTError.invalidAttributeValueLength,
       );
     }
   }
 
-  void _centralInvitationMessageHandler(
+  /// Обработка нового подключения клиента
+  Future<void> _handleNewClientConnection(
     GATTCharacteristicWriteRequestedEventArgs event,
-    InvitationMessage message,
-  ) {
-    // Проверяем, является ли клиент новым и сохраняем
-    final central = event.central;
-    final clientId = central.uuid.toString();
-    if (_connectedClients.keys.contains(clientId)) return;
-    _BluetoothLogger.d('🆕 Новое подключение клиента: $clientId');
-    _setConnectionState(
-      BluetoothReceivedInvitationState(
-        user: message.user,
-        device: message.device,
-      ),
-    );
-    _unverifiedClients.addAll({clientId: central});
+  ) async {
+    // TODO(Vadim): Подумать над случаем если в момент подтверждения поступит запрос от другого клиента
+    // TODO(Vadim): Подумать над случаем если клиент отключится в момент подтверждения
+    // TODO(Vadim): Добавить таймаут на подтверждение
+
+    if (_confirmCompleter == null) {
+      final clientId = event.central.uuid.toString();
+      _connectedClients[clientId] = event.central;
+      _confirmCompleter = Completer<bool>();
+      final isConfirmed = await _confirmCompleter!.future;
+      if (isConfirmed) return;
+      _connectedClients.remove(clientId);
+    }
   }
 }

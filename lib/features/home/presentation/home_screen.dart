@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:batuga/features/home/presentation/widgets/awaiting_connection_dialog/awaiting_connection_dialog.dart';
 import 'package:batuga/features/home/presentation/widgets/searching_devices_dialog/searching_devices_dialog.dart';
 import 'package:flutter/material.dart';
@@ -92,64 +94,68 @@ class _HomeView extends StatelessWidget {
 
   /// Обработчик нажатия кнопки 'Ожидать присоединения'
   void _onAwaitConnectionPressed(BuildContext context) {
-    AwaitingConnectionDialog.show(context);
+    unawaited(AwaitingConnectionDialog.show(context));
   }
 
   /// Обработчик нажатия кнопки 'Найти и подключиться'
   void _onSearchDevicesPressed(BuildContext context) {
-    SearchingDevicesDialog.show(context);
+    unawaited(SearchingDevicesDialog.show(context));
   }
 
   /// Обработчик перехода на экран списка игр
   void _toGamesListScreen(BuildContext context) {
-    Navigator.pushNamed(context, '/games_list');
+    unawaited(Navigator.pushNamed(context, '/games_list'));
   }
 
   /// Показать диалог приглашения
   void _showInvitationDialog(BuildContext context, User invitingUser) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Приглашение'),
-        content: Text('${invitingUser.name} пригласил вас поиграть'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              context.read<HomeBloc>().add(
-                const HomeEvent.onRejectInvitation(),
-              );
-            },
-            child: const Text('Отмена'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              context.read<HomeBloc>().add(
-                const HomeEvent.onAcceptInvitation(),
-              );
-            },
-            child: const Text('Начать'),
-          ),
-        ],
+    unawaited(
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          title: const Text('Приглашение'),
+          content: Text('${invitingUser.name} пригласил вас поиграть'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.read<HomeBloc>().add(
+                  const HomeEvent.onRejectInvitation(),
+                );
+              },
+              child: const Text('Отмена'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.read<HomeBloc>().add(
+                  const HomeEvent.onAcceptInvitation(),
+                );
+              },
+              child: const Text('Начать'),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   /// Показать диалог отказа
   void _showRejectionDialog(BuildContext context, User rejectedUser) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Отказ'),
-        content: Text('${rejectedUser.name} отказался играть'),
-        actions: [
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Ок'),
-          ),
-        ],
+    unawaited(
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Отказ'),
+          content: Text('${rejectedUser.name} отказался играть'),
+          actions: [
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Ок'),
+            ),
+          ],
+        ),
       ),
     );
   }
