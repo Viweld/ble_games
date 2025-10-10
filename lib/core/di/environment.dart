@@ -72,7 +72,7 @@ class Environment extends DepGenEnvironment {
     final linkServer = BleLinkServer(logger: logger);
     final messengerServer = BleMessenger(connector: linkServer, logger: logger);
     final sessionServer = BleSessionServer(
-      connector: linkServer,
+      link: linkServer,
       messenger: messengerServer,
       logger: logger,
     );

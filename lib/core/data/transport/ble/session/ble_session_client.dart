@@ -16,9 +16,10 @@ final class BleSessionClient extends BleSessionBase
     required BleLinkClient link,
     required IMessenger messenger,
     required ILogger logger,
-  }) : _link = link,
-       _messenger = messenger,
-       _log = logger {
+  })
+      : _link = link,
+        _messenger = messenger,
+        _log = logger {
     _unhandledMessagesSubscription = _messenger.messagesStream.listen(
       _messagesHandler,
     );
@@ -83,6 +84,9 @@ final class BleSessionClient extends BleSessionBase
       _log.w('Получен отказ на приглашение');
       await _link.disconnect();
       super.setConnectionState(const TransportSessionDisconnected());
+    } else if (event is AcceptanceMessage) {
+      super.setConnectionState(
+          TransportSessionConnected(remoteUser:, remoteDevice:,));
     }
   }
 }

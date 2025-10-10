@@ -10,10 +10,10 @@ import '../../../../domain/transport/i_messenger.dart';
 final class BleSessionServer extends BleSessionBase
     implements ITransportSessionServer {
   BleSessionServer({
-    required BleLinkServer connector,
+    required BleLinkServer link,
     required IMessenger messenger,
     required ILogger logger,
-  }) : _connector = connector,
+  }) : _link = link,
        _messenger = messenger,
        _log = logger {
     _unhandledMessagesSubscription = _messenger.messagesStream.listen(
@@ -22,7 +22,7 @@ final class BleSessionServer extends BleSessionBase
     _handledMessagesController = StreamController<Message>.broadcast();
   }
 
-  final BleLinkServer _connector;
+  final BleLinkServer _link;
   final IMessenger _messenger;
   final ILogger _log;
 
@@ -36,16 +36,10 @@ final class BleSessionServer extends BleSessionBase
   Future<void> sendMessage(Message message) => _messenger.sendMessage(message);
 
   @override
-  Future<void> startAdvertising() {
-    // TODO: implement startAdvertising
-    throw UnimplementedError();
-  }
+  Future<void> startAdvertising() => _link.startAdvertising();
 
   @override
-  Future<void> stopAdvertising() {
-    // TODO: implement stopAdvertising
-    throw UnimplementedError();
-  }
+  Future<void> stopAdvertising() => _link.stopAdvertising();
 
   @override
   Future<void> confirmConnectionRequest() {
@@ -60,15 +54,12 @@ final class BleSessionServer extends BleSessionBase
   }
 
   @override
-  Future<void> disconnect() {
-    // TODO: implement disconnect
-    throw UnimplementedError();
-  }
+  Future<void> disconnect() => _link.disconnect();
 
   /// Освободить ресурсы
   @override
   Future<void> onDispose() async {
-    await _connector.dispose();
+    await _link.dispose();
     await _messenger.dispose();
     await _unhandledMessagesSubscription.cancel();
     await _handledMessagesController.close();
@@ -77,8 +68,9 @@ final class BleSessionServer extends BleSessionBase
   // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
   // ---------------------------------------------------------------------------
   /// Обработчик входящих сообщений
-  void _messagesHandler(Message event) {
-    // TODO: implement messagesHandler
-    throw UnimplementedError();
+  Future<void> _messagesHandler(Message event) async {
+    _log.d('Ретрансляция сообщения в BleSessionServer');
+    if (_handledMessagesController.isClosed) return;
+    _handledMessagesController.add(event);
   }
 }
