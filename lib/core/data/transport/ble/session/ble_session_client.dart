@@ -5,6 +5,7 @@ import 'package:batuga/core/domain/models/messages.dart';
 import 'package:batuga/core/domain/transport/models/transport_session_state.dart';
 
 import '../../../../domain/logger/i_logger.dart';
+import '../../../../domain/models/peer_endpoint_dto.dart';
 import '../link/ble_link_client.dart';
 import 'ble_session_base.dart';
 import '../../../../domain/transport/i_transport_session_client.dart';
@@ -45,7 +46,11 @@ final class BleSessionClient extends BleSessionBase
   Future<void> sendMessage(Message message) => _messenger.sendMessage(message);
 
   @override
-  Future<void> startDiscovery() => _link.startDiscovery();
+  Future<void> startDiscovery({required PeerEndpoint localPeer}) async {
+    await _link.startDiscovery();
+    super.setConnectionState(
+        TransportSessionDisconnected(localPeer: localPeer));
+  }
 
   @override
   Future<void> stopDiscovery() => _link.stopDiscovery();

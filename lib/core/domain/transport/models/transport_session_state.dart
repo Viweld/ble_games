@@ -1,38 +1,39 @@
-import '../../models/device.dart';
-import '../../models/user.dart';
+import 'package:batuga/core/domain/models/peer_endpoint.dart';
 
 /// Базовый тип состояний транспортной сессии
-sealed class TransportSessionState {}
+sealed class TransportSessionState {
+  const TransportSessionState({required this.localPeer});
 
+  /// Местный участник сессии
+  final PeerEndpoint localPeer;
+}
+
+// -----------------------------------------------------------------------------
 /// Сессия неактивна или завершена.
-final class TransportSessionDisconnected implements TransportSessionState {
-  const TransportSessionDisconnected();
+final class TransportSessionDisconnected extends TransportSessionState {
+  const TransportSessionDisconnected({required super.localPeer});
 }
 
+// -----------------------------------------------------------------------------
 /// Идёт ожидание подтверждения подключения (например, клиент ожидает ответ сервера).
-final class TransportSessionAwaitingConfirmation
-    implements TransportSessionState {
-  const TransportSessionAwaitingConfirmation();
-}
-
-/// Получено приглашение на подключение (например, серверу пришёл запрос от клиента).
-final class TransportSessionIncomingRequest implements TransportSessionState {
-  const TransportSessionIncomingRequest({
-    required this.remoteUser,
-    required this.remoteDevice,
+final class TransportSessionAwaitingConfirmation extends TransportSessionState {
+  const TransportSessionAwaitingConfirmation({
+    required super.localPeer,
+    required this.remotePeer,
   });
 
-  final User remoteUser;
-  final Device remoteDevice;
+  /// Удаленный участник сессии
+  final PeerEndpoint remotePeer;
 }
 
+// -----------------------------------------------------------------------------
 /// Сессия установлена — соединение активно.
-final class TransportSessionConnected implements TransportSessionState {
+final class TransportSessionConnected extends TransportSessionState {
   const TransportSessionConnected({
-    required this.remoteUser,
-    required this.remoteDevice,
+    required super.localPeer,
+    required this.remotePeer,
   });
 
-  final User remoteUser;
-  final Device remoteDevice;
+  /// Удаленный участник сессии
+  final PeerEndpoint remotePeer;
 }

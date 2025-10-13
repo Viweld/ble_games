@@ -56,7 +56,7 @@ class Environment extends DepGenEnvironment {
     final bluetoothPermissionsService = BluetoothPermissionsService();
     registry<IBluetoothPermissionsService>(bluetoothPermissionsService);
 
-    /// BLUETOOTH
+    /// BLUETOOTH ТРАНСПОРТ
     // -------------------------------------------------------------------------
     // Клиентская часть
     final linkClient = BleLinkClient(logger: logger);

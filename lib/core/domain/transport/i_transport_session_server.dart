@@ -1,7 +1,9 @@
+import '../models/peer_endpoint.dart';
+
 /// Интерфейс сессии транспортного соединения со стороны сервера
 abstract interface class ITransportSessionServer {
   /// Начать рекламу присутствия приложения
-  Future<void> startAdvertising();
+  Future<void> startAdvertising({required PeerEndpoint localPeer});
 
   /// Остановить рекламу присутствия приложения
   Future<void> stopAdvertising();

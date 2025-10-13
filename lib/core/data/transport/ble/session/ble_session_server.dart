@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:batuga/core/domain/models/peer_endpoint.dart';
+
 import '../../../../domain/logger/i_logger.dart';
 import '../../../../domain/models/messages.dart';
 import '../link/ble_link_server.dart';
@@ -36,25 +38,31 @@ final class BleSessionServer extends BleSessionBase
   Future<void> sendMessage(Message message) => _messenger.sendMessage(message);
 
   @override
-  Future<void> startAdvertising() => _link.startAdvertising();
+  Future<void> startAdvertising({required PeerEndpoint localPeer}) async {
+    await _link.startAdvertising();
+    super.initSessionState(localPeer: localPeer);
+  }
 
   @override
   Future<void> stopAdvertising() => _link.stopAdvertising();
 
   @override
-  Future<void> confirmConnectionRequest() {
+  Future<void> confirmConnectionRequest() async {
     // TODO: implement confirmConnectionRequest
-    throw UnimplementedError();
+    super.connectionRequestConfirmed();
   }
 
   @override
-  Future<void> rejectConnectionRequest() {
+  Future<void> rejectConnectionRequest() async {
     // TODO: implement rejectConnectionRequest
-    throw UnimplementedError();
+    super.connectionRequestRejected();
   }
 
   @override
-  Future<void> disconnect() => _link.disconnect();
+  Future<void> disconnect() async {
+    await _link.disconnect();
+    super.sessionDisconnected();
+  }
 
   /// Освободить ресурсы
   @override
@@ -72,5 +80,9 @@ final class BleSessionServer extends BleSessionBase
     _log.d('Ретрансляция сообщения в BleSessionServer');
     if (_handledMessagesController.isClosed) return;
     _handledMessagesController.add(event);
+
+    if(event is InvitationMessage) {
+      super.connectionRequested(remotePeer: PeerEndpoint(user: event., device: device));
+    }
   }
 }

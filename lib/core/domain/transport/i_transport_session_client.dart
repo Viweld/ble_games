@@ -1,4 +1,5 @@
 import '../models/device.dart';
+import '../models/peer_endpoint.dart';
 
 /// Интерфейс сессии транспортного соединения со стороны клиента
 abstract interface class ITransportSessionClient {
@@ -6,7 +7,7 @@ abstract interface class ITransportSessionClient {
   Stream<List<Device>> get discoveredDevicesStream;
 
   /// Начать сканирование устройств
-  Future<void> startDiscovery();
+  Future<void> startDiscovery({required PeerEndpoint localPeer});
 
   /// Остановить сканирование устройств
   Future<void> stopDiscovery();
