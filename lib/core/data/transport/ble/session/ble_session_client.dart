@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:batuga/core/domain/models/device.dart';
 import 'package:batuga/core/domain/models/messages.dart';
-import 'package:batuga/core/domain/transport/models/transport_session_state.dart';
 
 import '../../../../domain/logger/i_logger.dart';
-import '../../../../domain/models/peer_endpoint_dto.dart';
+import '../../../../domain/models/peer_endpoint.dart';
 import '../link/ble_link_client.dart';
 import 'ble_session_base.dart';
 import '../../../../domain/transport/i_transport_session_client.dart';
@@ -17,10 +16,9 @@ final class BleSessionClient extends BleSessionBase
     required BleLinkClient link,
     required IMessenger messenger,
     required ILogger logger,
-  })
-      : _link = link,
-        _messenger = messenger,
-        _log = logger {
+  }) : _link = link,
+       _messenger = messenger,
+       _log = logger {
     _unhandledMessagesSubscription = _messenger.messagesStream.listen(
       _messagesHandler,
     );
@@ -48,8 +46,7 @@ final class BleSessionClient extends BleSessionBase
   @override
   Future<void> startDiscovery({required PeerEndpoint localPeer}) async {
     await _link.startDiscovery();
-    super.setConnectionState(
-        TransportSessionDisconnected(localPeer: localPeer));
+    super.initSessionState(localPeer: localPeer);
   }
 
   @override
@@ -61,11 +58,20 @@ final class BleSessionClient extends BleSessionBase
   @override
   Future<void> connectToDevice(Device device) async {
     await _link.connectToDevice(device);
-    super.setConnectionState(const TransportSessionAwaitingConfirmation());
+    await _messenger.sendMessage(
+      InvitationMessage(peerEndpoint: super.localPeer),
+    );
+    super.onConnectionInvitationSent();
   }
 
   @override
-  Future<void> disconnect() => _link.disconnect();
+  Future<void> disconnect() async {
+    await _messenger.sendMessage(
+      DisconnectionMessage(peerEndpoint: super.localPeer),
+    );
+    await _link.disconnect();
+    super.onSessionDisconnected();
+  }
 
   /// Освободить ресурсы
   @override
@@ -84,14 +90,18 @@ final class BleSessionClient extends BleSessionBase
     if (_handledMessagesController.isClosed) return;
     _handledMessagesController.add(event);
 
-    // Обрабатываем различные кейсы
+    // Обрабатываем события управления соединением
     if (event is RejectionMessage) {
       _log.w('Получен отказ на приглашение');
       await _link.disconnect();
-      super.setConnectionState(const TransportSessionDisconnected());
+      super.onConnectionRequestRejected();
     } else if (event is AcceptanceMessage) {
-      super.setConnectionState(
-          TransportSessionConnected(remoteUser:, remoteDevice:,));
+      _log.d('Приглашение принято');
+      super.onConnectionRequestRemoteConfirmed(remotePeer: event.peerEndpoint);
+    } else if (event is DisconnectionMessage) {
+      _log.d('Соединение прервано по инициативе сервера');
+      await _link.disconnect();
+      super.onSessionDisconnected();
     }
   }
 }

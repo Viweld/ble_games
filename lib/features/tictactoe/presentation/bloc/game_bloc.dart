@@ -56,7 +56,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
               playerType: move.playerType,
             ),
           );
-        case TerminationMessage():
+        case DisconnectionMessage():
           add(const GameEvent.onConnectionLost());
         case OpponentLeftMessage():
           add(const GameEvent.onConnectionLost());

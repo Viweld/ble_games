@@ -1,49 +1,43 @@
-import 'package:batuga/core/domain/models/user.dart';
+import 'package:batuga/core/domain/models/peer_endpoint.dart';
 import 'package:flutter/foundation.dart';
 import '../../../features/tictactoe/domain/models/game_move.dart';
 import '../../../features/tictactoe/domain/models/enums/player_type.dart';
-import 'device.dart';
 
 @immutable
 sealed class Message {
-  const Message({required this.device, required this.user});
+  const Message({required this.peerEndpoint});
 
-  final Device device;
-  final User user;
+  final PeerEndpoint peerEndpoint;
 }
 
 /// Приглашение к подключению
 @immutable
 class InvitationMessage extends Message {
-  const InvitationMessage({required super.device, required super.user});
+  const InvitationMessage({required super.peerEndpoint});
 }
 
 /// Согласие на подключение
 @immutable
 class AcceptanceMessage extends Message {
-  const AcceptanceMessage({required super.device, required super.user});
+  const AcceptanceMessage({required super.peerEndpoint});
 }
 
 /// Отказ от подключения
 @immutable
 class RejectionMessage extends Message {
-  const RejectionMessage({required super.device, required super.user});
+  const RejectionMessage({required super.peerEndpoint});
 }
 
 /// Одностороннее прекращение соединения
 @immutable
-class TerminationMessage extends Message {
-  const TerminationMessage({required super.device, required super.user});
+class DisconnectionMessage extends Message {
+  const DisconnectionMessage({required super.peerEndpoint});
 }
 
 /// Сообщение о ходе в игре
 @immutable
 class MoveMessage extends Message {
-  const MoveMessage({
-    required super.device,
-    required super.user,
-    required this.move,
-  });
+  const MoveMessage({required super.peerEndpoint, required this.move});
 
   /// Устройство, отправившее ход и параметры хода
   final GameMove move;
@@ -53,8 +47,7 @@ class MoveMessage extends Message {
 @immutable
 class RoleAssignmentMessage extends Message {
   const RoleAssignmentMessage({
-    required super.device,
-    required super.user,
+    required super.peerEndpoint,
     required this.assignedType,
   });
 
@@ -64,5 +57,5 @@ class RoleAssignmentMessage extends Message {
 /// Соперник вышел из игры (в пределах активного соединения)
 @immutable
 class OpponentLeftMessage extends Message {
-  const OpponentLeftMessage({required super.device, required super.user});
+  const OpponentLeftMessage({required super.peerEndpoint});
 }

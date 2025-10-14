@@ -1,3 +1,4 @@
+import 'package:batuga/core/data/models/peer_endpoint_dto.dart';
 import 'package:batuga/features/tictactoe/data/models/game_move_dto.dart'
     as game_move_dto;
 import 'package:batuga/core/data/models/user_dto.dart';
@@ -16,30 +17,20 @@ part 'messages_dto.g.dart';
 @immutable
 abstract class MessageDto<T extends Message> extends BaseDto<T> {
   /// Конструктор базового DTO для сообщений
-  const MessageDto({
-    required this.device,
-    required this.type,
-    required this.user,
-  });
+  const MessageDto({required this.type, required this.peerEndpoint});
 
   static const String typeKey = 'type';
-  static const String deviceKey = 'device';
-  static const String userKey = 'user';
+  static const String peerEndpointKey = 'peer_endpoint';
 
   /// Тип сообщения (используется для определения класса-наследника при десериализации).
   /// Пример: `"invitation"`, `"acceptance"`, `"rejection"`, `"termination"`
   @JsonKey(name: typeKey)
   final String type;
 
-  /// Устройство, связанное с сообщением.
-  /// Пример: `{ "id": "device_456", "name": "Samsung Galaxy S21" }`
-  @JsonKey(name: deviceKey)
-  final DeviceDto device;
-
-  /// Владелец устройства.
-  /// Пример: `{ "id": "user_123", "name": "Иван Иванов" }`
-  @JsonKey(name: userKey)
-  final UserDto user;
+  /// Данные участника сессии
+  /// Пример: { }
+  @JsonKey(name: peerEndpointKey)
+  final PeerEndpointDto peerEndpoint;
 
   /// Универсальная фабрика для создания конкретного наследника MessageDto
   static MessageDto fromJson(Map<String, dynamic> json) => switch (json[typeKey]
@@ -61,7 +52,7 @@ abstract class MessageDto<T extends Message> extends BaseDto<T> {
     InvitationMessage m => InvitationMessageDto.fromDomain(m),
     AcceptanceMessage m => AcceptanceMessageDto.fromDomain(m),
     RejectionMessage m => RejectionMessageDto.fromDomain(m),
-    TerminationMessage m => TerminationMessageDto.fromDomain(m),
+    DisconnectionMessage m => TerminationMessageDto.fromDomain(m),
     MoveMessage m => MoveMessageDto.fromDomain(m),
     RoleAssignmentMessage m => RoleAssignmentMessageDto.fromDomain(m),
     OpponentLeftMessage m => OpponentLeftMessageDto.fromDomain(m),
@@ -75,8 +66,7 @@ abstract class MessageDto<T extends Message> extends BaseDto<T> {
 class InvitationMessageDto extends MessageDto<InvitationMessage> {
   const InvitationMessageDto({
     required super.type,
-    required super.device,
-    required super.user,
+    required super.peerEndpoint,
   });
 
   static const String typeValue = 'invitation';
@@ -89,13 +79,12 @@ class InvitationMessageDto extends MessageDto<InvitationMessage> {
 
   @override
   InvitationMessage toDomain() =>
-      InvitationMessage(device: device.toDomain(), user: user.toDomain());
+      InvitationMessage(peerEndpoint: peerEndpoint.toDomain());
 
   static InvitationMessageDto fromDomain(InvitationMessage message) =>
       InvitationMessageDto(
         type: typeValue,
-        device: DeviceDto.fromDomain(message.device),
-        user: UserDto.fromDomain(message.user),
+        peerEndpoint: PeerEndpointDto.fromDomain(message.peerEndpoint),
       );
 }
 
@@ -106,8 +95,7 @@ class InvitationMessageDto extends MessageDto<InvitationMessage> {
 class AcceptanceMessageDto extends MessageDto<AcceptanceMessage> {
   const AcceptanceMessageDto({
     required super.type,
-    required super.device,
-    required super.user,
+    required super.peerEndpoint,
   });
 
   static const String typeValue = 'acceptance';
@@ -120,13 +108,12 @@ class AcceptanceMessageDto extends MessageDto<AcceptanceMessage> {
 
   @override
   AcceptanceMessage toDomain() =>
-      AcceptanceMessage(device: device.toDomain(), user: user.toDomain());
+      AcceptanceMessage(peerEndpoint: peerEndpoint.toDomain());
 
   static AcceptanceMessageDto fromDomain(AcceptanceMessage message) =>
       AcceptanceMessageDto(
         type: typeValue,
-        device: DeviceDto.fromDomain(message.device),
-        user: UserDto.fromDomain(message.user),
+        peerEndpoint: PeerEndpointDto.fromDomain(message.peerEndpoint),
       );
 }
 
@@ -135,11 +122,7 @@ class AcceptanceMessageDto extends MessageDto<AcceptanceMessage> {
 @immutable
 @JsonSerializable(explicitToJson: true)
 class RejectionMessageDto extends MessageDto<RejectionMessage> {
-  const RejectionMessageDto({
-    required super.type,
-    required super.device,
-    required super.user,
-  });
+  const RejectionMessageDto({required super.type, required super.peerEndpoint});
 
   static const String typeValue = 'rejection';
 
@@ -151,13 +134,12 @@ class RejectionMessageDto extends MessageDto<RejectionMessage> {
 
   @override
   RejectionMessage toDomain() =>
-      RejectionMessage(device: device.toDomain(), user: user.toDomain());
+      RejectionMessage(peerEndpoint: peerEndpoint.toDomain());
 
   static RejectionMessageDto fromDomain(RejectionMessage message) =>
       RejectionMessageDto(
         type: typeValue,
-        device: DeviceDto.fromDomain(message.device),
-        user: UserDto.fromDomain(message.user),
+        peerEndpoint: PeerEndpointDto.fromDomain(message.peerEndpoint),
       );
 }
 
@@ -165,11 +147,10 @@ class RejectionMessageDto extends MessageDto<RejectionMessage> {
 /// DTO одностороннего прекращения соединения
 @immutable
 @JsonSerializable(explicitToJson: true)
-class TerminationMessageDto extends MessageDto<TerminationMessage> {
+class TerminationMessageDto extends MessageDto<DisconnectionMessage> {
   const TerminationMessageDto({
     required super.type,
-    required super.device,
-    required super.user,
+    required super.peerEndpoint,
   });
 
   static const String typeValue = 'termination';
@@ -181,14 +162,13 @@ class TerminationMessageDto extends MessageDto<TerminationMessage> {
   Map<String, dynamic> toJson() => _$TerminationMessageDtoToJson(this);
 
   @override
-  TerminationMessage toDomain() =>
-      TerminationMessage(device: device.toDomain(), user: user.toDomain());
+  DisconnectionMessage toDomain() =>
+      DisconnectionMessage(peerEndpoint: peerEndpoint.toDomain());
 
-  static TerminationMessageDto fromDomain(TerminationMessage message) =>
+  static TerminationMessageDto fromDomain(DisconnectionMessage message) =>
       TerminationMessageDto(
         type: typeValue,
-        device: DeviceDto.fromDomain(message.device),
-        user: UserDto.fromDomain(message.user),
+        peerEndpoint: PeerEndpointDto.fromDomain(message.peerEndpoint),
       );
 }
 
@@ -199,8 +179,7 @@ class TerminationMessageDto extends MessageDto<TerminationMessage> {
 class MoveMessageDto extends MessageDto<MoveMessage> {
   const MoveMessageDto({
     required super.type,
-    required super.device,
-    required super.user,
+    required super.peerEndpoint,
     required this.move,
   });
 
@@ -219,16 +198,12 @@ class MoveMessageDto extends MessageDto<MoveMessage> {
   Map<String, dynamic> toJson() => _$MoveMessageDtoToJson(this);
 
   @override
-  MoveMessage toDomain() => MoveMessage(
-    device: device.toDomain(),
-    move: move.toDomain(),
-    user: user.toDomain(),
-  );
+  MoveMessage toDomain() =>
+      MoveMessage(peerEndpoint: peerEndpoint.toDomain(), move: move.toDomain());
 
   static MoveMessageDto fromDomain(MoveMessage message) => MoveMessageDto(
     type: typeValue,
-    device: DeviceDto.fromDomain(message.device),
-    user: UserDto.fromDomain(message.user),
+    peerEndpoint: PeerEndpointDto.fromDomain(message.peerEndpoint),
     move: game_move_dto.GameMoveDto.fromDomain(message.move),
   );
 }
@@ -240,8 +215,7 @@ class MoveMessageDto extends MessageDto<MoveMessage> {
 class RoleAssignmentMessageDto extends MessageDto<RoleAssignmentMessage> {
   const RoleAssignmentMessageDto({
     required super.type,
-    required super.device,
-    required super.user,
+    required super.peerEndpoint,
     required this.assignedType,
   });
 
@@ -259,8 +233,7 @@ class RoleAssignmentMessageDto extends MessageDto<RoleAssignmentMessage> {
 
   @override
   RoleAssignmentMessage toDomain() => RoleAssignmentMessage(
-    device: device.toDomain(),
-    user: user.toDomain(),
+    peerEndpoint: peerEndpoint.toDomain(),
     assignedType: PlayerType.values.firstWhere(
       (e) => e.name == assignedType,
       orElse: () => PlayerType.x,
@@ -270,8 +243,7 @@ class RoleAssignmentMessageDto extends MessageDto<RoleAssignmentMessage> {
   static RoleAssignmentMessageDto fromDomain(RoleAssignmentMessage message) =>
       RoleAssignmentMessageDto(
         type: typeValue,
-        device: DeviceDto.fromDomain(message.device),
-        user: UserDto.fromDomain(message.user),
+        peerEndpoint: PeerEndpointDto.fromDomain(message.peerEndpoint),
         assignedType: message.assignedType.name,
       );
 }
@@ -283,8 +255,7 @@ class RoleAssignmentMessageDto extends MessageDto<RoleAssignmentMessage> {
 class OpponentLeftMessageDto extends MessageDto<OpponentLeftMessage> {
   const OpponentLeftMessageDto({
     required super.type,
-    required super.device,
-    required super.user,
+    required super.peerEndpoint,
   });
 
   static const String typeValue = 'opponent_left';
@@ -297,12 +268,11 @@ class OpponentLeftMessageDto extends MessageDto<OpponentLeftMessage> {
 
   @override
   OpponentLeftMessage toDomain() =>
-      OpponentLeftMessage(device: device.toDomain(), user: user.toDomain());
+      OpponentLeftMessage(peerEndpoint: peerEndpoint.toDomain());
 
   static OpponentLeftMessageDto fromDomain(OpponentLeftMessage message) =>
       OpponentLeftMessageDto(
         type: typeValue,
-        device: DeviceDto.fromDomain(message.device),
-        user: UserDto.fromDomain(message.user),
+        peerEndpoint: PeerEndpointDto.fromDomain(message.peerEndpoint),
       );
 }

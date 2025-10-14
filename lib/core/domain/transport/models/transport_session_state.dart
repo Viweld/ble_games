@@ -15,15 +15,22 @@ final class TransportSessionDisconnected extends TransportSessionState {
 }
 
 // -----------------------------------------------------------------------------
-/// Идёт ожидание подтверждения подключения (например, клиент ожидает ответ сервера).
-final class TransportSessionAwaitingConfirmation extends TransportSessionState {
-  const TransportSessionAwaitingConfirmation({
+/// Получено приглашение от клиента и теперь ожидается подтверждение от пользователя
+final class TransportSessionAwaitingUserDecision extends TransportSessionState {
+  const TransportSessionAwaitingUserDecision({
     required super.localPeer,
     required this.remotePeer,
   });
 
   /// Удаленный участник сессии
   final PeerEndpoint remotePeer;
+}
+
+// -----------------------------------------------------------------------------
+/// Отправлено приглашение на сервер и теперь ожидается подтверждение на удаленном устройстве
+final class TransportSessionAwaitingRemoteDecision
+    extends TransportSessionState {
+  const TransportSessionAwaitingRemoteDecision({required super.localPeer});
 }
 
 // -----------------------------------------------------------------------------

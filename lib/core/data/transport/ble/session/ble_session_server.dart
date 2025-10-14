@@ -48,20 +48,27 @@ final class BleSessionServer extends BleSessionBase
 
   @override
   Future<void> confirmConnectionRequest() async {
-    // TODO: implement confirmConnectionRequest
-    super.connectionRequestConfirmed();
+    await _messenger.sendMessage(
+      AcceptanceMessage(peerEndpoint: super.localPeer),
+    );
+    super.onConnectionRequestUserConfirmed();
   }
 
   @override
   Future<void> rejectConnectionRequest() async {
-    // TODO: implement rejectConnectionRequest
-    super.connectionRequestRejected();
+    await _messenger.sendMessage(
+      RejectionMessage(peerEndpoint: super.localPeer),
+    );
+    super.onConnectionRequestRejected();
   }
 
   @override
   Future<void> disconnect() async {
+    await _messenger.sendMessage(
+      DisconnectionMessage(peerEndpoint: super.localPeer),
+    );
     await _link.disconnect();
-    super.sessionDisconnected();
+    super.onSessionDisconnected();
   }
 
   /// Освободить ресурсы
@@ -81,8 +88,12 @@ final class BleSessionServer extends BleSessionBase
     if (_handledMessagesController.isClosed) return;
     _handledMessagesController.add(event);
 
-    if(event is InvitationMessage) {
-      super.connectionRequested(remotePeer: PeerEndpoint(user: event., device: device));
+    if (event is InvitationMessage) {
+      super.onConnectionInvitationReceived(remotePeer: event.peerEndpoint);
+    } else if (event is DisconnectionMessage) {
+      _log.d('Соединение прервано по инициативе клиента');
+      await _link.disconnect();
+      super.onSessionDisconnected();
     }
   }
 }

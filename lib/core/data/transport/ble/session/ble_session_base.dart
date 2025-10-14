@@ -31,6 +31,14 @@ abstract base class BleSessionBase implements ITransportSession {
   final _connectionStateController =
       StreamController<TransportSessionState>.broadcast();
 
+  /// Возвращает текущий localPeer или ошибку если он еще не проинициализирован
+  @protected
+  PeerEndpoint get localPeer {
+    final localPeer = _currentConnectionState?.localPeer;
+    return localPeer ??
+        (throw UnsupportedError('Не проинициализирован localPeer'));
+  }
+
   /// поступил запрос на подключение
   @protected
   void initSessionState({required PeerEndpoint localPeer}) {
@@ -39,26 +47,40 @@ abstract base class BleSessionBase implements ITransportSession {
 
   /// поступил запрос на подключение
   @protected
-  void connectionRequested({required PeerEndpoint remotePeer}) {
+  void onConnectionInvitationReceived({required PeerEndpoint remotePeer}) {
     final state = _currentConnectionState;
     if (state is! TransportSessionDisconnected) {
       throw UnsupportedError(
-        'Невозможен переход в TransportSessionAwaitingConfirmation из состояния ${_currentConnectionState.runtimeType}',
+        'Невозможен переход в TransportSessionAwaitingUserDecision из состояния ${_currentConnectionState.runtimeType}',
       );
     }
     _setConnectionState(
-      TransportSessionAwaitingConfirmation(
+      TransportSessionAwaitingUserDecision(
         localPeer: state.localPeer,
         remotePeer: remotePeer,
       ),
     );
   }
 
+  /// отправлен запрос на подключение
+  @protected
+  void onConnectionInvitationSent() {
+    final state = _currentConnectionState;
+    if (state is! TransportSessionDisconnected) {
+      throw UnsupportedError(
+        'Невозможен переход в TransportSessionAwaitingRemoteDecision из состояния ${_currentConnectionState.runtimeType}',
+      );
+    }
+    _setConnectionState(
+      TransportSessionAwaitingRemoteDecision(localPeer: state.localPeer),
+    );
+  }
+
   /// решено отклонить
   @protected
-  void connectionRequestRejected() {
+  void onConnectionRequestRejected() {
     final state = _currentConnectionState;
-    if (state is! TransportSessionAwaitingConfirmation) {
+    if (state is! TransportSessionAwaitingUserDecision) {
       throw UnsupportedError(
         'Невозможен переход в TransportSessionDisconnected из состояния ${_currentConnectionState.runtimeType}',
       );
@@ -70,9 +92,9 @@ abstract base class BleSessionBase implements ITransportSession {
 
   /// решено принять
   @protected
-  void connectionRequestConfirmed() {
+  void onConnectionRequestUserConfirmed() {
     final state = _currentConnectionState;
-    if (state is! TransportSessionAwaitingConfirmation) {
+    if (state is! TransportSessionAwaitingUserDecision) {
       throw UnsupportedError(
         'Невозможен переход в TransportSessionConnected из состояния ${_currentConnectionState.runtimeType}',
       );
@@ -85,9 +107,26 @@ abstract base class BleSessionBase implements ITransportSession {
     );
   }
 
+  /// получено положительное решение от удаленного peer
+  @protected
+  void onConnectionRequestRemoteConfirmed({required PeerEndpoint remotePeer}) {
+    final state = _currentConnectionState;
+    if (state is! TransportSessionAwaitingRemoteDecision) {
+      throw UnsupportedError(
+        'Невозможен переход в TransportSessionConnected из состояния ${_currentConnectionState.runtimeType}',
+      );
+    }
+    _setConnectionState(
+      TransportSessionConnected(
+        localPeer: state.localPeer,
+        remotePeer: remotePeer,
+      ),
+    );
+  }
+
   /// решено отключиться
   @protected
-  void sessionDisconnected() {
+  void onSessionDisconnected() {
     final state = _currentConnectionState;
     if (state is! TransportSessionConnected) {
       throw UnsupportedError(
