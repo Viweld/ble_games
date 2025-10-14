@@ -1,6 +1,7 @@
 import 'package:batuga/core/domain/transport/i_transport_session_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../config/env.dart';
 import '../data/data_providers/i_cached_data_provider.dart';
 import '../data/data_providers/cached_data_provider.dart';
 import '../data/transport/ble/facade/ble_transport_facade.dart';
@@ -59,7 +60,13 @@ class Environment extends DepGenEnvironment {
     /// BLUETOOTH ТРАНСПОРТ
     // -------------------------------------------------------------------------
     // Клиентская часть
-    final linkClient = BleLinkClient(logger: logger);
+
+    final linkClient = BleLinkClient(
+      logger: logger,
+      appName: Env.appName,
+      serviceId: Env.serviceId,
+      characteristicId: Env.characteristicId,
+    );
     final messengerClient = BleMessenger(connector: linkClient, logger: logger);
     final sessionClient = BleSessionClient(
       link: linkClient,
@@ -69,7 +76,12 @@ class Environment extends DepGenEnvironment {
     registry<ITransportSessionClient>(sessionClient);
 
     // Серверная часть
-    final linkServer = BleLinkServer(logger: logger);
+    final linkServer = BleLinkServer(
+      logger: logger,
+      appName: Env.appName,
+      serviceId: Env.serviceId,
+      characteristicId: Env.characteristicId,
+    );
     final messengerServer = BleMessenger(connector: linkServer, logger: logger);
     final sessionServer = BleSessionServer(
       link: linkServer,

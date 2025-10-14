@@ -43,3 +43,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Игнорировать все .env файлы в проекте
+*.env
+*.env.*
+**/.env
+**/.env.*

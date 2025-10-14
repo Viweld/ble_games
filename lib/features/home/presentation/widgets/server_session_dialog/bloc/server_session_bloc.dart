@@ -44,7 +44,7 @@ class ServerSessionBloc extends Bloc<ServerSessionEvent, ServerSessionState> {
     Emitter<ServerSessionState> emitter,
   ) async {
     try {
-      await _session.startAdvertising();
+      //await _session.startAdvertising();
     } on BluetoothDisabledException {
       emitter(
         const ServerSessionState.error(

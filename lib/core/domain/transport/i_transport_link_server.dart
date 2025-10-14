@@ -1,7 +1,7 @@
 /// Интерфейс сервера для управления Bluetooth-соединениями
 abstract interface class ITransportLinkServer {
   /// Начать рекламу присутствия приложения
-  Future<void> startAdvertising();
+  Future<void> startAdvertisingAs({required String deviceName});
 
   /// Остановить рекламу присутствия приложения
   Future<void> stopAdvertising();

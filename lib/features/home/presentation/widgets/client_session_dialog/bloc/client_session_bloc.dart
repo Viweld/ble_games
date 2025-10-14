@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:batuga/core/domain/models/peer_endpoint.dart';
 import 'package:batuga/core/domain/transport/i_transport_session_client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
@@ -67,7 +68,7 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
   ) async {
     try {
       _viewState = const ClientSessionState.view() as ClientSessionStateView;
-      await _session.startDiscovery();
+      //await _session.startDiscovery(localPeer: PeerEndpoint(user: user, device: ));
     } catch (e) {
       emitter(ClientSessionState.error(message: 'Ошибка запуска поиска: $e'));
     }

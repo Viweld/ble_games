@@ -131,18 +131,18 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       // Отправляем ход сопернику доменной моделью
       final sessionState = _transport.transportSession.currentConnectionState;
       if (sessionState is! TransportSessionConnected) return;
-      final device = sessionState.remoteDevice;
+      // final device = sessionState.remoteDevice;
       if (_currentUser != null) {
-        await _transport.sendMessage(
-          MoveMessage(
-            device: device,
-            user: _currentUser!,
-            move: GameMove(
-              position: GamePosition(row: event.row, column: event.column),
-              playerType: _currentPlayer,
-            ),
-          ),
-        );
+        // await _transport.sendMessage(
+        //   MoveMessage(
+        //     device: device,
+        //     user: _currentUser!,
+        //     move: GameMove(
+        //       position: GamePosition(row: event.row, column: event.column),
+        //       playerType: _currentPlayer,
+        //     ),
+        //   ),
+        // );
       }
 
       // Обновляем состояние

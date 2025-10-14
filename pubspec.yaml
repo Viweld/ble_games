@@ -12,6 +12,9 @@ dependencies:
 
   cupertino_icons: ^1.0.8
 
+  # Конфиги
+  envied: ^1.3.1
+
   # BLoC для управления состоянием
   flutter_bloc: ^9.1.1
   bloc: ^9.0.1
@@ -21,7 +24,7 @@ dependencies:
   json_annotation: ^4.9.0
 
   # Dependency Injection
-  dep_gen: ^1.1.11
+  dep_gen: ^1.1.12
 
   # Bluetooth
   bluetooth_low_energy: ^6.1.0
@@ -61,9 +64,11 @@ dev_dependencies:
   lints: ^6.0.0
 
   # Генераторы кода
-  build_runner: ^2.4.10
+  build_runner: ^2.7.1
   freezed: ^3.2.0
   json_serializable: ^6.8.0
+
+  envied_generator: ^1.3.1
 
 
 flutter:

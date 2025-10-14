@@ -9,7 +9,12 @@ import '../../../../domain/transport/i_transport_link_server.dart';
 import 'ble_link_base.dart';
 
 final class BleLinkServer extends BleLinkBase implements ITransportLinkServer {
-  BleLinkServer({required ILogger logger}) : _log = logger;
+  BleLinkServer({
+    required ILogger logger,
+    required super.appName,
+    required super.serviceId,
+    required super.characteristicId,
+  }) : _log = logger;
 
   final ILogger _log;
   final _peripheralManager = PeripheralManager();
@@ -20,7 +25,7 @@ final class BleLinkServer extends BleLinkBase implements ITransportLinkServer {
   Completer<bool>? _confirmCompleter;
 
   @override
-  Future<void> startAdvertising() async {
+  Future<void> startAdvertisingAs({required String deviceName}) async {
     _log.d('\n📡 Запуск рекламы Bluetooth сервиса...');
     try {
       await stopAdvertising();
@@ -59,10 +64,7 @@ final class BleLinkServer extends BleLinkBase implements ITransportLinkServer {
 
       // Начинаем рекламу с нашим именем и специальными данными
       await _peripheralManager.startAdvertising(
-        Advertisement(
-          name: super.deviceName,
-          serviceUUIDs: [super.serviceUuid],
-        ),
+        Advertisement(name: deviceName, serviceUUIDs: [super.serviceUuid]),
       );
     } on Object catch (e) {
       _log.e('❌ Ошибка запуска рекламы: $e');

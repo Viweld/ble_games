@@ -10,7 +10,12 @@ import '../../../../domain/transport/i_transport_link_client.dart';
 import 'ble_link_base.dart';
 
 final class BleLinkClient extends BleLinkBase implements ITransportLinkClient {
-  BleLinkClient({required ILogger logger}) : _log = logger {
+  BleLinkClient({
+    required ILogger logger,
+    required super.appName,
+    required super.serviceId,
+    required super.characteristicId,
+  }) : _log = logger {
     _discoveredDevicesController = StreamController<List<Device>>.broadcast();
   }
 

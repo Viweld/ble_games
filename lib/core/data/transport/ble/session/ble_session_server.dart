@@ -39,7 +39,7 @@ final class BleSessionServer extends BleSessionBase
 
   @override
   Future<void> startAdvertising({required PeerEndpoint localPeer}) async {
-    await _link.startAdvertising();
+    await _link.startAdvertisingAs(deviceName: localPeer.device.name);
     super.initSessionState(localPeer: localPeer);
   }
 

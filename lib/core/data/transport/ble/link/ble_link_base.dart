@@ -6,6 +6,13 @@ import 'package:flutter/foundation.dart';
 import '../../../../domain/transport/i_transport_link.dart';
 
 abstract base class BleLinkBase implements ITransportLink {
+  BleLinkBase({
+    required this.appName,
+    required String serviceId,
+    required String characteristicId,
+  }) : serviceUuid = UUID.fromString(serviceId),
+       characteristicUuid = UUID.fromString(characteristicId);
+
   // ПУБЛИЧНЫЕ МЕТОДЫ И СВОЙСТВА
   // ---------------------------------------------------------------------------
   @override
@@ -29,20 +36,17 @@ abstract base class BleLinkBase implements ITransportLink {
   /// Контроллер потока входящих сырых данных
   final _incomingRawMessageController = StreamController<Uint8List>.broadcast();
 
-  /// Часть UUID для всех сервисов и характеристик приложения
-  static const _appUuidPart = '0000-1000-8000-00805f9b34fb';
-
   /// UUID сервиса и характеристики приложения
   @protected
-  final serviceUuid = UUID.fromString('0000a7c0-$_appUuidPart');
+  final UUID serviceUuid;
 
   /// UUID характеристики приложения
   @protected
-  final characteristicUuid = UUID.fromString('0000a7c1-$_appUuidPart');
+  final UUID characteristicUuid;
 
   /// Уникальное имя приложения для идентификации
   @protected
-  late final appName = '🎮BaTuGa';
+  final String appName;
 
   // TODO(Vadim): сделать возможность переопределения имени устройства, например, через
   // todo - конструктор
@@ -57,9 +61,6 @@ abstract base class BleLinkBase implements ITransportLink {
   // todo - получение имени от пользователя
   // todo - получение имени от другого устройства
   // todo - получение имени от системных настроек
-  /// Уникальное имя устройства для идентификации
-  @protected
-  late final deviceName = '$appName-УСТРОЙСТВО';
 
   /// Переводит входящие сырые данные в поток
   @protected
