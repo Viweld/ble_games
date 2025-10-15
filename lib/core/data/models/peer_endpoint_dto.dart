@@ -15,12 +15,12 @@ class PeerEndpointDto extends BaseDto<PeerEndpoint> {
   const PeerEndpointDto({required this.user, required this.device});
 
   /// Данные пользователя
-  /// Пример: {}
+  /// Пример: "user": {}
   @JsonKey(name: 'user')
   final UserDto user;
 
   /// Данные устройства
-  /// Пример: {}
+  /// Пример: "device": {}
   @JsonKey(name: 'device')
   final DeviceDto device;
 

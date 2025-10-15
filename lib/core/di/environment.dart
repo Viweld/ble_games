@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../config/env.dart';
 import '../data/data_providers/i_cached_data_provider.dart';
 import '../data/data_providers/cached_data_provider.dart';
+import '../data/repositories/device_repository.dart';
 import '../data/transport/ble/facade/ble_transport_facade.dart';
 import '../data/transport/ble/link/ble_link_client.dart';
 import '../data/transport/ble/link/ble_link_server.dart';
@@ -11,6 +12,7 @@ import '../data/transport/ble/messenger/ble_messenger.dart';
 import '../data/transport/ble/session/ble_session_client.dart';
 import '../data/transport/ble/session/ble_session_server.dart';
 import '../domain/logger/i_logger.dart';
+import '../domain/repositories/i_device_repository.dart';
 import '../domain/repositories/i_user_repository.dart';
 import '../domain/services/i_bluetooth_permissions_service.dart';
 import '../domain/services/i_bluetooth_state_service.dart';
@@ -40,22 +42,24 @@ class Environment extends DepGenEnvironment {
 
     /// РЕПОЗИТОРИИ
     // -------------------------------------------------------------------------
-    // Репозиторий игроков
-    final playerRepository = UserRepository(
-      cachedDataProvider: sharedPreferencesProvider,
+    // Репозиторий пользователя
+    registry<IUserRepository>(
+      UserRepository(cachedDataProvider: sharedPreferencesProvider),
     );
-    registry<IUserRepository>(playerRepository);
+
+    // Репозиторий устройства
+    registry<IDeviceRepository>(
+      DeviceRepository(appName: Env.appName, serviceId: Env.serviceId),
+    );
 
     /// BLUETOOTH СЕРВИСЫ
     // -------------------------------------------------------------------------
     // Сервис состояния Bluetooth
-    final bluetoothStateService = BluetoothStateService();
-    registry<IBluetoothStateService>(bluetoothStateService);
+    registry<IBluetoothStateService>(BluetoothStateService());
 
     // ------------------------------------------------------------------------
     // Сервис разрешений Bluetooth
-    final bluetoothPermissionsService = BluetoothPermissionsService();
-    registry<IBluetoothPermissionsService>(bluetoothPermissionsService);
+    registry<IBluetoothPermissionsService>(BluetoothPermissionsService());
 
     /// BLUETOOTH ТРАНСПОРТ
     // -------------------------------------------------------------------------

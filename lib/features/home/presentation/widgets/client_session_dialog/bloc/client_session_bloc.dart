@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:batuga/core/domain/models/peer_endpoint.dart';
+import 'package:batuga/core/domain/repositories/i_user_repository.dart';
 import 'package:batuga/core/domain/transport/i_transport_session_client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../../core/domain/models/device.dart';
+import '../../../../../../core/domain/repositories/i_device_repository.dart';
 
 part 'events.dart';
 
@@ -17,9 +19,14 @@ part 'client_session_bloc.freezed.dart';
 /// BLoC для диалога ожидания подключения
 @DepGen()
 class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
-  ClientSessionBloc({@DepArg() required ITransportSessionClient session})
-    : _session = session,
-      super(const ClientSessionState.pending()) {
+  ClientSessionBloc({
+    @DepArg() required IUserRepository userRepo,
+    @DepArg() required IDeviceRepository deviceRepo,
+    @DepArg() required ITransportSessionClient session,
+  }) : _userRepo = userRepo,
+       _deviceRepo = deviceRepo,
+       _session = session,
+       super(const ClientSessionState.pending()) {
     on<ClientSessionEvent>(
       (event, emitter) => switch (event) {
         ClientSessionEventOnViewStateChanged() => emitter(_viewState),
@@ -42,6 +49,8 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
     add(const ClientSessionEvent.onInitializationRequested());
   }
 
+  final IUserRepository _userRepo;
+  final IDeviceRepository _deviceRepo;
   final ITransportSessionClient _session;
   late final StreamSubscription<List<Device>> _discoveredDevicesSubscription;
 
@@ -68,7 +77,13 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
   ) async {
     try {
       _viewState = const ClientSessionState.view() as ClientSessionStateView;
-      //await _session.startDiscovery(localPeer: PeerEndpoint(user: user, device: ));
+      final user = await _userRepo.getCurrentUser();
+      // TODO(Vadim): надо перетащить проверку пользователя на предыдущий этап (перед входом в этот экран)
+      if (user == null) return;
+      final device = await _deviceRepo.getDevice();
+      await _session.startDiscovery(
+        localPeer: PeerEndpoint(user: user, device: device),
+      );
     } catch (e) {
       emitter(ClientSessionState.error(message: 'Ошибка запуска поиска: $e'));
     }

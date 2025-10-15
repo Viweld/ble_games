@@ -122,18 +122,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   /// Обработчик принятия приглашения
   Future<void> _onAcceptInvitation(Emitter<HomeState> emitter) async {
     try {
-      final currentUser =
-          _currentUser ??
-          const User(id: 'temp_user', name: 'Тестовый пользователь');
-      // Отправляем сообщение о принятии
-      // if (_bluetoothRepository.isConnected) {
-      //   final acceptanceMessage = AcceptanceMessage(
-      //     device: _bluetoothRepository.connectedDevice!,
-      //     user: currentUser,
-      //   );
-      //   await _bluetoothRepository.sendMessage(acceptanceMessage);
-      // }
-
       // TODO(Vadim): Тут переход в список игр
     } catch (e) {
       emitter(HomeState.connectionError(message: 'Ошибка принятия: $e'));

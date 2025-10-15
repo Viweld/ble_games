@@ -18,10 +18,9 @@ class UserRepository implements IUserRepository {
 
   @override
   Future<User?> getCurrentUser() async {
-    final playerJson = await _cachedDataProvider.getString(key: _userKey);
-    if (playerJson == null) return null;
-
     try {
+      final playerJson = await _cachedDataProvider.getString(key: _userKey);
+      if (playerJson == null) return null;
       final playerMap = jsonDecode(playerJson) as Map<String, dynamic>;
       return UserDto.fromJson(playerMap).toDomain();
     } catch (e) {

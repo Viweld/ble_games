@@ -1,13 +1,17 @@
 import 'package:batuga/core/domain/models/device.dart';
+import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
 import '../../domain/repositories/i_device_repository.dart';
 
 /// Реализация репозитория устройства
-class DeviceRepository implements IDeviceRepository {
-  const DeviceRepository({required String appName}) : _appName = appName;
+final class DeviceRepository implements IDeviceRepository {
+  DeviceRepository({required String appName, required String serviceId})
+    : _appName = appName,
+      _serviceUuid = UUID.fromString(serviceId);
 
   final String _appName;
+  final UUID _serviceUuid;
 
   /// Получение имени устройства
   @override
@@ -23,6 +27,10 @@ class DeviceRepository implements IDeviceRepository {
   @override
   Future<Device> getDevice() async {
     final deviceName = await getDeviceName();
-    return Device(id: '', name: deviceName, isOurApp: true);
+    return Device(
+      id: _serviceUuid.toString(),
+      name: deviceName,
+      isOurApp: true,
+    );
   }
 }
