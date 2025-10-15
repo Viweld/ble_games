@@ -1,12 +1,11 @@
 import 'dart:async';
 
 import 'package:batuga/features/home/presentation/widgets/client_session_dialog/client_session_dialog.dart';
+import 'package:batuga/features/home/presentation/widgets/nickname_dialog/nickname_dialog.dart';
 import 'package:batuga/features/home/presentation/widgets/server_session_dialog/server_session_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/domain/models/user.dart';
-import '../../../../core/extensions/build_context_extension.dart';
 import '../../../core/di/builders.dep_gen.dart';
 import '../../../core/presentation/widgets/common_progress_indicator.dart';
 import 'bloc/home_bloc.dart';
@@ -30,12 +29,15 @@ class _HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Крестики-Нолики'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('Добро пожаловать в BaTuGa'),
+        centerTitle: true,
+      ),
       body: BlocConsumer<HomeBloc, HomeState>(
         listenWhen: (previous, state) => switch (state) {
-          HomeStateInitializationError() => true,
-          HomeStateInvitationReceived() => true,
-          HomeStateInvitationRejected() => true,
+          HomeStateStartAsServer() => true,
+          HomeStateStartAsClient() => true,
+          HomeStateNickNameRequired() => true,
           HomeStateConnected() => true,
           _ => false,
         },
@@ -46,13 +48,12 @@ class _HomeView extends StatelessWidget {
           _ => false,
         },
         listener: (context, state) => switch (state) {
-          HomeStateInitializationError(:final message) => context.showSnackBar(
-            'Ошибка: $message',
+          HomeStateStartAsServer() => _showStartAsServerDialog(context),
+          HomeStateStartAsClient() => _showStartAsClientDialog(context),
+          HomeStateNickNameRequired(:final role) => _showNickNameDialog(
+            context,
+            role,
           ),
-          HomeStateInvitationReceived(:final invitingUser) =>
-            _showInvitationDialog(context, invitingUser),
-          HomeStateInvitationRejected(:final rejectedUser) =>
-            _showRejectionDialog(context, rejectedUser),
           HomeStateConnected() => _toGamesListScreen(context),
           _ => null,
         },
@@ -95,71 +96,93 @@ class _HomeView extends StatelessWidget {
 
   /// Обработчик нажатия кнопки 'Начать как сервер'
   void _onStartSeverSessionTapped(BuildContext context) {
-    unawaited(ServerSessionDialog.show(context));
+    context.read<HomeBloc>().add(const HomeEvent.onStartSeverSessionTapped());
   }
 
   /// Обработчик нажатия кнопки 'Начать как клиент'
   void _onStartClientSessionTapped(BuildContext context) {
-    unawaited(ClientSessionDialog.show(context));
+    context.read<HomeBloc>().add(const HomeEvent.onStartClientSessionTapped());
   }
 
-  /// Обработчик перехода на экран списка игр
+  /// Обработчик состояние перехода на экран списка игр
   void _toGamesListScreen(BuildContext context) {
     unawaited(Navigator.pushNamed(context, '/games_list'));
   }
 
-  /// Показать диалог приглашения
-  void _showInvitationDialog(BuildContext context, User invitingUser) {
-    unawaited(
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: const Text('Приглашение'),
-          content: Text('${invitingUser.name} пригласил вас поиграть'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                context.read<HomeBloc>().add(
-                  const HomeEvent.onRejectInvitation(),
-                );
-              },
-              child: const Text('Отмена'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                context.read<HomeBloc>().add(
-                  const HomeEvent.onAcceptInvitation(),
-                );
-              },
-              child: const Text('Начать'),
-            ),
-          ],
-        ),
-      ),
-    );
+  /// Обработчик состояние открытия диалога подключения в роли сервера
+  Future<void> _showStartAsServerDialog(BuildContext context) async {
+    await ServerSessionDialog.show(context);
   }
 
-  /// Показать диалог отказа
-  void _showRejectionDialog(BuildContext context, User rejectedUser) {
-    unawaited(
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Отказ'),
-          content: Text('${rejectedUser.name} отказался играть'),
-          actions: [
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Ок'),
-            ),
-          ],
-        ),
-      ),
-    );
+  /// Обработчик состояние открытия диалога подключения в роли клиента
+  Future<void> _showStartAsClientDialog(BuildContext context) async {
+    await ClientSessionDialog.show(context);
   }
+
+  /// Обработчик состояния отсутствия записи о текущем пользователе
+  Future<void> _showNickNameDialog(BuildContext context, StartAs role) async {
+    final result = await NicknameDialog.show(context);
+    if (!context.mounted || result != true) return;
+    switch (role) {
+      case StartAs.server:
+        await ServerSessionDialog.show(context);
+      case StartAs.client:
+        await ClientSessionDialog.show(context);
+    }
+  }
+
+  // /// Показать диалог приглашения
+  // void _showInvitationDialog(BuildContext context, User invitingUser) {
+  //   unawaited(
+  //     showDialog(
+  //       context: context,
+  //       barrierDismissible: false,
+  //       builder: (context) => AlertDialog(
+  //         title: const Text('Приглашение'),
+  //         content: Text('${invitingUser.name} пригласил вас поиграть'),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //               context.read<HomeBloc>().add(
+  //                 const HomeEvent.onRejectInvitation(),
+  //               );
+  //             },
+  //             child: const Text('Отмена'),
+  //           ),
+  //           ElevatedButton(
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //               context.read<HomeBloc>().add(
+  //                 const HomeEvent.onAcceptInvitation(),
+  //               );
+  //             },
+  //             child: const Text('Начать'),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+  //
+  // /// Показать диалог отказа
+  // void _showRejectionDialog(BuildContext context, User rejectedUser) {
+  //   unawaited(
+  //     showDialog(
+  //       context: context,
+  //       builder: (context) => AlertDialog(
+  //         title: const Text('Отказ'),
+  //         content: Text('${rejectedUser.name} отказался играть'),
+  //         actions: [
+  //           ElevatedButton(
+  //             onPressed: () => Navigator.of(context).pop(),
+  //             child: const Text('Ок'),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 }
 
 /// Основной вид

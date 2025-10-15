@@ -22,4 +22,12 @@ abstract class ClientSessionEvent with _$ClientSessionEvent {
   /// Выбор игрока
   const factory ClientSessionEvent.onDeviceSelected({required Device device}) =
       ClientSessionEventOnDeviceSelected;
+
+  /// Сервер принял приглашение
+  const factory ClientSessionEvent.onInvitationAccepted() =
+      ClientSessionEventOnInvitationAccepted;
+
+  /// Сервер отклонил приглашение
+  const factory ClientSessionEvent.onInvitationRejected() =
+      ClientSessionEventOnInvitationRejected;
 }

@@ -14,25 +14,16 @@ abstract class HomeState with _$HomeState {
   /// Основное состояние
   const factory HomeState.view() = HomeStateView;
 
-  /// Ожидание ответа на приглашение
-  const factory HomeState.invitationPending({required Device invitedDevice}) =
-      HomeStateInvitationPending;
+  /// Начать соединение как сервер
+  const factory HomeState.startAsServer() = HomeStateStartAsServer;
 
-  /// Получено приглашение
-  const factory HomeState.invitationReceived({required User invitingUser}) =
-      HomeStateInvitationReceived;
+  /// Начать соединение как клиент
+  const factory HomeState.startAsClient() = HomeStateStartAsClient;
 
-  /// Приглашение отклонено
-  const factory HomeState.invitationRejected({required User rejectedUser}) =
-      HomeStateInvitationRejected;
-
-  /// Состояние ошибки соединения
-  const factory HomeState.connectionError({required String message}) =
-      HomeStateConnectionError;
+  /// Требуется создать псевдоним
+  const factory HomeState.nickNameRequired({required StartAs role}) =
+      HomeStateNickNameRequired;
 
   /// Успешное соединение
-  const factory HomeState.connected({
-    required User opponent,
-    required PlayerType myPlayerType,
-  }) = HomeStateConnected;
+  const factory HomeState.connected() = HomeStateConnected;
 }

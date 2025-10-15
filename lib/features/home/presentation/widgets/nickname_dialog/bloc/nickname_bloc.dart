@@ -1,6 +1,9 @@
+import 'package:batuga/core/domain/repositories/i_user_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+import '../../../../../../core/domain/models/user.dart';
 
 part 'events.dart';
 
@@ -8,10 +11,14 @@ part 'states.dart';
 
 part 'nickname_bloc.freezed.dart';
 
+enum NickNameValidationState { empty, tooLong, wrongFormat }
+
 /// BLoC для диалога псевдонима
 @DepGen()
 class NicknameBloc extends Bloc<NicknameEvent, NicknameState> {
-  NicknameBloc() : super(const NicknameState.initial()) {
+  NicknameBloc({@DepArg() required IUserRepository userRepo})
+    : _userRepo = userRepo,
+      super(const NicknameState.view()) {
     on<NicknameEvent>(
       (event, emit) => switch (event) {
         NicknameEventOnNicknameChanged() => _onNicknameChanged(event, emit),
@@ -19,28 +26,48 @@ class NicknameBloc extends Bloc<NicknameEvent, NicknameState> {
         _ => throw UnimplementedError('Unhandled event: $event'),
       },
     );
+
+    _stateView = super.state as NicknameStateView;
   }
+
+  final IUserRepository _userRepo;
+  late NicknameStateView _stateView;
 
   /// Обработчик изменения псевдонима
   Future<void> _onNicknameChanged(
     NicknameEventOnNicknameChanged event,
-    Emitter<NicknameState> emit,
+    Emitter<NicknameState> emitter,
   ) async {
-    // В данном случае просто игнорируем изменение
-    // Можно добавить валидацию в реальном времени
+    final nickName = event.nick.trim();
+    _stateView = _stateView.copyWith(nickName: nickName);
+    if (nickName.isEmpty) {
+      _stateView = _stateView.copyWith(
+        nickNameValidationState: NickNameValidationState.empty,
+      );
+    } else if (nickName.length > 50) {
+      _stateView = _stateView.copyWith(
+        nickNameValidationState: NickNameValidationState.tooLong,
+      );
+    } else if (nickName.contains(' ')) {
+      _stateView = _stateView.copyWith(
+        nickNameValidationState: NickNameValidationState.wrongFormat,
+      );
+    } else {
+      _stateView = _stateView.copyWith(nickNameValidationState: null);
+    }
+    emitter(_stateView);
   }
 
-  /// Обработчик сохранения псевдонима
+  /// Обработчик сохранения пользователя
   Future<void> _onSaveNickname(
     NicknameEventOnSaveNickname event,
-    Emitter<NicknameState> emit,
+    Emitter<NicknameState> emitter,
   ) async {
     try {
-      // Здесь должна быть логика создания и сохранения игрока
-      // Пока просто эмитим успешное состояние
-      emit(const NicknameState.nicknameSaved());
+      await _userRepo.saveCurrentUser(User.fromName(_stateView.nickName));
+      emitter(const NicknameState.nicknameSaved());
     } catch (e) {
-      emit(NicknameState.error(message: e.toString()));
+      emitter(NicknameState.error(message: e.toString()));
     }
   }
 }

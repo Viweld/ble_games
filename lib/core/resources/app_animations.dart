@@ -1,5 +1,4 @@
-class AppAnimations {
-  AppAnimations._();
+abstract final class AppAnimations {
   static const String src = 'assets/animations';
 
   static const String awaitingConnection = '$src/awaiting_connection.json';

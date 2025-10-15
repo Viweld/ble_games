@@ -16,6 +16,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:batuga/core/domain/transport/i_transport_session_client.dart';
 import 'package:batuga/core/domain/repositories/i_user_repository.dart';
+import 'package:batuga/core/domain/transport/i_transport_facade.dart';
 import 'package:batuga/core/domain/transport/i_transport_session_server.dart';
 import 'package:batuga/core/domain/services/i_bluetooth_state_service.dart';
 import 'package:batuga/core/domain/repositories/i_device_repository.dart';
@@ -121,7 +122,7 @@ class DepProvider extends InheritedWidget {
 
   // ---------------------------------------------------------------------------
   HomeBloc buildHomeBloc() => HomeBloc(
-    playerRepository: _env.g<IUserRepository>(),
+    userRepo: _env.g<IUserRepository>(),
     transport: _env.g<ITransportFacade>(),
   );
 
@@ -130,10 +131,12 @@ class DepProvider extends InheritedWidget {
     userRepo: _env.g<IUserRepository>(),
     deviceRepo: _env.g<IDeviceRepository>(),
     session: _env.g<ITransportSessionClient>(),
+    transport: _env.g<ITransportFacade>(),
   );
 
   // ---------------------------------------------------------------------------
-  NicknameBloc buildNicknameBloc() => NicknameBloc();
+  NicknameBloc buildNicknameBloc() =>
+      NicknameBloc(userRepo: _env.g<IUserRepository>());
 
   // ---------------------------------------------------------------------------
   ServerSessionBloc buildServerSessionBloc() =>

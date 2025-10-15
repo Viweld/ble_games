@@ -12,31 +12,31 @@ sealed class Message {
 
 /// Приглашение к подключению
 @immutable
-class InvitationMessage extends Message {
+final class InvitationMessage extends Message {
   const InvitationMessage({required super.peerEndpoint});
 }
 
 /// Согласие на подключение
 @immutable
-class AcceptanceMessage extends Message {
+final class AcceptanceMessage extends Message {
   const AcceptanceMessage({required super.peerEndpoint});
 }
 
 /// Отказ от подключения
 @immutable
-class RejectionMessage extends Message {
+final class RejectionMessage extends Message {
   const RejectionMessage({required super.peerEndpoint});
 }
 
 /// Одностороннее прекращение соединения
 @immutable
-class DisconnectionMessage extends Message {
+final class DisconnectionMessage extends Message {
   const DisconnectionMessage({required super.peerEndpoint});
 }
 
 /// Сообщение о ходе в игре
 @immutable
-class MoveMessage extends Message {
+final class MoveMessage extends Message {
   const MoveMessage({required super.peerEndpoint, required this.move});
 
   /// Устройство, отправившее ход и параметры хода
@@ -45,7 +45,7 @@ class MoveMessage extends Message {
 
 /// Назначение роли игрока перед началом партии
 @immutable
-class RoleAssignmentMessage extends Message {
+final class RoleAssignmentMessage extends Message {
   const RoleAssignmentMessage({
     required super.peerEndpoint,
     required this.assignedType,
@@ -56,6 +56,6 @@ class RoleAssignmentMessage extends Message {
 
 /// Соперник вышел из игры (в пределах активного соединения)
 @immutable
-class OpponentLeftMessage extends Message {
+final class OpponentLeftMessage extends Message {
   const OpponentLeftMessage({required super.peerEndpoint});
 }

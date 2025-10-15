@@ -14,6 +14,7 @@ dependencies:
 
   # Конфиги
   envied: ^1.3.1
+  uuid: ^4.5.1
 
   # BLoC для управления состоянием
   flutter_bloc: ^9.1.1

@@ -4,7 +4,8 @@ part of 'client_session_bloc.dart';
 @freezed
 abstract class ClientSessionState with _$ClientSessionState {
   /// Состояние ожидания инициализации
-  const factory ClientSessionState.pending() = ClientSessionStatePending;
+  const factory ClientSessionState.initializationPending() =
+      ClientSessionStateInitializationPending;
 
   /// Состояние построения
   const factory ClientSessionState.view({
@@ -13,9 +14,18 @@ abstract class ClientSessionState with _$ClientSessionState {
   }) = ClientSessionStateView;
 
   /// Ошибка
-  const factory ClientSessionState.error({String? message}) =
-      ClientSessionStateError;
+  const factory ClientSessionState.initializationError({String? message}) =
+      ClientSessionStateInitializationError;
 
-  /// Соединение успешно установлено
-  const factory ClientSessionState.connected() = ClientSessionStateConnected;
+  /// Состояние ожидания принятия приглашения
+  const factory ClientSessionState.remoteConfirmationPending() =
+      ClientSessionStateRemoteConfirmationPending;
+
+  /// Сервер принял приглашение
+  const factory ClientSessionState.invitationAccepted() =
+      ClientSessionStateInvitationAccepted;
+
+  /// Сервер отклонил приглашение
+  const factory ClientSessionState.invitationRejected() =
+      ClientSessionStateInvitationRejected;
 }

@@ -7,7 +7,7 @@ import '../../../../../core/presentation/widgets/common_error.dart';
 import '../../../../../core/presentation/widgets/common_progress_indicator.dart';
 import 'bloc/client_session_bloc.dart';
 
-/// Диалог ввода псевдонима
+/// Диалог подключения с качестве клиента
 class ClientSessionDialog extends StatelessWidget {
   const ClientSessionDialog._();
 
@@ -24,37 +24,46 @@ class ClientSessionDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => DepProvider.of(context).buildClientSessionBloc(),
-      child: BlocConsumer<ClientSessionBloc, ClientSessionState>(
-        listenWhen: (previous, state) => switch (state) {
-          ClientSessionStateConnected() => true,
-          _ => false,
-        },
-        listener: (context, state) => switch (state) {
-          ClientSessionStateConnected() => Navigator.pop(context),
-          _ => null,
-        },
+      child: BlocBuilder<ClientSessionBloc, ClientSessionState>(
         buildWhen: (previous, state) => switch (state) {
-          ClientSessionStatePending() => true,
           ClientSessionStateView() => true,
-          ClientSessionStateError() => true,
+          ClientSessionStateInitializationPending() => true,
+          ClientSessionStateInitializationError() => true,
+          ClientSessionStateRemoteConfirmationPending() => true,
+          ClientSessionStateInvitationAccepted() => true,
+          ClientSessionStateInvitationRejected() => true,
           _ => false,
         },
         builder: (context, state) => switch (state) {
-          ClientSessionStatePending() => _ClientSessionPending(
-            onCancelPressed: () => _onCancelPressed(context),
-          ),
+          ClientSessionStateInitializationPending() =>
+            _ClientSessionInitializationPending(
+              onCancelPressed: () => _onClosePressed(context),
+            ),
           ClientSessionStateView(:final devices, :final selectedDevice) =>
             _ClientSessionView(
               devices: devices,
               selectedDevice: selectedDevice,
               onDeviceSelected: (device) => _onDeviceSelected(context, device),
               onConnectPressed: () => _onConnectPressed(context),
-              onCancelPressed: () => _onCancelPressed(context),
+              onCancelPressed: () => _onClosePressed(context),
             ),
-          ClientSessionStateError(:final message) => _ClientSessionError(
-            onCancelPressed: () => _onCancelPressed(context),
-            message: message,
-          ),
+          ClientSessionStateInitializationError(:final message) =>
+            _ClientSessionInitializationError(
+              onCancelPressed: () => _onClosePressed(context),
+              message: message,
+            ),
+          ClientSessionStateRemoteConfirmationPending() =>
+            _ClientSessionRemoteConfirmationPending(
+              onClosePressed: () => _onClosePressed(context),
+            ),
+          ClientSessionStateInvitationAccepted() =>
+            _ClientSessionInvitationAccepted(
+              onClosePressed: () => _onClosePressed(context),
+            ),
+          ClientSessionStateInvitationRejected() =>
+            _ClientSessionInvitationRejected(
+              onClosePressed: () => _onClosePressed(context),
+            ),
           _ => throw UnsupportedError('${state.runtimeType} нельзя строить'),
         },
       ),
@@ -76,7 +85,7 @@ class ClientSessionDialog extends StatelessWidget {
   }
 
   /// Обработчик нажатия кнопки 'Отмена'
-  void _onCancelPressed(BuildContext context) {
+  void _onClosePressed(BuildContext context) {
     Navigator.pop(context);
   }
 }
@@ -84,7 +93,7 @@ class ClientSessionDialog extends StatelessWidget {
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-/// Ожидание подключения
+/// Вью со списком найденных устройств
 class _ClientSessionView extends StatelessWidget {
   const _ClientSessionView({
     required this.devices,
@@ -221,8 +230,11 @@ class _ClientSessionView extends StatelessWidget {
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 /// Ошибка ожидания подключения
-class _ClientSessionError extends StatelessWidget {
-  const _ClientSessionError({required this.onCancelPressed, this.message});
+class _ClientSessionInitializationError extends StatelessWidget {
+  const _ClientSessionInitializationError({
+    required this.onCancelPressed,
+    this.message,
+  });
 
   /// Коллбэк отмены
   final VoidCallback onCancelPressed;
@@ -269,9 +281,9 @@ class _ClientSessionError extends StatelessWidget {
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-/// Ошибка ожидания подключения
-class _ClientSessionPending extends StatelessWidget {
-  const _ClientSessionPending({required this.onCancelPressed});
+/// Ожидание инициализации
+class _ClientSessionInitializationPending extends StatelessWidget {
+  const _ClientSessionInitializationPending({required this.onCancelPressed});
 
   /// Коллбэк отмены
   final VoidCallback onCancelPressed;
@@ -298,6 +310,111 @@ class _ClientSessionPending extends StatelessWidget {
           onPressed: onCancelPressed,
           style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
           child: const Text('Отмена'),
+        ),
+      ],
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+/// Ожидание подтверждения
+class _ClientSessionRemoteConfirmationPending extends StatelessWidget {
+  const _ClientSessionRemoteConfirmationPending({required this.onClosePressed});
+
+  /// Коллбэк закрытия
+  final VoidCallback onClosePressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
+    return AlertDialog(
+      title: const Text('Приглашение отправлено', textAlign: TextAlign.center),
+      content: SizedBox(
+        width: screenSize.width * ClientSessionDialog.widthFraction,
+        height: screenSize.height * ClientSessionDialog.heightFraction,
+        child: const Column(
+          children: [Text('Ждите подтверждения', textAlign: TextAlign.center)],
+        ),
+      ),
+      actions: [
+        /// Кнопка отмены
+        ElevatedButton(
+          onPressed: onClosePressed,
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+          child: const Text('Отмена'),
+        ),
+      ],
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+/// Сервер принял приглашение
+class _ClientSessionInvitationAccepted extends StatelessWidget {
+  const _ClientSessionInvitationAccepted({required this.onClosePressed});
+
+  /// Коллбэк закрытия
+  final VoidCallback onClosePressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
+    return AlertDialog(
+      title: const Text('Приглашение принято', textAlign: TextAlign.center),
+      content: SizedBox(
+        width: screenSize.width * ClientSessionDialog.widthFraction,
+        height: screenSize.height * ClientSessionDialog.heightFraction,
+        child: const Column(
+          children: [Text('Ура!', textAlign: TextAlign.center)],
+        ),
+      ),
+      actions: [
+        /// Кнопка отмены
+        ElevatedButton(
+          onPressed: onClosePressed,
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+          child: const Text('Хорошо'),
+        ),
+      ],
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+/// Сервер принял приглашение
+class _ClientSessionInvitationRejected extends StatelessWidget {
+  const _ClientSessionInvitationRejected({required this.onClosePressed});
+
+  /// Коллбэк закрытия
+  final VoidCallback onClosePressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
+    return AlertDialog(
+      title: const Text('Приглашение отклонено', textAlign: TextAlign.center),
+      content: SizedBox(
+        width: screenSize.width * ClientSessionDialog.widthFraction,
+        height: screenSize.height * ClientSessionDialog.heightFraction,
+        child: const Column(
+          children: [Text('О нет..', textAlign: TextAlign.center)],
+        ),
+      ),
+      actions: [
+        /// Кнопка отмены
+        ElevatedButton(
+          onPressed: onClosePressed,
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+          child: const Text('Жаль...'),
         ),
       ],
     );

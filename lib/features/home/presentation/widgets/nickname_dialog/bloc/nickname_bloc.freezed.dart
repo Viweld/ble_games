@@ -122,11 +122,11 @@ return onSaveNickname(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String nick)?  onNicknameChanged,TResult Function( String name)?  onSaveNickname,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String nick)?  onNicknameChanged,TResult Function()?  onSaveNickname,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case NicknameEventOnNicknameChanged() when onNicknameChanged != null:
 return onNicknameChanged(_that.nick);case NicknameEventOnSaveNickname() when onSaveNickname != null:
-return onSaveNickname(_that.name);case _:
+return onSaveNickname();case _:
   return orElse();
 
 }
@@ -144,11 +144,11 @@ return onSaveNickname(_that.name);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String nick)  onNicknameChanged,required TResult Function( String name)  onSaveNickname,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String nick)  onNicknameChanged,required TResult Function()  onSaveNickname,}) {final _that = this;
 switch (_that) {
 case NicknameEventOnNicknameChanged():
 return onNicknameChanged(_that.nick);case NicknameEventOnSaveNickname():
-return onSaveNickname(_that.name);case _:
+return onSaveNickname();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -165,11 +165,11 @@ return onSaveNickname(_that.name);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String nick)?  onNicknameChanged,TResult? Function( String name)?  onSaveNickname,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String nick)?  onNicknameChanged,TResult? Function()?  onSaveNickname,}) {final _that = this;
 switch (_that) {
 case NicknameEventOnNicknameChanged() when onNicknameChanged != null:
 return onNicknameChanged(_that.nick);case NicknameEventOnSaveNickname() when onSaveNickname != null:
-return onSaveNickname(_that.name);case _:
+return onSaveNickname();case _:
   return null;
 
 }
@@ -247,67 +247,33 @@ as String,
 
 
 class NicknameEventOnSaveNickname implements NicknameEvent {
-  const NicknameEventOnSaveNickname({required this.name});
+  const NicknameEventOnSaveNickname();
   
 
- final  String name;
 
-/// Create a copy of NicknameEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$NicknameEventOnSaveNicknameCopyWith<NicknameEventOnSaveNickname> get copyWith => _$NicknameEventOnSaveNicknameCopyWithImpl<NicknameEventOnSaveNickname>(this, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NicknameEventOnSaveNickname&&(identical(other.name, name) || other.name == name));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NicknameEventOnSaveNickname);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'NicknameEvent.onSaveNickname(name: $name)';
+  return 'NicknameEvent.onSaveNickname()';
 }
 
 
 }
 
-/// @nodoc
-abstract mixin class $NicknameEventOnSaveNicknameCopyWith<$Res> implements $NicknameEventCopyWith<$Res> {
-  factory $NicknameEventOnSaveNicknameCopyWith(NicknameEventOnSaveNickname value, $Res Function(NicknameEventOnSaveNickname) _then) = _$NicknameEventOnSaveNicknameCopyWithImpl;
-@useResult
-$Res call({
- String name
-});
 
 
-
-
-}
-/// @nodoc
-class _$NicknameEventOnSaveNicknameCopyWithImpl<$Res>
-    implements $NicknameEventOnSaveNicknameCopyWith<$Res> {
-  _$NicknameEventOnSaveNicknameCopyWithImpl(this._self, this._then);
-
-  final NicknameEventOnSaveNickname _self;
-  final $Res Function(NicknameEventOnSaveNickname) _then;
-
-/// Create a copy of NicknameEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? name = null,}) {
-  return _then(NicknameEventOnSaveNickname(
-name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
 
 /// @nodoc
 mixin _$NicknameState {
@@ -353,11 +319,11 @@ extension NicknameStatePatterns on NicknameState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( NicknameStateInitial value)?  initial,TResult Function( NicknameStateNicknameSaved value)?  nicknameSaved,TResult Function( NicknameStateError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( NicknameStateView value)?  view,TResult Function( NicknameStateNicknameSaved value)?  nicknameSaved,TResult Function( NicknameStateError value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case NicknameStateInitial() when initial != null:
-return initial(_that);case NicknameStateNicknameSaved() when nicknameSaved != null:
+case NicknameStateView() when view != null:
+return view(_that);case NicknameStateNicknameSaved() when nicknameSaved != null:
 return nicknameSaved(_that);case NicknameStateError() when error != null:
 return error(_that);case _:
   return orElse();
@@ -377,11 +343,11 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( NicknameStateInitial value)  initial,required TResult Function( NicknameStateNicknameSaved value)  nicknameSaved,required TResult Function( NicknameStateError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( NicknameStateView value)  view,required TResult Function( NicknameStateNicknameSaved value)  nicknameSaved,required TResult Function( NicknameStateError value)  error,}){
 final _that = this;
 switch (_that) {
-case NicknameStateInitial():
-return initial(_that);case NicknameStateNicknameSaved():
+case NicknameStateView():
+return view(_that);case NicknameStateNicknameSaved():
 return nicknameSaved(_that);case NicknameStateError():
 return error(_that);case _:
   throw StateError('Unexpected subclass');
@@ -400,11 +366,11 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( NicknameStateInitial value)?  initial,TResult? Function( NicknameStateNicknameSaved value)?  nicknameSaved,TResult? Function( NicknameStateError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( NicknameStateView value)?  view,TResult? Function( NicknameStateNicknameSaved value)?  nicknameSaved,TResult? Function( NicknameStateError value)?  error,}){
 final _that = this;
 switch (_that) {
-case NicknameStateInitial() when initial != null:
-return initial(_that);case NicknameStateNicknameSaved() when nicknameSaved != null:
+case NicknameStateView() when view != null:
+return view(_that);case NicknameStateNicknameSaved() when nicknameSaved != null:
 return nicknameSaved(_that);case NicknameStateError() when error != null:
 return error(_that);case _:
   return null;
@@ -423,10 +389,10 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  nicknameSaved,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String nickName,  NickNameValidationState? nickNameValidationState,  bool isSaveButtonEnabled)?  view,TResult Function()?  nicknameSaved,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case NicknameStateInitial() when initial != null:
-return initial();case NicknameStateNicknameSaved() when nicknameSaved != null:
+case NicknameStateView() when view != null:
+return view(_that.nickName,_that.nickNameValidationState,_that.isSaveButtonEnabled);case NicknameStateNicknameSaved() when nicknameSaved != null:
 return nicknameSaved();case NicknameStateError() when error != null:
 return error(_that.message);case _:
   return orElse();
@@ -446,10 +412,10 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  nicknameSaved,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String nickName,  NickNameValidationState? nickNameValidationState,  bool isSaveButtonEnabled)  view,required TResult Function()  nicknameSaved,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
-case NicknameStateInitial():
-return initial();case NicknameStateNicknameSaved():
+case NicknameStateView():
+return view(_that.nickName,_that.nickNameValidationState,_that.isSaveButtonEnabled);case NicknameStateNicknameSaved():
 return nicknameSaved();case NicknameStateError():
 return error(_that.message);case _:
   throw StateError('Unexpected subclass');
@@ -468,10 +434,10 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  nicknameSaved,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String nickName,  NickNameValidationState? nickNameValidationState,  bool isSaveButtonEnabled)?  view,TResult? Function()?  nicknameSaved,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
-case NicknameStateInitial() when initial != null:
-return initial();case NicknameStateNicknameSaved() when nicknameSaved != null:
+case NicknameStateView() when view != null:
+return view(_that.nickName,_that.nickNameValidationState,_that.isSaveButtonEnabled);case NicknameStateNicknameSaved() when nicknameSaved != null:
 return nicknameSaved();case NicknameStateError() when error != null:
 return error(_that.message);case _:
   return null;
@@ -484,34 +450,72 @@ return error(_that.message);case _:
 /// @nodoc
 
 
-class NicknameStateInitial implements NicknameState {
-  const NicknameStateInitial();
+class NicknameStateView implements NicknameState {
+  const NicknameStateView({this.nickName = '', this.nickNameValidationState, this.isSaveButtonEnabled = false});
   
 
+@JsonKey() final  String nickName;
+ final  NickNameValidationState? nickNameValidationState;
+@JsonKey() final  bool isSaveButtonEnabled;
 
-
+/// Create a copy of NicknameState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$NicknameStateViewCopyWith<NicknameStateView> get copyWith => _$NicknameStateViewCopyWithImpl<NicknameStateView>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NicknameStateInitial);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NicknameStateView&&(identical(other.nickName, nickName) || other.nickName == nickName)&&(identical(other.nickNameValidationState, nickNameValidationState) || other.nickNameValidationState == nickNameValidationState)&&(identical(other.isSaveButtonEnabled, isSaveButtonEnabled) || other.isSaveButtonEnabled == isSaveButtonEnabled));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,nickName,nickNameValidationState,isSaveButtonEnabled);
 
 @override
 String toString() {
-  return 'NicknameState.initial()';
+  return 'NicknameState.view(nickName: $nickName, nickNameValidationState: $nickNameValidationState, isSaveButtonEnabled: $isSaveButtonEnabled)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $NicknameStateViewCopyWith<$Res> implements $NicknameStateCopyWith<$Res> {
+  factory $NicknameStateViewCopyWith(NicknameStateView value, $Res Function(NicknameStateView) _then) = _$NicknameStateViewCopyWithImpl;
+@useResult
+$Res call({
+ String nickName, NickNameValidationState? nickNameValidationState, bool isSaveButtonEnabled
+});
 
 
+
+
+}
+/// @nodoc
+class _$NicknameStateViewCopyWithImpl<$Res>
+    implements $NicknameStateViewCopyWith<$Res> {
+  _$NicknameStateViewCopyWithImpl(this._self, this._then);
+
+  final NicknameStateView _self;
+  final $Res Function(NicknameStateView) _then;
+
+/// Create a copy of NicknameState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? nickName = null,Object? nickNameValidationState = freezed,Object? isSaveButtonEnabled = null,}) {
+  return _then(NicknameStateView(
+nickName: null == nickName ? _self.nickName : nickName // ignore: cast_nullable_to_non_nullable
+as String,nickNameValidationState: freezed == nickNameValidationState ? _self.nickNameValidationState : nickNameValidationState // ignore: cast_nullable_to_non_nullable
+as NickNameValidationState?,isSaveButtonEnabled: null == isSaveButtonEnabled ? _self.isSaveButtonEnabled : isSaveButtonEnabled // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
 
 /// @nodoc
 

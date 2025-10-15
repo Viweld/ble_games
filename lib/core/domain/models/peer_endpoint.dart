@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'device.dart';
 
 @immutable
-class PeerEndpoint {
+final class PeerEndpoint {
   const PeerEndpoint({required this.user, required this.device});
 
   /// Данные о пользователе

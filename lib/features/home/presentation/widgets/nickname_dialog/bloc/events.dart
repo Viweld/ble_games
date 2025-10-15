@@ -8,6 +8,5 @@ abstract class NicknameEvent with _$NicknameEvent {
       NicknameEventOnNicknameChanged;
 
   /// Сохранение псевдонима
-  const factory NicknameEvent.onSaveNickname({required String name}) =
-      NicknameEventOnSaveNickname;
+  const factory NicknameEvent.onSaveNickname() = NicknameEventOnSaveNickname;
 }

@@ -2,13 +2,16 @@ import 'dart:async';
 
 import 'package:batuga/core/domain/models/peer_endpoint.dart';
 import 'package:batuga/core/domain/repositories/i_user_repository.dart';
+import 'package:batuga/core/domain/transport/i_transport_facade.dart';
 import 'package:batuga/core/domain/transport/i_transport_session_client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../../core/domain/models/device.dart';
+import '../../../../../../core/domain/models/messages.dart';
 import '../../../../../../core/domain/repositories/i_device_repository.dart';
+import '../../../../../../core/domain/transport/models/transport_session_state.dart';
 
 part 'events.dart';
 
@@ -23,10 +26,11 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
     @DepArg() required IUserRepository userRepo,
     @DepArg() required IDeviceRepository deviceRepo,
     @DepArg() required ITransportSessionClient session,
+    @DepArg() required ITransportFacade transport,
   }) : _userRepo = userRepo,
        _deviceRepo = deviceRepo,
        _session = session,
-       super(const ClientSessionState.pending()) {
+       super(const ClientSessionState.initializationPending()) {
     on<ClientSessionEvent>(
       (event, emitter) => switch (event) {
         ClientSessionEventOnViewStateChanged() => emitter(_viewState),
@@ -37,13 +41,22 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
           event,
           emitter,
         ),
+        ClientSessionEventOnInvitationAccepted() => _onInvitationAccepted(
+          emitter,
+        ),
+        ClientSessionEventOnInvitationRejected() => _onInvitationRejected(
+          emitter,
+        ),
 
         _ => throw UnimplementedError('Unhandled event: $event'),
       },
     );
 
-    _discoveredDevicesSubscription = _session.discoveredDevicesStream.listen(
+    _discoveredDevicesSubscription = session.discoveredDevicesStream.listen(
       _discoveredDevicesListener,
+    );
+    _messagesStreamSubscription = transport.messagesStream.listen(
+      _messagesStreamListener,
     );
 
     add(const ClientSessionEvent.onInitializationRequested());
@@ -53,12 +66,14 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
   final IDeviceRepository _deviceRepo;
   final ITransportSessionClient _session;
   late final StreamSubscription<List<Device>> _discoveredDevicesSubscription;
+  late final StreamSubscription<Message> _messagesStreamSubscription;
 
   late ClientSessionStateView _viewState;
 
   @override
   Future<void> close() async {
     await _discoveredDevicesSubscription.cancel();
+    await _messagesStreamSubscription.cancel();
     await _session.stopDiscovery();
     return super.close();
   }
@@ -69,6 +84,26 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
     _viewState = _viewState.copyWith(devices: devices);
     add(const ClientSessionEvent.onViewStateChanged());
   }
+
+  void _messagesStreamListener(Message event) {
+    if (isClosed) return;
+    if (event is AcceptanceMessage) {
+      add(const ClientSessionEvent.onInvitationAccepted());
+    } else if (event is RejectionMessage) {
+      add(const ClientSessionEvent.onInvitationRejected());
+    }
+  }
+
+  // void _connectionStateStreamListener(TransportSessionState state) {
+  //   switch(state){
+  //     case
+  //     TransportSessionDisconnected
+  //       TransportSessionDisconnected
+  //       TransportSessionAwaitingUserDecision
+  //       TransportSessionAwaitingRemoteDecision
+  //       TransportSessionConnected
+  //   }
+  // }
 
   /// Обработчик запроса на инициализацию
   Future<void> _onInitializationRequested(
@@ -85,7 +120,11 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
         localPeer: PeerEndpoint(user: user, device: device),
       );
     } catch (e) {
-      emitter(ClientSessionState.error(message: 'Ошибка запуска поиска: $e'));
+      emitter(
+        ClientSessionState.initializationError(
+          message: 'Ошибка запуска поиска: $e',
+        ),
+      );
     }
   }
 
@@ -94,7 +133,7 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
     try {
       if (_viewState.selectedDevice == null) {
         emitter(
-          const ClientSessionState.error(
+          const ClientSessionState.initializationError(
             message: 'Не выбрано устройство для подключения',
           ),
         );
@@ -104,7 +143,11 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
       // TODO(Vadim): Возможно, стоит здесь отправлять приглашение
       // TODO(Vadim): Тут переход в список игр
     } catch (e) {
-      emitter(ClientSessionState.error(message: 'Ошибка подключения: $e'));
+      emitter(
+        ClientSessionState.initializationError(
+          message: 'Ошибка подключения: $e',
+        ),
+      );
     }
   }
 
@@ -121,5 +164,19 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
           : selectedDevice,
     );
     emitter(_viewState);
+  }
+
+  /// Обработчик события - "Сервер принял приглашение"
+  Future<void> _onInvitationAccepted(
+    Emitter<ClientSessionState> emitter,
+  ) async {
+    emitter(const ClientSessionState.invitationAccepted());
+  }
+
+  /// Обработчик события - "Сервер отклонил приглашение"
+  Future<void> _onInvitationRejected(
+    Emitter<ClientSessionState> emitter,
+  ) async {
+    emitter(const ClientSessionState.invitationRejected());
   }
 }

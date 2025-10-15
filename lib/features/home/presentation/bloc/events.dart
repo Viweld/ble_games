@@ -7,31 +7,15 @@ abstract class HomeEvent with _$HomeEvent {
   const factory HomeEvent.onInitializationRequested() =
       HomeEventOnInitializationRequested;
 
-  /// Приглашение игрока
-  const factory HomeEvent.onInvite() = HomeEventOnInvite;
+  /// Нажата кнопка ожидать подключения (роль сервера)
+  const factory HomeEvent.onStartSeverSessionTapped() =
+      HomeEventOnStartSeverSessionTapped;
 
-  /// Отмена приглашения
-  const factory HomeEvent.onCancelInvitation() = HomeEventOnCancelInvitation;
-
-  /// Принятие приглашения
-  const factory HomeEvent.onAcceptInvitation() = HomeEventOnAcceptInvitation;
-
-  /// Отклонение приглашения
-  const factory HomeEvent.onRejectInvitation() = HomeEventOnRejectInvitation;
-
-  /// Сохранение псевдонима
-  const factory HomeEvent.onNicknameSaved({required String nickname}) =
-      HomeEventOnNicknameSaved;
-
-  /// Получено приглашение
-  const factory HomeEvent.onInvitationReceived({required User invitingUser}) =
-      HomeEventOnInvitationReceived;
-
-  /// Приглашение отклонено
-  const factory HomeEvent.onInvitationRejected({required User rejectedUser}) =
-      HomeEventOnInvitationRejected;
+  /// Нажата кнопка найти и подключиться (роль клиента)
+  const factory HomeEvent.onStartClientSessionTapped() =
+      HomeEventOnStartClientSessionTapped;
 
   /// Соединение установлено
-  const factory HomeEvent.onConnected({required User opponent}) =
-      HomeEventOnConnected;
+  const factory HomeEvent.onTransportConnected() =
+      HomeEventOnTransportConnected;
 }
