@@ -1,6 +1,6 @@
 name: batuga
-description: "BaTuGa - игра по Bluetooth"
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+description: "BaTuGa - игры по Bluetooth"
+publish_to: 'none'
 version: 1.0.0+1
 
 environment:
