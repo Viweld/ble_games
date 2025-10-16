@@ -1,14 +1,12 @@
 import 'package:batuga/core/data/models/peer_endpoint_dto.dart';
 import 'package:batuga/features/tictactoe/data/models/game_move_dto.dart'
     as game_move_dto;
-import 'package:batuga/core/data/models/user_dto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../../features/tictactoe/data/models/game_move_dto.dart';
 import 'abstracts/base_dto.dart';
 import '../../domain/models/messages.dart';
-import 'device_dto.dart';
 import '../../../features/tictactoe/domain/models/enums/player_type.dart';
 
 part 'messages_dto.g.dart';

@@ -11,8 +11,6 @@ import '../../../../core/domain/repositories/i_user_repository.dart';
 import '../../../../core/domain/transport/i_transport_facade.dart';
 import '../../domain/models/enums/game_winner.dart';
 import '../../domain/models/enums/player_type.dart';
-import '../../domain/models/game_move.dart';
-import '../../domain/models/game_position.dart';
 import '../../domain/services/game_rules.dart';
 
 part 'events.dart';

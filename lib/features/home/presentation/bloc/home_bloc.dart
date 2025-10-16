@@ -4,13 +4,10 @@ import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/domain/models/device.dart';
-import '../../../../core/domain/models/messages.dart';
 import '../../../../core/domain/models/user.dart';
 import '../../../../core/domain/repositories/i_user_repository.dart';
 import '../../../../core/domain/transport/i_transport_facade.dart';
 import '../../../../core/domain/transport/models/transport_session_state.dart';
-import '../../../tictactoe/domain/models/enums/player_type.dart';
 
 part 'events.dart';
 
@@ -52,10 +49,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       },
     );
 
-    _connectionStateSubscription = _transport
-        .transportSession
-        .connectionStateStream
-        .listen(_connectionStateStreamListener);
+    _connectionStateSubscription = _transport.connectionStateStream.listen(
+      _connectionStateStreamListener,
+    );
     add(const HomeEvent.onInitializationRequested());
   }
 
@@ -79,7 +75,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (isClosed) return;
     if (connectionState is! TransportSessionConnected) return;
     add(const HomeEvent.onTransportConnected());
-    print('П О Д К Л Ю Ч И - Л О С Ь');
   }
 
   /// Обработчик запроса инициализации

@@ -2,6 +2,7 @@ import '../models/messages.dart';
 import 'i_transport_session.dart';
 import 'i_transport_session_client.dart';
 import 'i_transport_session_server.dart';
+import 'models/transport_session_state.dart';
 
 /// Фасад для управления транспортом данных
 abstract interface class ITransportFacade {
@@ -10,6 +11,9 @@ abstract interface class ITransportFacade {
 
   /// Отправить сообщение
   Future<void> sendMessage(Message message);
+
+  /// Поток состояни
+  Stream<TransportSessionState> get connectionStateStream;
 
   /// Текущий активный менеджер подключений
   ITransportSession get transportSession;
