@@ -122,6 +122,7 @@ class ServerSessionBloc extends Bloc<ServerSessionEvent, ServerSessionState> {
     ServerSessionEventOnInvitationReceived event,
     Emitter<ServerSessionState> emitter,
   ) async {
+    print('Меняем отображаемый визуал');
     emitter(
       ServerSessionState.userDecision(
         remoteUser: event.remoteUser,

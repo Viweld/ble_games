@@ -51,8 +51,8 @@ class NicknameDialog extends StatelessWidget {
             actions: [
               ElevatedButton(
                 onPressed: state.isSaveButtonEnabled
-                    ? null
-                    : () => _onSaveTapped(context),
+                    ? () => _onSaveTapped(context)
+                    : null,
                 child: const Text('Сохранить'),
               ),
             ],
@@ -79,7 +79,7 @@ class NicknameDialog extends StatelessWidget {
     return switch (nickNameValidationState) {
       NickNameValidationState.empty => 'Псевдоним не должен быть пустым',
       NickNameValidationState.tooLong =>
-        'Псевдоним не должен быть длиннее 25 символов',
+        'Псевдоним не должен быть длиннее 20 символов',
       NickNameValidationState.wrongFormat =>
         'Не допускаются пробелы между символами',
       _ => null,

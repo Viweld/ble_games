@@ -79,6 +79,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (isClosed) return;
     if (connectionState is! TransportSessionConnected) return;
     add(const HomeEvent.onTransportConnected());
+    print('П О Д К Л Ю Ч И - Л О С Ь');
   }
 
   /// Обработчик запроса инициализации
@@ -91,26 +92,38 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  /// Обработчик запроса инициализации
+  /// Обработчик события "соединение установлено"
   Future<void> _onTransportConnected(Emitter<HomeState> emitter) async {
     emitter(const HomeState.connected());
   }
 
   /// Обработчик запроса инициализации
   Future<void> _onStartSeverSessionTapped(Emitter<HomeState> emitter) async {
-    if (_currentUser == null) {
-      emitter(const HomeState.nickNameRequired(role: StartAs.server));
-    } else {
-      emitter(const HomeState.startAsServer());
+    try {
+      _currentUser = await _userRepo.getCurrentUser();
+      if (_currentUser == null) {
+        emitter(const HomeState.nickNameRequired(role: StartAs.server));
+      } else {
+        emitter(const HomeState.startAsServer());
+        emitter(const HomeState.view());
+      }
+    } catch (e) {
+      emitter(HomeState.initializationError(message: e.toString()));
     }
   }
 
   /// Обработчик запроса инициализации
   Future<void> _onStartClientSessionTapped(Emitter<HomeState> emitter) async {
-    if (_currentUser == null) {
-      emitter(const HomeState.nickNameRequired(role: StartAs.client));
-    } else {
-      emitter(const HomeState.startAsClient());
+    try {
+      _currentUser = await _userRepo.getCurrentUser();
+      if (_currentUser == null) {
+        emitter(const HomeState.nickNameRequired(role: StartAs.client));
+      } else {
+        emitter(const HomeState.startAsClient());
+        emitter(const HomeState.view());
+      }
+    } catch (e) {
+      emitter(HomeState.initializationError(message: e.toString()));
     }
   }
 }

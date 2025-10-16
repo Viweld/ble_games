@@ -33,6 +33,7 @@ class ServerSessionDialog extends StatelessWidget {
         buildWhen: (previous, state) => switch (state) {
           ServerSessionStateInvitationPending() => true,
           ServerSessionStateError() => true,
+          ServerSessionStateUserDecision() => true,
           _ => false,
         },
         listener: (context, state) => switch (state) {
@@ -155,22 +156,19 @@ class _ServerSessionUserDecision extends StatelessWidget {
       content: SizedBox(
         width: screenSize.width * ServerSessionDialog.widthFraction,
         height: screenSize.height * ServerSessionDialog.heightFraction,
-        child: const Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Ваше устройство видимо для других устройств',
+              'Получено приглашение от устройства ${remoteDevice.name}',
               textAlign: TextAlign.center,
             ),
             Text(
-              'Ваше устройство видимо для других устройств',
+              'Имя пользователя: ${remoteUser.name}',
               textAlign: TextAlign.center,
             ),
-            Text(
-              'Ваше устройство видимо для других устройств',
-              textAlign: TextAlign.center,
-            ),
+            const Text('РИМИТЕ РЕШЕНИЕ', textAlign: TextAlign.center),
           ],
         ),
       ),

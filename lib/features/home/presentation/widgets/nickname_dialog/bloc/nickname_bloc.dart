@@ -43,17 +43,23 @@ class NicknameBloc extends Bloc<NicknameEvent, NicknameState> {
     if (nickName.isEmpty) {
       _stateView = _stateView.copyWith(
         nickNameValidationState: NickNameValidationState.empty,
+        isSaveButtonEnabled: false,
       );
-    } else if (nickName.length > 50) {
+    } else if (nickName.length > 20) {
       _stateView = _stateView.copyWith(
         nickNameValidationState: NickNameValidationState.tooLong,
+        isSaveButtonEnabled: false,
       );
     } else if (nickName.contains(' ')) {
       _stateView = _stateView.copyWith(
         nickNameValidationState: NickNameValidationState.wrongFormat,
+        isSaveButtonEnabled: false,
       );
     } else {
-      _stateView = _stateView.copyWith(nickNameValidationState: null);
+      _stateView = _stateView.copyWith(
+        nickNameValidationState: null,
+        isSaveButtonEnabled: true,
+      );
     }
     emitter(_stateView);
   }

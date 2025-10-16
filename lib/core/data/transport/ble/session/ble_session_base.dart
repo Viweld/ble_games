@@ -116,12 +116,14 @@ abstract base class BleSessionBase implements ITransportSession {
         'Невозможен переход в TransportSessionConnected из состояния ${_currentConnectionState.runtimeType}',
       );
     }
+    print('Получено + на клиенте');
     _setConnectionState(
       TransportSessionConnected(
         localPeer: state.localPeer,
         remotePeer: remotePeer,
       ),
     );
+    print('Смена состояние на подключен');
   }
 
   /// решено отключиться
