@@ -9,8 +9,8 @@ abstract interface class ITransportSessionServer {
   Future<void> stopAdvertising();
 
   /// Подтвердить запрос на подключение
-  Future<void> confirmConnectionRequest();
+  Future<void> acceptInvitation();
 
   /// Отклонить запрос на подключение
-  Future<void> rejectConnectionRequest();
+  Future<void> rejectInvitation();
 }

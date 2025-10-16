@@ -2,6 +2,8 @@ import 'package:batuga/core/di/builders.dep_gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/domain/models/device.dart';
+import '../../../../../core/domain/models/user.dart';
 import '../../../../../core/presentation/widgets/common_awaiting.dart';
 import '../../../../../core/presentation/widgets/common_error.dart';
 import 'bloc/server_session_bloc.dart';
@@ -25,24 +27,31 @@ class ServerSessionDialog extends StatelessWidget {
       create: (context) => DepProvider.of(context).buildServerSessionBloc(),
       child: BlocConsumer<ServerSessionBloc, ServerSessionState>(
         listenWhen: (previous, state) => switch (state) {
-          ServerSessionStateConnected() => true,
+          ServerSessionStateCloseDialog() => true,
           _ => false,
         },
         buildWhen: (previous, state) => switch (state) {
-          ServerSessionStateView() => true,
+          ServerSessionStateInvitationPending() => true,
           ServerSessionStateError() => true,
           _ => false,
         },
         listener: (context, state) => switch (state) {
-          ServerSessionStateConnected() => Navigator.pop(context),
+          ServerSessionStateCloseDialog() => _closeDialog(context),
           _ => null,
         },
         builder: (context, state) => switch (state) {
-          ServerSessionStateView() => _ServerSessionView(
-            onCancelPressed: () => _onCancelPressed(context),
+          ServerSessionStateInvitationPending() =>
+            _ServerSessionInvitationPending(
+              onCancelTapped: () => _closeDialog(context),
+            ),
+          ServerSessionStateUserDecision() => _ServerSessionUserDecision(
+            remoteUser: state.remoteUser,
+            remoteDevice: state.remoteDevice,
+            onAcceptTapped: () => _onAcceptTapped(context),
+            onRejectTapped: () => _onRejectTapped(context),
           ),
           ServerSessionStateError(:final message) => _ServerSessionError(
-            onCancelPressed: () => _onCancelPressed(context),
+            onCancelPressed: () => _closeDialog(context),
             message: message,
           ),
           _ => throw UnsupportedError('${state.runtimeType} нельзя строить'),
@@ -52,20 +61,32 @@ class ServerSessionDialog extends StatelessWidget {
   }
 
   /// Обработчик нажатия кнопки 'Отмена'
-  void _onCancelPressed(BuildContext context) {
+  void _closeDialog(BuildContext context) {
     Navigator.pop(context);
+  }
+
+  void _onAcceptTapped(BuildContext context) {
+    context.read<ServerSessionBloc>().add(
+      const ServerSessionEvent.onAcceptTapped(),
+    );
+  }
+
+  void _onRejectTapped(BuildContext context) {
+    context.read<ServerSessionBloc>().add(
+      const ServerSessionEvent.onRejectTapped(),
+    );
   }
 }
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-/// Ожидание подключения
-class _ServerSessionView extends StatelessWidget {
-  const _ServerSessionView({required this.onCancelPressed});
+/// Ожидание приглашения
+class _ServerSessionInvitationPending extends StatelessWidget {
+  const _ServerSessionInvitationPending({required this.onCancelTapped});
 
   /// Коллбэк отмены
-  final VoidCallback onCancelPressed;
+  final VoidCallback onCancelTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -93,9 +114,87 @@ class _ServerSessionView extends StatelessWidget {
       actions: [
         /// Кнопка отмены
         ElevatedButton(
-          onPressed: onCancelPressed,
+          onPressed: onCancelTapped,
           style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
           child: const Text('Отмена'),
+        ),
+      ],
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+/// Ожидание решения пользователя
+class _ServerSessionUserDecision extends StatelessWidget {
+  const _ServerSessionUserDecision({
+    required this.remoteUser,
+    required this.remoteDevice,
+    required this.onAcceptTapped,
+    required this.onRejectTapped,
+  });
+
+  /// Пользователь удаленного устройства
+  final User remoteUser;
+
+  /// Данные удаленного устройства
+  final Device remoteDevice;
+
+  /// Коллбэк отмены
+  final VoidCallback onAcceptTapped;
+
+  /// Коллбэк отмены
+  final VoidCallback onRejectTapped;
+
+  @override
+  Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    return AlertDialog(
+      title: const Text('Получено приглашение', textAlign: TextAlign.center),
+      content: SizedBox(
+        width: screenSize.width * ServerSessionDialog.widthFraction,
+        height: screenSize.height * ServerSessionDialog.heightFraction,
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Ваше устройство видимо для других устройств',
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'Ваше устройство видимо для других устройств',
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'Ваше устройство видимо для других устройств',
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        Row(
+          children: [
+            /// Кнопка "отклонить приглашение"
+            Expanded(
+              child: ElevatedButton(
+                onPressed: onRejectTapped,
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                child: const Text('Отклонить'),
+              ),
+            ),
+
+            /// Кнопка "принять приглашение"
+            Expanded(
+              child: ElevatedButton(
+                onPressed: onAcceptTapped,
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                child: const Text('Принять'),
+              ),
+            ),
+          ],
         ),
       ],
     );

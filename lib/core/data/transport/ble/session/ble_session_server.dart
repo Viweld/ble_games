@@ -47,7 +47,7 @@ final class BleSessionServer extends BleSessionBase
   Future<void> stopAdvertising() => _link.stopAdvertising();
 
   @override
-  Future<void> confirmConnectionRequest() async {
+  Future<void> acceptInvitation() async {
     await _messenger.sendMessage(
       AcceptanceMessage(peerEndpoint: super.localPeer),
     );
@@ -55,7 +55,7 @@ final class BleSessionServer extends BleSessionBase
   }
 
   @override
-  Future<void> rejectConnectionRequest() async {
+  Future<void> rejectInvitation() async {
     await _messenger.sendMessage(
       RejectionMessage(peerEndpoint: super.localPeer),
     );

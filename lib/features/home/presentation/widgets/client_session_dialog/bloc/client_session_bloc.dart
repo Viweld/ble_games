@@ -11,7 +11,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../../../../core/domain/models/device.dart';
 import '../../../../../../core/domain/models/messages.dart';
 import '../../../../../../core/domain/repositories/i_device_repository.dart';
-import '../../../../../../core/domain/transport/models/transport_session_state.dart';
 
 part 'events.dart';
 
@@ -94,17 +93,6 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
     }
   }
 
-  // void _connectionStateStreamListener(TransportSessionState state) {
-  //   switch(state){
-  //     case
-  //     TransportSessionDisconnected
-  //       TransportSessionDisconnected
-  //       TransportSessionAwaitingUserDecision
-  //       TransportSessionAwaitingRemoteDecision
-  //       TransportSessionConnected
-  //   }
-  // }
-
   /// Обработчик запроса на инициализацию
   Future<void> _onInitializationRequested(
     ClientSessionEventOnInitializationRequested event,
@@ -113,7 +101,6 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
     try {
       _viewState = const ClientSessionState.view() as ClientSessionStateView;
       final user = await _userRepo.getCurrentUser();
-      // TODO(Vadim): надо перетащить проверку пользователя на предыдущий этап (перед входом в этот экран)
       if (user == null) return;
       final device = await _deviceRepo.getDevice();
       await _session.startDiscovery(
@@ -140,8 +127,6 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
         return;
       }
       await _session.connectToDevice(_viewState.selectedDevice!);
-      // TODO(Vadim): Возможно, стоит здесь отправлять приглашение
-      // TODO(Vadim): Тут переход в список игр
     } catch (e) {
       emitter(
         ClientSessionState.initializationError(

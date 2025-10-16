@@ -37,7 +37,7 @@ class ClientSessionDialog extends StatelessWidget {
         builder: (context, state) => switch (state) {
           ClientSessionStateInitializationPending() =>
             _ClientSessionInitializationPending(
-              onCancelPressed: () => _onClosePressed(context),
+              onCancelPressed: () => _onCloseDialog(context),
             ),
           ClientSessionStateView(:final devices, :final selectedDevice) =>
             _ClientSessionView(
@@ -45,24 +45,24 @@ class ClientSessionDialog extends StatelessWidget {
               selectedDevice: selectedDevice,
               onDeviceSelected: (device) => _onDeviceSelected(context, device),
               onConnectPressed: () => _onConnectPressed(context),
-              onCancelPressed: () => _onClosePressed(context),
+              onCancelPressed: () => _onCloseDialog(context),
             ),
           ClientSessionStateInitializationError(:final message) =>
             _ClientSessionInitializationError(
-              onCancelPressed: () => _onClosePressed(context),
+              onCancelPressed: () => _onCloseDialog(context),
               message: message,
             ),
           ClientSessionStateRemoteConfirmationPending() =>
             _ClientSessionRemoteConfirmationPending(
-              onClosePressed: () => _onClosePressed(context),
+              onClosePressed: () => _onCloseDialog(context),
             ),
           ClientSessionStateInvitationAccepted() =>
             _ClientSessionInvitationAccepted(
-              onClosePressed: () => _onClosePressed(context),
+              onClosePressed: () => _onCloseDialog(context),
             ),
           ClientSessionStateInvitationRejected() =>
             _ClientSessionInvitationRejected(
-              onClosePressed: () => _onClosePressed(context),
+              onClosePressed: () => _onCloseDialog(context),
             ),
           _ => throw UnsupportedError('${state.runtimeType} нельзя строить'),
         },
@@ -85,7 +85,7 @@ class ClientSessionDialog extends StatelessWidget {
   }
 
   /// Обработчик нажатия кнопки 'Отмена'
-  void _onClosePressed(BuildContext context) {
+  void _onCloseDialog(BuildContext context) {
     Navigator.pop(context);
   }
 }

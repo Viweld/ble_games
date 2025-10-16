@@ -55,11 +55,14 @@ extension ServerSessionEventPatterns on ServerSessionEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ServerSessionEventOnInitializationRequested value)?  onInitializationRequested,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ServerSessionEventOnInitializationRequested value)?  onInitializationRequested,TResult Function( ServerSessionEventOnInvitationReceived value)?  onInvitationReceived,TResult Function( ServerSessionEventOnAcceptTapped value)?  onAcceptTapped,TResult Function( ServerSessionEventOnRejectTapped value)?  onRejectTapped,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case ServerSessionEventOnInitializationRequested() when onInitializationRequested != null:
-return onInitializationRequested(_that);case _:
+return onInitializationRequested(_that);case ServerSessionEventOnInvitationReceived() when onInvitationReceived != null:
+return onInvitationReceived(_that);case ServerSessionEventOnAcceptTapped() when onAcceptTapped != null:
+return onAcceptTapped(_that);case ServerSessionEventOnRejectTapped() when onRejectTapped != null:
+return onRejectTapped(_that);case _:
   return orElse();
 
 }
@@ -77,11 +80,14 @@ return onInitializationRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ServerSessionEventOnInitializationRequested value)  onInitializationRequested,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ServerSessionEventOnInitializationRequested value)  onInitializationRequested,required TResult Function( ServerSessionEventOnInvitationReceived value)  onInvitationReceived,required TResult Function( ServerSessionEventOnAcceptTapped value)  onAcceptTapped,required TResult Function( ServerSessionEventOnRejectTapped value)  onRejectTapped,}){
 final _that = this;
 switch (_that) {
 case ServerSessionEventOnInitializationRequested():
-return onInitializationRequested(_that);case _:
+return onInitializationRequested(_that);case ServerSessionEventOnInvitationReceived():
+return onInvitationReceived(_that);case ServerSessionEventOnAcceptTapped():
+return onAcceptTapped(_that);case ServerSessionEventOnRejectTapped():
+return onRejectTapped(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -98,11 +104,14 @@ return onInitializationRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ServerSessionEventOnInitializationRequested value)?  onInitializationRequested,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ServerSessionEventOnInitializationRequested value)?  onInitializationRequested,TResult? Function( ServerSessionEventOnInvitationReceived value)?  onInvitationReceived,TResult? Function( ServerSessionEventOnAcceptTapped value)?  onAcceptTapped,TResult? Function( ServerSessionEventOnRejectTapped value)?  onRejectTapped,}){
 final _that = this;
 switch (_that) {
 case ServerSessionEventOnInitializationRequested() when onInitializationRequested != null:
-return onInitializationRequested(_that);case _:
+return onInitializationRequested(_that);case ServerSessionEventOnInvitationReceived() when onInvitationReceived != null:
+return onInvitationReceived(_that);case ServerSessionEventOnAcceptTapped() when onAcceptTapped != null:
+return onAcceptTapped(_that);case ServerSessionEventOnRejectTapped() when onRejectTapped != null:
+return onRejectTapped(_that);case _:
   return null;
 
 }
@@ -119,10 +128,13 @@ return onInitializationRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  onInitializationRequested,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  onInitializationRequested,TResult Function( User remoteUser,  Device remoteDevice)?  onInvitationReceived,TResult Function()?  onAcceptTapped,TResult Function()?  onRejectTapped,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ServerSessionEventOnInitializationRequested() when onInitializationRequested != null:
-return onInitializationRequested();case _:
+return onInitializationRequested();case ServerSessionEventOnInvitationReceived() when onInvitationReceived != null:
+return onInvitationReceived(_that.remoteUser,_that.remoteDevice);case ServerSessionEventOnAcceptTapped() when onAcceptTapped != null:
+return onAcceptTapped();case ServerSessionEventOnRejectTapped() when onRejectTapped != null:
+return onRejectTapped();case _:
   return orElse();
 
 }
@@ -140,10 +152,13 @@ return onInitializationRequested();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  onInitializationRequested,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  onInitializationRequested,required TResult Function( User remoteUser,  Device remoteDevice)  onInvitationReceived,required TResult Function()  onAcceptTapped,required TResult Function()  onRejectTapped,}) {final _that = this;
 switch (_that) {
 case ServerSessionEventOnInitializationRequested():
-return onInitializationRequested();case _:
+return onInitializationRequested();case ServerSessionEventOnInvitationReceived():
+return onInvitationReceived(_that.remoteUser,_that.remoteDevice);case ServerSessionEventOnAcceptTapped():
+return onAcceptTapped();case ServerSessionEventOnRejectTapped():
+return onRejectTapped();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -160,10 +175,13 @@ return onInitializationRequested();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  onInitializationRequested,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  onInitializationRequested,TResult? Function( User remoteUser,  Device remoteDevice)?  onInvitationReceived,TResult? Function()?  onAcceptTapped,TResult? Function()?  onRejectTapped,}) {final _that = this;
 switch (_that) {
 case ServerSessionEventOnInitializationRequested() when onInitializationRequested != null:
-return onInitializationRequested();case _:
+return onInitializationRequested();case ServerSessionEventOnInvitationReceived() when onInvitationReceived != null:
+return onInvitationReceived(_that.remoteUser,_that.remoteDevice);case ServerSessionEventOnAcceptTapped() when onAcceptTapped != null:
+return onAcceptTapped();case ServerSessionEventOnRejectTapped() when onRejectTapped != null:
+return onRejectTapped();case _:
   return null;
 
 }
@@ -195,6 +213,138 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'ServerSessionEvent.onInitializationRequested()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class ServerSessionEventOnInvitationReceived implements ServerSessionEvent {
+  const ServerSessionEventOnInvitationReceived({required this.remoteUser, required this.remoteDevice});
+  
+
+ final  User remoteUser;
+ final  Device remoteDevice;
+
+/// Create a copy of ServerSessionEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ServerSessionEventOnInvitationReceivedCopyWith<ServerSessionEventOnInvitationReceived> get copyWith => _$ServerSessionEventOnInvitationReceivedCopyWithImpl<ServerSessionEventOnInvitationReceived>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerSessionEventOnInvitationReceived&&(identical(other.remoteUser, remoteUser) || other.remoteUser == remoteUser)&&(identical(other.remoteDevice, remoteDevice) || other.remoteDevice == remoteDevice));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,remoteUser,remoteDevice);
+
+@override
+String toString() {
+  return 'ServerSessionEvent.onInvitationReceived(remoteUser: $remoteUser, remoteDevice: $remoteDevice)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ServerSessionEventOnInvitationReceivedCopyWith<$Res> implements $ServerSessionEventCopyWith<$Res> {
+  factory $ServerSessionEventOnInvitationReceivedCopyWith(ServerSessionEventOnInvitationReceived value, $Res Function(ServerSessionEventOnInvitationReceived) _then) = _$ServerSessionEventOnInvitationReceivedCopyWithImpl;
+@useResult
+$Res call({
+ User remoteUser, Device remoteDevice
+});
+
+
+
+
+}
+/// @nodoc
+class _$ServerSessionEventOnInvitationReceivedCopyWithImpl<$Res>
+    implements $ServerSessionEventOnInvitationReceivedCopyWith<$Res> {
+  _$ServerSessionEventOnInvitationReceivedCopyWithImpl(this._self, this._then);
+
+  final ServerSessionEventOnInvitationReceived _self;
+  final $Res Function(ServerSessionEventOnInvitationReceived) _then;
+
+/// Create a copy of ServerSessionEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? remoteUser = null,Object? remoteDevice = null,}) {
+  return _then(ServerSessionEventOnInvitationReceived(
+remoteUser: null == remoteUser ? _self.remoteUser : remoteUser // ignore: cast_nullable_to_non_nullable
+as User,remoteDevice: null == remoteDevice ? _self.remoteDevice : remoteDevice // ignore: cast_nullable_to_non_nullable
+as Device,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class ServerSessionEventOnAcceptTapped implements ServerSessionEvent {
+  const ServerSessionEventOnAcceptTapped();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerSessionEventOnAcceptTapped);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'ServerSessionEvent.onAcceptTapped()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class ServerSessionEventOnRejectTapped implements ServerSessionEvent {
+  const ServerSessionEventOnRejectTapped();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerSessionEventOnRejectTapped);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'ServerSessionEvent.onRejectTapped()';
 }
 
 
@@ -247,11 +397,12 @@ extension ServerSessionStatePatterns on ServerSessionState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ServerSessionStateView value)?  view,TResult Function( ServerSessionStateConnected value)?  connected,TResult Function( ServerSessionStateError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ServerSessionStateInvitationPending value)?  invitationPending,TResult Function( ServerSessionStateUserDecision value)?  userDecision,TResult Function( ServerSessionStateCloseDialog value)?  connected,TResult Function( ServerSessionStateError value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case ServerSessionStateView() when view != null:
-return view(_that);case ServerSessionStateConnected() when connected != null:
+case ServerSessionStateInvitationPending() when invitationPending != null:
+return invitationPending(_that);case ServerSessionStateUserDecision() when userDecision != null:
+return userDecision(_that);case ServerSessionStateCloseDialog() when connected != null:
 return connected(_that);case ServerSessionStateError() when error != null:
 return error(_that);case _:
   return orElse();
@@ -271,11 +422,12 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ServerSessionStateView value)  view,required TResult Function( ServerSessionStateConnected value)  connected,required TResult Function( ServerSessionStateError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ServerSessionStateInvitationPending value)  invitationPending,required TResult Function( ServerSessionStateUserDecision value)  userDecision,required TResult Function( ServerSessionStateCloseDialog value)  connected,required TResult Function( ServerSessionStateError value)  error,}){
 final _that = this;
 switch (_that) {
-case ServerSessionStateView():
-return view(_that);case ServerSessionStateConnected():
+case ServerSessionStateInvitationPending():
+return invitationPending(_that);case ServerSessionStateUserDecision():
+return userDecision(_that);case ServerSessionStateCloseDialog():
 return connected(_that);case ServerSessionStateError():
 return error(_that);case _:
   throw StateError('Unexpected subclass');
@@ -294,11 +446,12 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ServerSessionStateView value)?  view,TResult? Function( ServerSessionStateConnected value)?  connected,TResult? Function( ServerSessionStateError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ServerSessionStateInvitationPending value)?  invitationPending,TResult? Function( ServerSessionStateUserDecision value)?  userDecision,TResult? Function( ServerSessionStateCloseDialog value)?  connected,TResult? Function( ServerSessionStateError value)?  error,}){
 final _that = this;
 switch (_that) {
-case ServerSessionStateView() when view != null:
-return view(_that);case ServerSessionStateConnected() when connected != null:
+case ServerSessionStateInvitationPending() when invitationPending != null:
+return invitationPending(_that);case ServerSessionStateUserDecision() when userDecision != null:
+return userDecision(_that);case ServerSessionStateCloseDialog() when connected != null:
 return connected(_that);case ServerSessionStateError() when error != null:
 return error(_that);case _:
   return null;
@@ -317,10 +470,11 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  view,TResult Function()?  connected,TResult Function( String? message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  invitationPending,TResult Function( User remoteUser,  Device remoteDevice)?  userDecision,TResult Function()?  connected,TResult Function( String? message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case ServerSessionStateView() when view != null:
-return view();case ServerSessionStateConnected() when connected != null:
+case ServerSessionStateInvitationPending() when invitationPending != null:
+return invitationPending();case ServerSessionStateUserDecision() when userDecision != null:
+return userDecision(_that.remoteUser,_that.remoteDevice);case ServerSessionStateCloseDialog() when connected != null:
 return connected();case ServerSessionStateError() when error != null:
 return error(_that.message);case _:
   return orElse();
@@ -340,10 +494,11 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  view,required TResult Function()  connected,required TResult Function( String? message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  invitationPending,required TResult Function( User remoteUser,  Device remoteDevice)  userDecision,required TResult Function()  connected,required TResult Function( String? message)  error,}) {final _that = this;
 switch (_that) {
-case ServerSessionStateView():
-return view();case ServerSessionStateConnected():
+case ServerSessionStateInvitationPending():
+return invitationPending();case ServerSessionStateUserDecision():
+return userDecision(_that.remoteUser,_that.remoteDevice);case ServerSessionStateCloseDialog():
 return connected();case ServerSessionStateError():
 return error(_that.message);case _:
   throw StateError('Unexpected subclass');
@@ -362,10 +517,11 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  view,TResult? Function()?  connected,TResult? Function( String? message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  invitationPending,TResult? Function( User remoteUser,  Device remoteDevice)?  userDecision,TResult? Function()?  connected,TResult? Function( String? message)?  error,}) {final _that = this;
 switch (_that) {
-case ServerSessionStateView() when view != null:
-return view();case ServerSessionStateConnected() when connected != null:
+case ServerSessionStateInvitationPending() when invitationPending != null:
+return invitationPending();case ServerSessionStateUserDecision() when userDecision != null:
+return userDecision(_that.remoteUser,_that.remoteDevice);case ServerSessionStateCloseDialog() when connected != null:
 return connected();case ServerSessionStateError() when error != null:
 return error(_that.message);case _:
   return null;
@@ -378,8 +534,8 @@ return error(_that.message);case _:
 /// @nodoc
 
 
-class ServerSessionStateView implements ServerSessionState {
-  const ServerSessionStateView();
+class ServerSessionStateInvitationPending implements ServerSessionState {
+  const ServerSessionStateInvitationPending();
   
 
 
@@ -389,7 +545,7 @@ class ServerSessionStateView implements ServerSessionState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerSessionStateView);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerSessionStateInvitationPending);
 }
 
 
@@ -398,7 +554,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ServerSessionState.view()';
+  return 'ServerSessionState.invitationPending()';
 }
 
 
@@ -410,8 +566,76 @@ String toString() {
 /// @nodoc
 
 
-class ServerSessionStateConnected implements ServerSessionState {
-  const ServerSessionStateConnected();
+class ServerSessionStateUserDecision implements ServerSessionState {
+  const ServerSessionStateUserDecision({required this.remoteUser, required this.remoteDevice});
+  
+
+ final  User remoteUser;
+ final  Device remoteDevice;
+
+/// Create a copy of ServerSessionState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ServerSessionStateUserDecisionCopyWith<ServerSessionStateUserDecision> get copyWith => _$ServerSessionStateUserDecisionCopyWithImpl<ServerSessionStateUserDecision>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerSessionStateUserDecision&&(identical(other.remoteUser, remoteUser) || other.remoteUser == remoteUser)&&(identical(other.remoteDevice, remoteDevice) || other.remoteDevice == remoteDevice));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,remoteUser,remoteDevice);
+
+@override
+String toString() {
+  return 'ServerSessionState.userDecision(remoteUser: $remoteUser, remoteDevice: $remoteDevice)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ServerSessionStateUserDecisionCopyWith<$Res> implements $ServerSessionStateCopyWith<$Res> {
+  factory $ServerSessionStateUserDecisionCopyWith(ServerSessionStateUserDecision value, $Res Function(ServerSessionStateUserDecision) _then) = _$ServerSessionStateUserDecisionCopyWithImpl;
+@useResult
+$Res call({
+ User remoteUser, Device remoteDevice
+});
+
+
+
+
+}
+/// @nodoc
+class _$ServerSessionStateUserDecisionCopyWithImpl<$Res>
+    implements $ServerSessionStateUserDecisionCopyWith<$Res> {
+  _$ServerSessionStateUserDecisionCopyWithImpl(this._self, this._then);
+
+  final ServerSessionStateUserDecision _self;
+  final $Res Function(ServerSessionStateUserDecision) _then;
+
+/// Create a copy of ServerSessionState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? remoteUser = null,Object? remoteDevice = null,}) {
+  return _then(ServerSessionStateUserDecision(
+remoteUser: null == remoteUser ? _self.remoteUser : remoteUser // ignore: cast_nullable_to_non_nullable
+as User,remoteDevice: null == remoteDevice ? _self.remoteDevice : remoteDevice // ignore: cast_nullable_to_non_nullable
+as Device,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class ServerSessionStateCloseDialog implements ServerSessionState {
+  const ServerSessionStateCloseDialog();
   
 
 
@@ -421,7 +645,7 @@ class ServerSessionStateConnected implements ServerSessionState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerSessionStateConnected);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerSessionStateCloseDialog);
 }
 
 

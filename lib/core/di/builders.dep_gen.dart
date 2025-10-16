@@ -139,8 +139,12 @@ class DepProvider extends InheritedWidget {
       NicknameBloc(userRepo: _env.g<IUserRepository>());
 
   // ---------------------------------------------------------------------------
-  ServerSessionBloc buildServerSessionBloc() =>
-      ServerSessionBloc(session: _env.g<ITransportSessionServer>());
+  ServerSessionBloc buildServerSessionBloc() => ServerSessionBloc(
+    userRepo: _env.g<IUserRepository>(),
+    deviceRepo: _env.g<IDeviceRepository>(),
+    session: _env.g<ITransportSessionServer>(),
+    transport: _env.g<ITransportFacade>(),
+  );
 
   // ---------------------------------------------------------------------------
   SplashBloc buildSplashBloc() => SplashBloc(
