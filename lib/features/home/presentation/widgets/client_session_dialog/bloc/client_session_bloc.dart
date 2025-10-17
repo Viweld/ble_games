@@ -118,14 +118,7 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
   /// Обработчик подключения к устройству
   Future<void> _onConnectToDevice(Emitter<ClientSessionState> emitter) async {
     try {
-      if (_viewState.selectedDevice == null) {
-        emitter(
-          const ClientSessionState.initializationError(
-            message: 'Не выбрано устройство для подключения',
-          ),
-        );
-        return;
-      }
+      emitter(const ClientSessionState.remoteConfirmationPending());
       await _session.connectToDevice(_viewState.selectedDevice!);
     } catch (e) {
       emitter(

@@ -61,7 +61,7 @@ class ServerSessionDialog extends StatelessWidget {
     );
   }
 
-  /// Обработчик нажатия кнопки 'Отмена'
+  /// Закрыть диалог
   void _closeDialog(BuildContext context) {
     Navigator.pop(context);
   }
@@ -97,19 +97,19 @@ class _ServerSessionInvitationPending extends StatelessWidget {
       content: SizedBox(
         width: screenSize.width * ServerSessionDialog.widthFraction,
         height: screenSize.height * ServerSessionDialog.heightFraction,
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(bottom: 16),
-              child: CommonAwaiting(),
-            ),
-            Text(
-              'Ваше устройство видимо для других устройств',
-              textAlign: TextAlign.center,
-            ),
-          ],
+        child: const Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 16,
+            children: [
+              CommonAwaiting(),
+              Text(
+                'Ваше устройство видимо для других устройств',
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
       actions: [
@@ -156,20 +156,23 @@ class _ServerSessionUserDecision extends StatelessWidget {
       content: SizedBox(
         width: screenSize.width * ServerSessionDialog.widthFraction,
         height: screenSize.height * ServerSessionDialog.heightFraction,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Получено приглашение от устройства ${remoteDevice.name}',
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              'Имя пользователя: ${remoteUser.name}',
-              textAlign: TextAlign.center,
-            ),
-            const Text('РИМИТЕ РЕШЕНИЕ', textAlign: TextAlign.center),
-          ],
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 16,
+            children: [
+              Text(
+                'Получено приглашение от устройства ${remoteDevice.name}',
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                'Имя пользователя: ${remoteUser.name}',
+                textAlign: TextAlign.center,
+              ),
+              const Text('ПРИМИТЕ РЕШЕНИЕ', textAlign: TextAlign.center),
+            ],
+          ),
         ),
       ),
       actions: [
@@ -217,28 +220,23 @@ class _ServerSessionError extends StatelessWidget {
     final screenSize = MediaQuery.of(context).size;
 
     return AlertDialog(
-      title: const Text(
-        'Ошибка ожидания подключения!',
-        textAlign: TextAlign.center,
-      ),
+      title: const Text('Ошибка!', textAlign: TextAlign.center),
       content: SizedBox(
         width: screenSize.width * ServerSessionDialog.widthFraction,
         height: screenSize.height * ServerSessionDialog.heightFraction,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(bottom: 16),
-              child: CommonError(),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              spacing: 16,
+              children: [
+                const CommonError(),
+                if (message != null)
+                  Text(message!, textAlign: TextAlign.center),
+              ],
             ),
-            if (message != null)
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Text(message!, textAlign: TextAlign.center),
-                ),
-              ),
-          ],
+          ),
         ),
       ),
       actions: [

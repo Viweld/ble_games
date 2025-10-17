@@ -76,9 +76,23 @@ abstract base class BleSessionBase implements ITransportSession {
     );
   }
 
-  /// решено отклонить
+  /// КЛИЕНТ: сервер отклонил
   @protected
-  void onConnectionRequestRejected() {
+  void onConnectionRequestRemoteRejected() {
+    final state = _currentConnectionState;
+    if (state is! TransportSessionAwaitingRemoteDecision) {
+      throw UnsupportedError(
+        'Невозможен переход в TransportSessionDisconnected из состояния ${_currentConnectionState.runtimeType}',
+      );
+    }
+    _setConnectionState(
+      TransportSessionDisconnected(localPeer: state.localPeer),
+    );
+  }
+
+  /// СЕРВЕР: пользователь отклонил
+  @protected
+  void onConnectionRequestUserRejected() {
     final state = _currentConnectionState;
     if (state is! TransportSessionAwaitingUserDecision) {
       throw UnsupportedError(
@@ -92,7 +106,7 @@ abstract base class BleSessionBase implements ITransportSession {
 
   /// решено принять
   @protected
-  void onConnectionRequestUserConfirmed() {
+  void onConnectionRequestUserAccepted() {
     final state = _currentConnectionState;
     if (state is! TransportSessionAwaitingUserDecision) {
       throw UnsupportedError(

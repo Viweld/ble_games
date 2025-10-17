@@ -51,7 +51,7 @@ final class BleSessionServer extends BleSessionBase
     await _messenger.sendMessage(
       AcceptanceMessage(peerEndpoint: super.localPeer),
     );
-    super.onConnectionRequestUserConfirmed();
+    super.onConnectionRequestUserAccepted();
   }
 
   @override
@@ -59,7 +59,7 @@ final class BleSessionServer extends BleSessionBase
     await _messenger.sendMessage(
       RejectionMessage(peerEndpoint: super.localPeer),
     );
-    super.onConnectionRequestRejected();
+    super.onConnectionRequestUserRejected();
   }
 
   @override

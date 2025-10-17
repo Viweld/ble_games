@@ -94,7 +94,7 @@ final class BleSessionClient extends BleSessionBase
     if (event is RejectionMessage) {
       _log.w('Получен отказ на приглашение');
       await _link.disconnect();
-      super.onConnectionRequestRejected();
+      super.onConnectionRequestRemoteRejected();
     } else if (event is AcceptanceMessage) {
       _log.d('Приглашение принято');
       super.onConnectionRequestRemoteConfirmed(remotePeer: event.peerEndpoint);

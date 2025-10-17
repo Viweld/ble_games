@@ -12,7 +12,7 @@ class ClientSessionDialog extends StatelessWidget {
   const ClientSessionDialog._();
 
   static const widthFraction = 0.9;
-  static const heightFraction = 0.6;
+  static const heightFraction = 0.4;
 
   static Future<void> show(BuildContext context) => showDialog<void>(
     context: context,
@@ -24,13 +24,20 @@ class ClientSessionDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => DepProvider.of(context).buildClientSessionBloc(),
-      child: BlocBuilder<ClientSessionBloc, ClientSessionState>(
+      child: BlocConsumer<ClientSessionBloc, ClientSessionState>(
+        listenWhen: (previous, state) => switch (state) {
+          ClientSessionStateInvitationAccepted() => true,
+          _ => false,
+        },
+        listener: (context, state) => switch (state) {
+          ClientSessionStateInvitationAccepted() => _closeDialog(context),
+          _ => null,
+        },
         buildWhen: (previous, state) => switch (state) {
           ClientSessionStateView() => true,
           ClientSessionStateInitializationPending() => true,
           ClientSessionStateInitializationError() => true,
           ClientSessionStateRemoteConfirmationPending() => true,
-          ClientSessionStateInvitationAccepted() => true,
           ClientSessionStateInvitationRejected() => true,
           _ => false,
         },
@@ -48,16 +55,12 @@ class ClientSessionDialog extends StatelessWidget {
               onCancelPressed: () => _onCloseDialog(context),
             ),
           ClientSessionStateInitializationError(:final message) =>
-            _ClientSessionInitializationError(
+            _ClientSessionError(
               onCancelPressed: () => _onCloseDialog(context),
               message: message,
             ),
           ClientSessionStateRemoteConfirmationPending() =>
             _ClientSessionRemoteConfirmationPending(
-              onClosePressed: () => _onCloseDialog(context),
-            ),
-          ClientSessionStateInvitationAccepted() =>
-            _ClientSessionInvitationAccepted(
               onClosePressed: () => _onCloseDialog(context),
             ),
           ClientSessionStateInvitationRejected() =>
@@ -86,6 +89,11 @@ class ClientSessionDialog extends StatelessWidget {
 
   /// Обработчик нажатия кнопки 'Отмена'
   void _onCloseDialog(BuildContext context) {
+    Navigator.pop(context);
+  }
+
+  /// Закрыть диалог
+  void _closeDialog(BuildContext context) {
     Navigator.pop(context);
   }
 }
@@ -123,78 +131,61 @@ class _ClientSessionView extends StatelessWidget {
     final screenSize = MediaQuery.of(context).size;
 
     return AlertDialog(
-      title: const Text('Найденные устройства', textAlign: TextAlign.center),
+      title: const Text('Ждут приглашения:', textAlign: TextAlign.center),
       content: SizedBox(
         width: screenSize.width * ClientSessionDialog.widthFraction,
         height: screenSize.height * ClientSessionDialog.heightFraction,
         child: devices.isEmpty
             ? const Center(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CommonProgressIndicator(),
-                    SizedBox(height: 16),
-                    Text('Поиск устройств...'),
-                  ],
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  spacing: 16,
+                  children: [CommonProgressIndicator(), Text('Поиск...')],
                 ),
               )
             : ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: devices.length,
                 itemBuilder: (context, index) {
                   final device = devices[index];
                   final isSelected = selectedDevice?.id == device.id;
 
-                  return Card(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    color: isSelected
+                  return ListTile(
+                    textColor: isSelected
                         ? Theme.of(context).primaryColor.withValues(alpha: 0.3)
                         : null,
-                    child: ListTile(
-                      leading: device.isOurApp
-                          ? const Icon(
-                              Icons.games,
-                              color: Colors.green,
-                              size: 28,
-                            )
-                          : Icon(
-                              Icons.bluetooth,
-                              color: isSelected
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.grey,
-                            ),
-                      title: Text(
-                        device.name.isEmpty
-                            ? 'Неизвестное устройство'
-                            : device.name,
-                        style: TextStyle(
-                          fontWeight: isSelected ? FontWeight.bold : null,
-                          color: device.isOurApp ? Colors.green : null,
-                        ),
+                    leading: device.isOurApp
+                        ? const Icon(Icons.games, color: Colors.green, size: 28)
+                        : Icon(
+                            Icons.bluetooth,
+                            color: isSelected
+                                ? Theme.of(context).primaryColor
+                                : Colors.grey,
+                          ),
+                    title: Text(
+                      device.name.isEmpty
+                          ? 'Неизвестное устройство'
+                          : device.name,
+                      style: TextStyle(
+                        fontWeight: isSelected ? FontWeight.bold : null,
+                        color: device.isOurApp ? Colors.green : null,
                       ),
-                      subtitle: device.isOurApp
-                          ? const Text(
-                              '🎮 Приложение BaTuGa',
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontSize: 12,
-                              ),
-                            )
-                          : null,
-                      trailing: isSelected
-                          ? Icon(
-                              Icons.check_circle,
-                              color: Theme.of(context).primaryColor,
-                            )
-                          : device.isOurApp
-                          ? const Icon(
-                              Icons.star,
-                              color: Colors.green,
-                              size: 20,
-                            )
-                          : null,
-                      onTap: () => onDeviceSelected(device),
                     ),
+                    subtitle: device.isOurApp
+                        ? const Text(
+                            '🎮 Приложение BaTuGa',
+                            style: TextStyle(color: Colors.green, fontSize: 12),
+                          )
+                        : null,
+                    trailing: isSelected
+                        ? Icon(
+                            Icons.check_circle,
+                            color: Theme.of(context).primaryColor,
+                          )
+                        : device.isOurApp
+                        ? const Icon(Icons.star, color: Colors.green, size: 20)
+                        : null,
+                    onTap: () => onDeviceSelected(device),
                   );
                 },
               ),
@@ -212,11 +203,11 @@ class _ClientSessionView extends StatelessWidget {
             ),
             const SizedBox(width: 16),
 
-            /// Кнопка подключения
+            /// Кнопка приглашения
             Expanded(
               child: ElevatedButton(
                 onPressed: selectedDevice != null ? onConnectPressed : null,
-                child: const Text('Подключиться'),
+                child: const Text('Пригласить'),
               ),
             ),
           ],
@@ -230,11 +221,8 @@ class _ClientSessionView extends StatelessWidget {
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 /// Ошибка ожидания подключения
-class _ClientSessionInitializationError extends StatelessWidget {
-  const _ClientSessionInitializationError({
-    required this.onCancelPressed,
-    this.message,
-  });
+class _ClientSessionError extends StatelessWidget {
+  const _ClientSessionError({required this.onCancelPressed, this.message});
 
   /// Коллбэк отмены
   final VoidCallback onCancelPressed;
@@ -247,23 +235,22 @@ class _ClientSessionInitializationError extends StatelessWidget {
     final screenSize = MediaQuery.of(context).size;
 
     return AlertDialog(
-      title: const Text(
-        'Ошибка ожидания подключения!',
-        textAlign: TextAlign.center,
-      ),
+      title: const Text('Ошибка!', textAlign: TextAlign.center),
       content: SizedBox(
         width: screenSize.width * ClientSessionDialog.widthFraction,
         height: screenSize.height * ClientSessionDialog.heightFraction,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(bottom: 16),
-              child: CommonError(),
-            ),
-            if (message != null) Text(message!, textAlign: TextAlign.center),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(bottom: 16),
+                child: CommonError(),
+              ),
+              if (message != null) Text(message!, textAlign: TextAlign.center),
+            ],
+          ),
         ),
       ),
       actions: [
@@ -297,11 +284,16 @@ class _ClientSessionInitializationPending extends StatelessWidget {
       content: SizedBox(
         width: screenSize.width * ClientSessionDialog.widthFraction,
         height: screenSize.height * ClientSessionDialog.heightFraction,
-        child: const Column(
-          children: [
-            CommonProgressIndicator(),
-            Text('Загрузка...', textAlign: TextAlign.center),
-          ],
+        child: const Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 16,
+            children: [
+              CommonProgressIndicator(),
+              Text('Загрузка...', textAlign: TextAlign.center),
+            ],
+          ),
         ),
       ),
       actions: [
@@ -335,8 +327,14 @@ class _ClientSessionRemoteConfirmationPending extends StatelessWidget {
       content: SizedBox(
         width: screenSize.width * ClientSessionDialog.widthFraction,
         height: screenSize.height * ClientSessionDialog.heightFraction,
-        child: const Column(
-          children: [Text('Ждите подтверждения', textAlign: TextAlign.center)],
+        child: const Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text('Ждите подтверждения', textAlign: TextAlign.center),
+            ],
+          ),
         ),
       ),
       actions: [
@@ -345,41 +343,6 @@ class _ClientSessionRemoteConfirmationPending extends StatelessWidget {
           onPressed: onClosePressed,
           style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
           child: const Text('Отмена'),
-        ),
-      ],
-    );
-  }
-}
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-/// Сервер принял приглашение
-class _ClientSessionInvitationAccepted extends StatelessWidget {
-  const _ClientSessionInvitationAccepted({required this.onClosePressed});
-
-  /// Коллбэк закрытия
-  final VoidCallback onClosePressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-
-    return AlertDialog(
-      title: const Text('Приглашение принято', textAlign: TextAlign.center),
-      content: SizedBox(
-        width: screenSize.width * ClientSessionDialog.widthFraction,
-        height: screenSize.height * ClientSessionDialog.heightFraction,
-        child: const Column(
-          children: [Text('Ура!', textAlign: TextAlign.center)],
-        ),
-      ),
-      actions: [
-        /// Кнопка отмены
-        ElevatedButton(
-          onPressed: onClosePressed,
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-          child: const Text('Хорошо'),
         ),
       ],
     );
@@ -405,8 +368,12 @@ class _ClientSessionInvitationRejected extends StatelessWidget {
       content: SizedBox(
         width: screenSize.width * ClientSessionDialog.widthFraction,
         height: screenSize.height * ClientSessionDialog.heightFraction,
-        child: const Column(
-          children: [Text('О нет..', textAlign: TextAlign.center)],
+        child: const Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [Text('О нет..', textAlign: TextAlign.center)],
+          ),
         ),
       ),
       actions: [
