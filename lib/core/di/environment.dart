@@ -1,107 +1,55 @@
-import 'package:batuga/core/domain/transport/i_transport_session_client.dart';
+import 'package:ble_peer_session/ble_peer_session.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../config/env.dart';
-import '../data/data_providers/i_cached_data_provider.dart';
 import '../data/data_providers/cached_data_provider.dart';
-import '../data/repositories/device_repository.dart';
-import '../data/transport/ble/facade/ble_transport_facade.dart';
-import '../data/transport/ble/link/ble_link_client.dart';
-import '../data/transport/ble/link/ble_link_server.dart';
-import '../data/transport/ble/messenger/ble_messenger.dart';
-import '../data/transport/ble/session/ble_session_client.dart';
-import '../data/transport/ble/session/ble_session_server.dart';
-import '../domain/logger/i_logger.dart';
-import '../domain/repositories/i_device_repository.dart';
-import '../domain/repositories/i_user_repository.dart';
-import '../domain/services/i_bluetooth_permissions_service.dart';
-import '../domain/services/i_bluetooth_state_service.dart';
-import '../data/repositories/user_repository.dart';
-import '../domain/transport/i_transport_facade.dart';
-import '../domain/transport/i_transport_session_server.dart';
-import '../services/app_logger.dart';
-import '../services/bluetooth_permissions_service.dart';
-import '../services/bluetooth_state_service.dart';
+import '../data/data_providers/cached_data_provider_impl.dart';
+import '../data/repositories/device_repository_impl.dart';
+import '../data/repositories/user_repository_impl.dart';
+import '../domain/repositories/device_repository.dart';
+import '../domain/repositories/user_repository.dart';
+import '../services/app_logger_impl.dart';
 import 'builders.dep_gen.dart';
 
 /// Окружение приложения для управления зависимостями
 class Environment extends DepGenEnvironment {
   /// Инициализация зависимостей
   Future<Environment> prepare() async {
-    /// ЛОГГЕРЫ
-    final logger = AppLogger();
-    registry<ILogger>(logger);
+    final logger = AppLoggerImpl();
+    registry<Logger>(logger);
 
-    /// ПРОВАЙДЕРЫ ДАННЫХ
-    // -------------------------------------------------------------------------
-    // Провайдер SharedPreferences
-    final sharedPreferencesProvider = CachedDataProvider(
+    final sharedPreferencesProvider = CachedDataProviderImpl(
       await SharedPreferences.getInstance(),
     );
-    registry<ICachedDataProvider>(sharedPreferencesProvider);
+    registry<CachedDataProvider>(sharedPreferencesProvider);
 
-    /// РЕПОЗИТОРИИ
-    // -------------------------------------------------------------------------
-    // Репозиторий пользователя
-    registry<IUserRepository>(
-      UserRepository(cachedDataProvider: sharedPreferencesProvider),
+    registry<UserRepository>(
+      UserRepositoryImpl(cachedDataProvider: sharedPreferencesProvider),
     );
 
-    // Репозиторий устройства
-    registry<IDeviceRepository>(
-      DeviceRepository(appName: Env.appName, serviceId: Env.serviceId),
+    registry<DeviceRepository>(
+      DeviceRepositoryImpl(appName: Env.appName, serviceId: Env.serviceId),
     );
 
-    /// BLUETOOTH СЕРВИСЫ
-    // -------------------------------------------------------------------------
-    // Сервис состояния Bluetooth
-    registry<IBluetoothStateService>(BluetoothStateService());
-
-    // ------------------------------------------------------------------------
-    // Сервис разрешений Bluetooth
-    registry<IBluetoothPermissionsService>(BluetoothPermissionsService());
-
-    /// BLUETOOTH ТРАНСПОРТ
-    // -------------------------------------------------------------------------
-    // Клиентская часть
-
-    final linkClient = BleLinkClient(
-      logger: logger,
+    final bleConfig = BlePeerConfig(
       appName: Env.appName,
-      serviceId: Env.serviceId,
-      characteristicId: Env.characteristicId,
+      serviceUuid: Env.serviceId,
+      characteristicUuid: Env.characteristicId,
+      deviceNamePrefix: '',
     );
-    final messengerClient = BleMessenger(connector: linkClient, logger: logger);
-    final sessionClient = BleSessionClient(
-      link: linkClient,
-      messenger: messengerClient,
+
+    final bleModule = BlePeerSessionModule.create(
+      config: bleConfig,
       logger: logger,
     );
-    registry<ITransportSessionClient>(sessionClient);
-
-    // Серверная часть
-    final linkServer = BleLinkServer(
-      logger: logger,
-      appName: Env.appName,
-      serviceId: Env.serviceId,
-      characteristicId: Env.characteristicId,
+    registry<BluetoothStateService>(bleModule.bluetoothStateService);
+    registry<BluetoothPermissionsService>(
+      bleModule.bluetoothPermissionsService,
     );
-    final messengerServer = BleMessenger(connector: linkServer, logger: logger);
-    final sessionServer = BleSessionServer(
-      link: linkServer,
-      messenger: messengerServer,
-      logger: logger,
-    );
-    registry<ITransportSessionServer>(sessionServer);
+    registry<TransportSessionClient>(bleModule.transportSessionClient);
+    registry<TransportSessionServer>(bleModule.transportSessionServer);
+    registry<TransportFacade>(bleModule.transportFacade);
 
-    // Единый транспортный узел
-    final bleTransport = BleTransportFacade(
-      transportSessionClient: sessionClient,
-      transportSessionServer: sessionServer,
-    );
-    registry<ITransportFacade>(bleTransport);
-
-    // -------------------------------------------------------------------------
     return this;
   }
 }

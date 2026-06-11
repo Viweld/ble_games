@@ -1,18 +1,16 @@
 import 'dart:convert';
 
-import '../../data/data_providers/i_cached_data_provider.dart';
-import '../../data/models/user_dto.dart';
+import '../data_providers/cached_data_provider.dart';
+import '../models/user_dto.dart';
 import '../../domain/models/user.dart';
-import '../../domain/repositories/i_user_repository.dart';
+import '../../domain/repositories/user_repository.dart';
 
-/// Реализация репозитория игроков
-class UserRepository implements IUserRepository {
-  const UserRepository({required ICachedDataProvider cachedDataProvider})
+final class UserRepositoryImpl implements UserRepository {
+  const UserRepositoryImpl({required CachedDataProvider cachedDataProvider})
     : _cachedDataProvider = cachedDataProvider;
 
-  final ICachedDataProvider _cachedDataProvider;
+  final CachedDataProvider _cachedDataProvider;
 
-  /// Ключи для хранения данных
   static const String _userKey = 'current_user';
   static const String _launchKey = 'first_launch';
 
@@ -23,8 +21,7 @@ class UserRepository implements IUserRepository {
       if (playerJson == null) return null;
       final playerMap = jsonDecode(playerJson) as Map<String, dynamic>;
       return UserDto.fromJson(playerMap).toDomain();
-    } catch (e) {
-      // Если данные повреждены, удаляем их
+    } catch (_) {
       await _cachedDataProvider.deleteValue(key: _userKey);
       return null;
     }

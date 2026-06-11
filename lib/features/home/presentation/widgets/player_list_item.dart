@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/domain/models/device.dart';
+import 'package:ble_peer_session/ble_peer_session.dart';
 
 /// Виджет элемента списка игроков
 class PlayerListItem extends StatelessWidget {

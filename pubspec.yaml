@@ -27,9 +27,10 @@ dependencies:
   # Dependency Injection
   dep_gen: ^1.1.12
 
-  # Bluetooth
-  bluetooth_low_energy: ^6.1.0
-  flutter_blue_plus: ^2.0.0
+  # BLE P2P transport
+  ble_peer_session: ^0.1.0
+
+  # Bluetooth (через ble_peer_session)
   permission_handler: ^12.0.1
   url_launcher: ^6.3.2
 

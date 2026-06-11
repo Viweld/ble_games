@@ -2,7 +2,7 @@ import 'package:batuga/core/di/builders.dep_gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../core/domain/models/device.dart';
+import 'package:ble_peer_session/ble_peer_session.dart';
 import '../../../../../core/domain/models/user.dart';
 import '../../../../../core/presentation/widgets/common_awaiting.dart';
 import '../../../../../core/presentation/widgets/common_error.dart';

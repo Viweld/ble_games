@@ -1,51 +1,12 @@
-import 'dart:async';
+/// Провайдер кэшированных данных (SharedPreferences).
+abstract interface class CachedDataProvider {
+  Future<String?> getString({required String key});
 
-import 'package:shared_preferences/shared_preferences.dart';
+  Future<void> setString({required String key, required String value});
 
-import 'i_cached_data_provider.dart';
+  Future<bool?> getBool({required String key});
 
-/// Реализация провайдера данных SharedPreferences
-class CachedDataProvider implements ICachedDataProvider {
-  const CachedDataProvider(this._sharedPreferences);
+  Future<void> setBool({required String key, required bool value});
 
-  final SharedPreferences _sharedPreferences;
-
-  /// Чтение строки по ключу
-  @override
-  Future<String?> getString({required String key}) async {
-    return _sharedPreferences.getString(key);
-  }
-
-  /// Сохранение строки по ключу
-  @override
-  Future<void> setString({required String key, required String value}) async {
-    await _sharedPreferences.setString(key, value);
-    await _sharedPreferences.reload();
-  }
-
-  /// Чтение булевого значения по ключу
-  @override
-  Future<bool?> getBool({required String key}) async {
-    return _sharedPreferences.getBool(key);
-  }
-
-  /// Сохранение булевого значения по ключу
-  @override
-  Future<void> setBool({required String key, required bool value}) async {
-    await _sharedPreferences.setBool(key, value);
-    await _sharedPreferences.reload();
-  }
-
-  /// Удаление значения по ключу
-  @override
-  Future<void> deleteValue({required String key}) async {
-    await _sharedPreferences.remove(key);
-    await _sharedPreferences.reload();
-  }
-
-  /// Очистка хранилища
-  @override
-  Future<void> clearValues() async {
-    await _sharedPreferences.clear();
-  }
+  Future<void> deleteValue({required String key});
 }

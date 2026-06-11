@@ -4,10 +4,10 @@ import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'package:ble_peer_session/ble_peer_session.dart';
+
 import '../../../../core/domain/models/user.dart';
-import '../../../../core/domain/repositories/i_user_repository.dart';
-import '../../../../core/domain/transport/i_transport_facade.dart';
-import '../../../../core/domain/transport/models/transport_session_state.dart';
+import '../../../../core/domain/repositories/user_repository.dart';
 
 part 'events.dart';
 
@@ -28,8 +28,8 @@ enum StartAs {
 @DepGen()
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc({
-    @DepArg() required IUserRepository userRepo,
-    @DepArg() required ITransportFacade transport,
+    @DepArg() required UserRepository userRepo,
+    @DepArg() required TransportFacade transport,
   }) : _userRepo = userRepo,
        _transport = transport,
        super(const HomeState.initializationPending()) {
@@ -55,8 +55,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     add(const HomeEvent.onInitializationRequested());
   }
 
-  final IUserRepository _userRepo;
-  final ITransportFacade _transport;
+  final UserRepository _userRepo;
+  final TransportFacade _transport;
 
   late final StreamSubscription<TransportSessionState>
   _connectionStateSubscription;

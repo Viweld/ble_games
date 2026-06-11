@@ -1,4 +1,4 @@
-import 'package:batuga/core/domain/repositories/i_user_repository.dart';
+import '../../../../../../core/domain/repositories/user_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -16,7 +16,7 @@ enum NickNameValidationState { empty, tooLong, wrongFormat }
 /// BLoC для диалога псевдонима
 @DepGen()
 class NicknameBloc extends Bloc<NicknameEvent, NicknameState> {
-  NicknameBloc({@DepArg() required IUserRepository userRepo})
+  NicknameBloc({@DepArg() required UserRepository userRepo})
     : _userRepo = userRepo,
       super(const NicknameState.view()) {
     on<NicknameEvent>(
@@ -30,7 +30,7 @@ class NicknameBloc extends Bloc<NicknameEvent, NicknameState> {
     _stateView = super.state as NicknameStateView;
   }
 
-  final IUserRepository _userRepo;
+  final UserRepository _userRepo;
   late NicknameStateView _stateView;
 
   /// Обработчик изменения псевдонима

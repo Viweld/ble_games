@@ -1,16 +1,18 @@
 import 'dart:async';
 
-import 'package:batuga/core/domain/transport/models/transport_session_state.dart';
+import 'package:ble_peer_session/ble_peer_session.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/domain/models/messages.dart';
 import '../../../../core/domain/models/user.dart';
-import '../../../../core/domain/repositories/i_user_repository.dart';
-import '../../../../core/domain/transport/i_transport_facade.dart';
+import '../../../../core/domain/repositories/user_repository.dart';
+import '../../../../core/transport/peer_endpoint_mapper.dart';
+import '../../domain/game_peer_message_codec.dart';
 import '../../domain/models/enums/game_winner.dart';
 import '../../domain/models/enums/player_type.dart';
+import '../../domain/models/game_move.dart';
+import '../../domain/models/game_position.dart';
 import '../../domain/services/game_rules.dart';
 
 part 'events.dart';
@@ -23,8 +25,8 @@ part 'game_bloc.freezed.dart';
 @DepGen()
 class GameBloc extends Bloc<GameEvent, GameState> {
   GameBloc({
-    @DepArg() required ITransportFacade transport,
-    @DepArg() required IUserRepository userRepository,
+    @DepArg() required TransportFacade transport,
+    @DepArg() required UserRepository userRepository,
   }) : _transport = transport,
        _userRepository = userRepository,
        super(const GameState.initializationPending()) {
@@ -42,21 +44,23 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     );
     _gameBoard = List.generate(3, (_) => List.filled(3, null));
 
-    // Подписка на входящие сообщения доменного уровня
     _incomingDataSubscription = _transport.messagesStream.listen((message) {
       if (isClosed) return;
       switch (message) {
-        case MoveMessage(:final move):
-          add(
-            GameEvent.onIncomingMove(
-              row: move.position.row,
-              column: move.position.column,
-              playerType: move.playerType,
-            ),
-          );
+        case PeerMessage():
+          final move = decodeMoveMessage(message);
+          if (move != null) {
+            add(
+              GameEvent.onIncomingMove(
+                row: move.position.row,
+                column: move.position.column,
+                playerType: move.playerType,
+              ),
+            );
+          } else if (isOpponentLeftMessage(message)) {
+            add(const GameEvent.onConnectionLost());
+          }
         case DisconnectionMessage():
-          add(const GameEvent.onConnectionLost());
-        case OpponentLeftMessage():
           add(const GameEvent.onConnectionLost());
         default:
           break;
@@ -66,10 +70,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     add(const GameEvent.onInitializationRequested());
   }
 
-  final ITransportFacade _transport;
-  final IUserRepository _userRepository;
+  final TransportFacade _transport;
+  final UserRepository _userRepository;
 
-  late final StreamSubscription<Message> _incomingDataSubscription;
+  late final StreamSubscription<TransportMessage> _incomingDataSubscription;
   late final List<List<PlayerType?>> _gameBoard;
   PlayerType _currentPlayer = PlayerType.x;
   PlayerType _playerType = PlayerType.x;
@@ -83,12 +87,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     await super.close();
   }
 
-  /// Обработчик запроса инициализации
   Future<void> _onInitializationRequested(Emitter<GameState> emit) async {
     try {
-      // Загружаем текущего пользователя
       _currentUser = await _userRepository.getCurrentUser();
-      // Роль назначается через RoleAssignmentMessage/аргументы экрана
       _currentPlayer = PlayerType.x;
       _playerType = PlayerType.x;
 
@@ -104,46 +105,34 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
   }
 
-  /// Обработчик нажатия на ячейку
   Future<void> _onCellTapped(
     GameEventOnCellTapped event,
     Emitter<GameState> emit,
   ) async {
     try {
-      // Проверяем, что это ход текущего игрока
-      if (_currentPlayer != _playerType) {
-        return;
-      }
+      if (_currentPlayer != _playerType) return;
+      if (_gameBoard[event.row][event.column] != null) return;
 
-      // Проверяем, что ячейка свободна
-      if (_gameBoard[event.row][event.column] != null) {
-        return;
-      }
-
-      // Делаем ход
       _gameBoard[event.row][event.column] = _currentPlayer;
-
-      // Проверяем победу
       _gameWinner = GameRules.determineWinner(_gameBoard);
 
-      // Отправляем ход сопернику доменной моделью
       final sessionState = _transport.transportSession.currentConnectionState;
-      if (sessionState is! TransportSessionConnected) return;
-      // final device = sessionState.remoteDevice;
-      if (_currentUser != null) {
-        // await _transport.sendMessage(
-        //   MoveMessage(
-        //     device: device,
-        //     user: _currentUser!,
-        //     move: GameMove(
-        //       position: GamePosition(row: event.row, column: event.column),
-        //       playerType: _currentPlayer,
-        //     ),
-        //   ),
-        // );
+      if (sessionState is TransportSessionConnected && _currentUser != null) {
+        final localDevice = sessionState.localPeer.device;
+        await _transport.sendMessage(
+          encodeMoveMessage(
+            peerEndpoint: buildPeerEndpoint(
+              user: _currentUser!,
+              device: localDevice,
+            ),
+            move: GameMove(
+              position: GamePosition(row: event.row, column: event.column),
+              playerType: _currentPlayer,
+            ),
+          ),
+        );
       }
 
-      // Обновляем состояние
       if (_viewState != null) {
         _viewState = _viewState!.copyWith(
           gameBoard: _gameBoard,
@@ -152,7 +141,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         emit(_viewState!);
       }
 
-      // Если игра не закончена, меняем игрока
       if (_gameWinner == GameWinner.none) {
         _currentPlayer = _currentPlayer == PlayerType.x
             ? PlayerType.o
@@ -167,13 +155,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
   }
 
-  /// Обработчик входящего хода (через событие)
   Future<void> _onIncomingMove(
     GameEventOnIncomingMove event,
     Emitter<GameState> emit,
   ) async {
     _gameBoard[event.row][event.column] = event.playerType;
-
     _gameWinner = GameRules.determineWinner(_gameBoard);
 
     if (_viewState != null) {
@@ -195,7 +181,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
   }
 
-  /// Обработчик потери соединения (через событие)
   void _onConnectionLost(Emitter<GameState> emit) {
     emit(const GameState.connectionLost());
   }
@@ -214,6 +199,4 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       emit(_viewState!);
     }
   }
-
-  // Логика победителя вынесена в GameRules.determineWinner
 }

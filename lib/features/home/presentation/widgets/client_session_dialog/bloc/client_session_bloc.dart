@@ -1,16 +1,13 @@
 import 'dart:async';
 
-import 'package:batuga/core/domain/models/peer_endpoint.dart';
-import 'package:batuga/core/domain/repositories/i_user_repository.dart';
-import 'package:batuga/core/domain/transport/i_transport_facade.dart';
-import 'package:batuga/core/domain/transport/i_transport_session_client.dart';
+import 'package:ble_peer_session/ble_peer_session.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../../../core/domain/models/device.dart';
-import '../../../../../../core/domain/models/messages.dart';
-import '../../../../../../core/domain/repositories/i_device_repository.dart';
+import '../../../../../../core/domain/repositories/device_repository.dart';
+import '../../../../../../core/domain/repositories/user_repository.dart';
+import '../../../../../../core/transport/peer_endpoint_mapper.dart';
 
 part 'events.dart';
 
@@ -22,10 +19,10 @@ part 'client_session_bloc.freezed.dart';
 @DepGen()
 class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
   ClientSessionBloc({
-    @DepArg() required IUserRepository userRepo,
-    @DepArg() required IDeviceRepository deviceRepo,
-    @DepArg() required ITransportSessionClient session,
-    @DepArg() required ITransportFacade transport,
+    @DepArg() required UserRepository userRepo,
+    @DepArg() required DeviceRepository deviceRepo,
+    @DepArg() required TransportSessionClient session,
+    @DepArg() required TransportFacade transport,
   }) : _userRepo = userRepo,
        _deviceRepo = deviceRepo,
        _session = session,
@@ -46,7 +43,6 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
         ClientSessionEventOnInvitationRejected() => _onInvitationRejected(
           emitter,
         ),
-
         _ => throw UnimplementedError('Unhandled event: $event'),
       },
     );
@@ -61,11 +57,11 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
     add(const ClientSessionEvent.onInitializationRequested());
   }
 
-  final IUserRepository _userRepo;
-  final IDeviceRepository _deviceRepo;
-  final ITransportSessionClient _session;
+  final UserRepository _userRepo;
+  final DeviceRepository _deviceRepo;
+  final TransportSessionClient _session;
   late final StreamSubscription<List<Device>> _discoveredDevicesSubscription;
-  late final StreamSubscription<Message> _messagesStreamSubscription;
+  late final StreamSubscription<TransportMessage> _messagesStreamSubscription;
 
   late ClientSessionStateView _viewState;
 
@@ -77,23 +73,24 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
     return super.close();
   }
 
-  /// Обновление списка найденных устройств
   void _discoveredDevicesListener(List<Device> devices) {
     if (isClosed) return;
     _viewState = _viewState.copyWith(devices: devices);
     add(const ClientSessionEvent.onViewStateChanged());
   }
 
-  void _messagesStreamListener(Message event) {
+  void _messagesStreamListener(TransportMessage event) {
     if (isClosed) return;
-    if (event is AcceptanceMessage) {
-      add(const ClientSessionEvent.onInvitationAccepted());
-    } else if (event is RejectionMessage) {
-      add(const ClientSessionEvent.onInvitationRejected());
+    switch (event) {
+      case AcceptanceMessage():
+        add(const ClientSessionEvent.onInvitationAccepted());
+      case RejectionMessage():
+        add(const ClientSessionEvent.onInvitationRejected());
+      default:
+        break;
     }
   }
 
-  /// Обработчик запроса на инициализацию
   Future<void> _onInitializationRequested(
     ClientSessionEventOnInitializationRequested event,
     Emitter<ClientSessionState> emitter,
@@ -104,7 +101,7 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
       if (user == null) return;
       final device = await _deviceRepo.getDevice();
       await _session.startDiscovery(
-        localPeer: PeerEndpoint(user: user, device: device),
+        localPeer: buildPeerEndpoint(user: user, device: device),
       );
     } catch (e) {
       emitter(
@@ -115,7 +112,6 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
     }
   }
 
-  /// Обработчик подключения к устройству
   Future<void> _onConnectToDevice(Emitter<ClientSessionState> emitter) async {
     try {
       emitter(const ClientSessionState.remoteConfirmationPending());
@@ -129,13 +125,11 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
     }
   }
 
-  /// Обработчик выбора устройства
   Future<void> _onDeviceSelected(
     ClientSessionEventOnDeviceSelected event,
     Emitter<ClientSessionState> emitter,
   ) async {
     final selectedDevice = event.device;
-    selectedDevice.id == _viewState.selectedDevice?.id ? null : selectedDevice;
     _viewState = _viewState.copyWith(
       selectedDevice: selectedDevice.id == _viewState.selectedDevice?.id
           ? null
@@ -144,14 +138,12 @@ class ClientSessionBloc extends Bloc<ClientSessionEvent, ClientSessionState> {
     emitter(_viewState);
   }
 
-  /// Обработчик события - "Сервер принял приглашение"
   Future<void> _onInvitationAccepted(
     Emitter<ClientSessionState> emitter,
   ) async {
     emitter(const ClientSessionState.invitationAccepted());
   }
 
-  /// Обработчик события - "Сервер отклонил приглашение"
   Future<void> _onInvitationRejected(
     Emitter<ClientSessionState> emitter,
   ) async {

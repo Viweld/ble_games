@@ -13,20 +13,16 @@ import 'package:flutter/widgets.dart';
 // flutter pub run dep_gen:generate -p lib/core/di
 // **************************************************************************
 
+import 'package:ble_peer_session/ble_peer_session.dart';
 import 'package:flutter/material.dart';
-import 'package:batuga/core/domain/transport/i_transport_session_client.dart';
-import 'package:batuga/core/domain/repositories/i_user_repository.dart';
-import 'package:batuga/core/domain/transport/i_transport_facade.dart';
-import 'package:batuga/core/domain/transport/i_transport_session_server.dart';
-import 'package:batuga/core/domain/services/i_bluetooth_state_service.dart';
-import 'package:batuga/core/domain/repositories/i_device_repository.dart';
-import 'package:batuga/core/domain/services/i_bluetooth_permissions_service.dart';
-import 'package:batuga/features/games_list/presentation/bloc/games_list_bloc.dart';
-import 'package:batuga/features/home/presentation/bloc/home_bloc.dart';
-import 'package:batuga/features/home/presentation/widgets/client_session_dialog/bloc/client_session_bloc.dart';
-import 'package:batuga/features/home/presentation/widgets/nickname_dialog/bloc/nickname_bloc.dart';
+import 'package:batuga/core/domain/repositories/device_repository.dart';
+import 'package:batuga/core/domain/repositories/user_repository.dart';
 import 'package:batuga/features/home/presentation/widgets/server_session_dialog/bloc/server_session_bloc.dart';
+import 'package:batuga/features/home/presentation/widgets/nickname_dialog/bloc/nickname_bloc.dart';
+import 'package:batuga/features/home/presentation/widgets/client_session_dialog/bloc/client_session_bloc.dart';
+import 'package:batuga/features/home/presentation/bloc/home_bloc.dart';
 import 'package:batuga/features/splash/presentation/bloc/splash_bloc.dart';
+import 'package:batuga/features/games_list/presentation/bloc/games_list_bloc.dart';
 import 'package:batuga/features/tictactoe/presentation/bloc/game_bloc.dart';
 
 /// The environment in which all used dependency instances are configured
@@ -113,44 +109,44 @@ class DepProvider extends InheritedWidget {
   T? mayBeGet<T>() => _env.mayBeGet<T>();
 
   // ---------------------------------------------------------------------------
-  GamesListBloc buildGamesListBloc() => GamesListBloc();
-
-  // ---------------------------------------------------------------------------
-  HomeBloc buildHomeBloc() => HomeBloc(
-    userRepo: _env.g<IUserRepository>(),
-    transport: _env.g<ITransportFacade>(),
-  );
-
-  // ---------------------------------------------------------------------------
-  ClientSessionBloc buildClientSessionBloc() => ClientSessionBloc(
-    userRepo: _env.g<IUserRepository>(),
-    deviceRepo: _env.g<IDeviceRepository>(),
-    session: _env.g<ITransportSessionClient>(),
-    transport: _env.g<ITransportFacade>(),
+  ServerSessionBloc buildServerSessionBloc() => ServerSessionBloc(
+    userRepo: _env.g<UserRepository>(),
+    deviceRepo: _env.g<DeviceRepository>(),
+    session: _env.g<TransportSessionServer>(),
+    transport: _env.g<TransportFacade>(),
   );
 
   // ---------------------------------------------------------------------------
   NicknameBloc buildNicknameBloc() =>
-      NicknameBloc(userRepo: _env.g<IUserRepository>());
+      NicknameBloc(userRepo: _env.g<UserRepository>());
 
   // ---------------------------------------------------------------------------
-  ServerSessionBloc buildServerSessionBloc() => ServerSessionBloc(
-    userRepo: _env.g<IUserRepository>(),
-    deviceRepo: _env.g<IDeviceRepository>(),
-    session: _env.g<ITransportSessionServer>(),
-    transport: _env.g<ITransportFacade>(),
+  ClientSessionBloc buildClientSessionBloc() => ClientSessionBloc(
+    userRepo: _env.g<UserRepository>(),
+    deviceRepo: _env.g<DeviceRepository>(),
+    session: _env.g<TransportSessionClient>(),
+    transport: _env.g<TransportFacade>(),
+  );
+
+  // ---------------------------------------------------------------------------
+  HomeBloc buildHomeBloc() => HomeBloc(
+    userRepo: _env.g<UserRepository>(),
+    transport: _env.g<TransportFacade>(),
   );
 
   // ---------------------------------------------------------------------------
   SplashBloc buildSplashBloc() => SplashBloc(
-    bluetoothPermissionsService: _env.g<IBluetoothPermissionsService>(),
-    bluetoothStateService: _env.g<IBluetoothStateService>(),
+    bluetoothPermissionsService: _env.g<BluetoothPermissionsService>(),
+    bluetoothStateService: _env.g<BluetoothStateService>(),
   );
 
   // ---------------------------------------------------------------------------
+  GamesListBloc buildGamesListBloc() => GamesListBloc();
+
+  // ---------------------------------------------------------------------------
   GameBloc buildGameBloc() => GameBloc(
-    transport: _env.g<ITransportFacade>(),
-    userRepository: _env.g<IUserRepository>(),
+    transport: _env.g<TransportFacade>(),
+    userRepository: _env.g<UserRepository>(),
   );
 }
 

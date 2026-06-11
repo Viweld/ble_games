@@ -1,10 +1,9 @@
-import 'package:batuga/core/domain/services/i_bluetooth_state_service.dart';
+import 'package:ble_peer_session/ble_peer_session.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dep_gen/dep_gen.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/domain/services/i_bluetooth_permissions_service.dart';
 
 part 'events.dart';
 
@@ -16,8 +15,8 @@ part 'splash_bloc.freezed.dart';
 @DepGen()
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
   SplashBloc({
-    @DepArg() required IBluetoothPermissionsService bluetoothPermissionsService,
-    @DepArg() required IBluetoothStateService bluetoothStateService,
+    @DepArg() required BluetoothPermissionsService bluetoothPermissionsService,
+    @DepArg() required BluetoothStateService bluetoothStateService,
   }) : _bluetoothPermissionsService = bluetoothPermissionsService,
        _bluetoothStateService = bluetoothStateService,
        super(const SplashState.initializationPending()) {
@@ -33,8 +32,8 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     add(const SplashEvent.onInitializationRequested());
   }
 
-  final IBluetoothPermissionsService _bluetoothPermissionsService;
-  final IBluetoothStateService _bluetoothStateService;
+  final BluetoothPermissionsService _bluetoothPermissionsService;
+  final BluetoothStateService _bluetoothStateService;
 
   /// Обработчик запроса инициализации
   Future<void> _onInitializationRequested(Emitter<SplashState> emitter) async {
